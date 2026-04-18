@@ -214,6 +214,31 @@ func GetProvider(id string) (*Provider, error) {
 	return getProvider(owner, name)
 }
 
+// GetProviderByOwnerAndName resolves a provider row from either a full id (owner/name) or a short name.
+// Short names are looked up under owner first, then under admin when missing (built-in and shared providers are created under admin).
+func GetProviderByOwnerAndName(owner string, nameOrId string) (*Provider, error) {
+	if nameOrId == "" {
+		return nil, nil
+	}
+	var id string
+	if _, _, err := util.GetOwnerAndNameFromIdWithError(nameOrId); err == nil {
+		id = nameOrId
+	} else {
+		id = util.GetIdFromOwnerAndName(owner, nameOrId)
+	}
+	p, err := GetProvider(id)
+	if err != nil {
+		return nil, err
+	}
+	if p != nil {
+		return p, nil
+	}
+	if owner != "admin" && !strings.Contains(nameOrId, "/") {
+		return GetProvider(util.GetIdFromOwnerAndName("admin", nameOrId))
+	}
+	return nil, nil
+}
+
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {

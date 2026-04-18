@@ -29,8 +29,7 @@ func getModelProviderFromName(owner string, providerName string, lang string) (*
 	var provider *Provider
 	var err error
 	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = GetProvider(providerId)
+		provider, err = GetProviderByOwnerAndName(owner, providerName)
 	} else {
 		provider, err = GetDefaultModelProvider()
 	}
@@ -64,8 +63,7 @@ func getEmbeddingProviderFromName(owner string, providerName string, lang string
 	var provider *Provider
 	var err error
 	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = GetProvider(providerId)
+		provider, err = GetProviderByOwnerAndName(owner, providerName)
 	} else {
 		provider, err = GetDefaultEmbeddingProvider()
 	}
@@ -99,8 +97,7 @@ func getAgentProviderFromName(owner string, providerName string, lang string) (*
 	var provider *Provider
 	var err error
 	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = GetProvider(providerId)
+		provider, err = GetProviderByOwnerAndName(owner, providerName)
 	} else {
 		provider, err = GetDefaultAgentProvider()
 	}

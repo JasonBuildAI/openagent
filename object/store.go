@@ -257,8 +257,7 @@ func (store *Store) GetStorageProviderObj(lang string) (storage.StorageProvider,
 	if store.StorageProvider == "" {
 		provider, err = GetDefaultStorageProvider()
 	} else {
-		providerId := util.GetIdFromOwnerAndName(store.Owner, store.StorageProvider)
-		provider, err = GetProvider(providerId)
+		provider, err = GetProviderByOwnerAndName(store.Owner, store.StorageProvider)
 	}
 	if err != nil {
 		return nil, err
@@ -293,8 +292,7 @@ func (store *Store) GetModelProvider() (*Provider, error) {
 		return GetDefaultModelProvider()
 	}
 
-	providerId := util.GetIdFromOwnerAndName(store.Owner, store.ModelProvider)
-	return GetProvider(providerId)
+	return GetProviderByOwnerAndName(store.Owner, store.ModelProvider)
 }
 
 func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
@@ -302,8 +300,7 @@ func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
 		return GetDefaultTextToSpeechProvider()
 	}
 
-	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TextToSpeechProvider)
-	return GetProvider(providerId)
+	return GetProviderByOwnerAndName(store.Owner, store.TextToSpeechProvider)
 }
 
 func (store *Store) GetSpeechToTextProvider() (*Provider, error) {
@@ -311,8 +308,7 @@ func (store *Store) GetSpeechToTextProvider() (*Provider, error) {
 		return GetDefaultSpeechToTextProvider()
 	}
 
-	providerId := util.GetIdFromOwnerAndName(store.Owner, store.SpeechToTextProvider)
-	return GetProvider(providerId)
+	return GetProviderByOwnerAndName(store.Owner, store.SpeechToTextProvider)
 }
 
 func (store *Store) GetEmbeddingProvider() (*Provider, error) {
@@ -320,8 +316,7 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 		return GetDefaultEmbeddingProvider()
 	}
 
-	providerId := util.GetIdFromOwnerAndName(store.Owner, store.EmbeddingProvider)
-	return GetProvider(providerId)
+	return GetProviderByOwnerAndName(store.Owner, store.EmbeddingProvider)
 }
 
 func RefreshStoreVectors(store *Store, lang string) (bool, error) {
