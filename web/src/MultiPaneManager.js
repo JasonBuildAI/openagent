@@ -450,7 +450,7 @@ const MultiPaneManager = ({
                 <Select.Option key={provider.name} value={provider.name}>
                   <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
                     <img src={Setting.getProviderLogoURL(provider)} alt={provider.name} style={{width: 16, height: 16}} />
-                    <span>{provider.displayName || provider.name}</span>
+                    <span>{Setting.getProviderDisplayName(provider)}</span>
                   </div>
                 </Select.Option>
               ))}

@@ -353,6 +353,25 @@ export function getLanguage() {
   return i18next.language;
 }
 
+export function getProviderDisplayName(provider) {
+  if (!provider) {
+    return "";
+  }
+  const lang = getLanguage();
+  const isEn = !lang || lang === "null" || lang === "en" || lang.startsWith("en-");
+  if (!isEn) {
+    const d2 = (provider.displayName2 || "").trim();
+    if (d2) {
+      return d2;
+    }
+  }
+  const d1 = (provider.displayName || "").trim();
+  if (d1) {
+    return d1;
+  }
+  return provider.name || "";
+}
+
 export function setLanguage(language) {
   localStorage.setItem("language", language);
   i18next.changeLanguage(language);

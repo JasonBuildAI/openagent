@@ -235,17 +235,24 @@ class TaskListPage extends BaseListPage {
         dataIndex: "provider",
         key: "provider",
         width: "200px",
-        sorter: (a, b) => (a.provider || "").localeCompare(b.provider || ""),
+        sorter: (a, b) => {
+          const pa = this.state.modelProviders.find((p) => p.name === a.provider);
+          const pb = this.state.modelProviders.find((p) => p.name === b.provider);
+          const la = pa ? Setting.getProviderDisplayName(pa) : (a.provider || "");
+          const lb = pb ? Setting.getProviderDisplayName(pb) : (b.provider || "");
+          return la.localeCompare(lb);
+        },
         ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
           if (!text) {
             return null;
           }
           const provider = this.state.modelProviders.find((p) => p.name === text);
+          const label = provider ? Setting.getProviderDisplayName(provider) : text;
           return (
             <span style={{display: "inline-flex", alignItems: "center", gap: 8}}>
               {provider ? <Provider.ProviderLogo provider={provider} width={20} height={20} /> : null}
-              <Link to={`/providers/${text}`}>{text}</Link>
+              <Link to={`/providers/${text}`}>{label}</Link>
             </span>
           );
         },

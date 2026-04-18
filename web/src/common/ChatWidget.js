@@ -717,7 +717,7 @@ class ChatWidget extends React.Component {
                       alt={provider.name}
                       style={{width: 16, height: 16}}
                     />
-                    <span>{provider.displayName || provider.name}</span>
+                    <span>{Setting.getProviderDisplayName(provider)}</span>
                   </div>
                 </Select.Option>
               ))}

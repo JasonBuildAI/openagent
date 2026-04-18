@@ -68,7 +68,7 @@ class StoreEditPage extends React.Component {
         <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
           src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})}
           alt={provider.name} />
-        {provider.displayName} ({provider.name})
+        {Setting.getProviderDisplayName(provider)} ({provider.name})
       </Option>
     );
   }

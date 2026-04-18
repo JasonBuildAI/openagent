@@ -22,6 +22,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import * as Provider from "./Provider";
 import {DeleteOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 class ProviderListPage extends BaseListPage {
   constructor(props) {
@@ -35,6 +36,7 @@ class ProviderListPage extends BaseListPage {
       name: `provider_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
+      displayName2: "",
       category: "Model",
       type: "OpenAI",
       subType: "text-davinci-003",
@@ -73,6 +75,7 @@ class ProviderListPage extends BaseListPage {
       name: `provider_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
+      displayName2: "",
       category: "Storage",
       type: "Local File System",
       subType: "",
@@ -149,8 +152,26 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "displayName",
         key: "displayName",
         width: "220px",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+        sorter: (a, b) => Setting.getProviderDisplayName(a).localeCompare(Setting.getProviderDisplayName(b)),
         ...this.getColumnSearchProps("displayName"),
+        onFilter: (value, record) => {
+          const v = (value || "").toLowerCase();
+          const hay = `${record.displayName || ""} ${record.displayName2 || ""}`.toLowerCase();
+          return hay.includes(v);
+        },
+        render: (text, record) => {
+          const visible = Setting.getProviderDisplayName(record);
+          return this.state.searchedColumn === "displayName" ? (
+            <Highlighter
+              highlightStyle={{backgroundColor: "#ffc069", padding: 0}}
+              searchWords={[this.state.searchText]}
+              autoEscape
+              textToHighlight={visible ? visible.toString() : ""}
+            />
+          ) : (
+            visible
+          );
+        },
       },
       {
         title: i18next.t("general:Category"),

@@ -181,6 +181,14 @@ class ProviderEditPage extends React.Component {
     });
   }
 
+  shouldShowProviderDisplayName2Field() {
+    const lang = Setting.getLanguage();
+    if (!lang || lang === "null") {
+      return false;
+    }
+    return lang !== "en" && !lang.startsWith("en-");
+  }
+
   isTemperatureEnabled(provider) {
     if (provider.category === "Model") {
       if (["OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama", "Writer"].includes(provider.type)) {
@@ -284,6 +292,18 @@ class ProviderEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {this.shouldShowProviderDisplayName2Field() ? (
+          <Row style={{marginTop: "20px"}} >
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("general:Display name 2"), i18next.t("general:Display name 2 - Tooltip"))} :
+            </Col>
+            <Col span={22} >
+              <Input disabled={isRemote} value={this.state.provider.displayName2 ?? ""} onChange={e => {
+                this.updateProviderField("displayName2", e.target.value);
+              }} />
+            </Col>
+          </Row>
+        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Category"), i18next.t("provider:Category - Tooltip"))} :

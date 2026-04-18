@@ -282,7 +282,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             <Select value={selectedProvider || chat?.modelProvider || storeInfo?.modelProvider || (modelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
               {modelProviders.map(provider => {
-                const displayName = provider.displayName || provider.name;
+                const displayName = Setting.getProviderDisplayName(provider);
                 return (
                   <Select.Option
                     key={provider.name}
@@ -294,7 +294,7 @@ const StoreInfoTitle = (props) => {
                         alt={provider.name}
                         style={{width: 20, height: 20, marginRight: 8}}
                       />
-                      <span>{displayName || provider.name}</span>
+                      <span>{displayName}</span>
                     </div>
                   </Select.Option>
                 );

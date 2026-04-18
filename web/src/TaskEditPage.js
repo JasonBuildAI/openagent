@@ -301,7 +301,7 @@ class TaskEditPage extends React.Component {
                     label: (
                       <span style={{display: "inline-flex", alignItems: "center", gap: 8}}>
                         <Provider.ProviderLogo provider={p} width={20} height={20} />
-                        <span>{p.displayName} ({p.name})</span>
+                        <span>{Setting.getProviderDisplayName(p)} ({p.name})</span>
                       </span>
                     ),
                   }))}
