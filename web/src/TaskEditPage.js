@@ -19,7 +19,7 @@ const ANALYZE_PROGRESS_DURATION_SEC = 300;
 const ANALYZE_PROGRESS_TICK_MS = 500;
 const ANALYZE_PROGRESS_MAX_PERCENT = 99;
 
-import {CloseOutlined, DownloadOutlined, FilePdfOutlined, FileWordOutlined, UploadOutlined} from "@ant-design/icons";
+import {BarChartOutlined, ClearOutlined, CloseOutlined, DownloadOutlined, FilePdfOutlined, FileWordOutlined, UploadOutlined} from "@ant-design/icons";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as ScaleBackend from "./backend/ScaleBackend";
 import * as Setting from "./Setting";
@@ -459,6 +459,7 @@ class TaskEditPage extends React.Component {
                   disabled={!this.state.task.documentText || !!this.state.task.result || !String(this.state.task.scale || "").trim()}
                   style={{marginBottom: "20px", width: "200px"}}
                   type="primary"
+                  icon={<BarChartOutlined />}
                   onClick={() => this.analyzeTask()}
                 >
                   {i18next.t("task:Analyze")}
@@ -466,6 +467,7 @@ class TaskEditPage extends React.Component {
                 {this.state.task.result ? (
                   <Button
                     style={{marginBottom: "20px", marginLeft: "8px", width: "200px"}}
+                    icon={<ClearOutlined />}
                     onClick={this.clearReport}
                   >
                     {i18next.t("general:Clear")}
