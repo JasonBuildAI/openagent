@@ -213,6 +213,24 @@ class ChatListPage extends BaseListPage {
           );
         },
       },
+      {
+        title: i18next.t("general:Store"),
+        dataIndex: "store",
+        key: "store",
+        width: "130px",
+        sorter: (a, b) => (a.store || "").localeCompare(b.store || ""),
+        ...this.getColumnSearchProps("store"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          return (
+            <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
       // {
       //   title: i18next.t("general:Created time"),
       //   dataIndex: "createdTime",
