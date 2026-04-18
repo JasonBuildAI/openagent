@@ -932,7 +932,7 @@
     "Chart caption bar ranked": "Sub-criteria scores (ranked)",
     "Chart caption pie": "Score share by first-level dimension",
     "Chart caption priority dimensions": "Dimensions to prioritize",
-    "Chart caption radar": "First-level dimensions (radar)",
+    "Chart caption radar": "Sub-criteria radar (axes colored by main dimension group)",
     "Designer": "Designer",
     "Disadvantages": "Disadvantages",
     "Download report": "Download report",

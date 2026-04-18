@@ -82,7 +82,21 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
     if (categories.length === 0) {
       return {min: 0, max: 5};
     }
-    const maxScore = Math.max(...categories.map((c) => Number(c.score) || 0));
+    const scores = [];
+    (categories || []).forEach((c) => {
+      (c.items || []).forEach((item) => {
+        scores.push(Number(item.score) || 0);
+      });
+    });
+    if (scores.length === 0) {
+      (categories || []).forEach((c) => {
+        scores.push(Number(c.score) || 0);
+      });
+    }
+    if (scores.length === 0) {
+      return {min: 0, max: 5};
+    }
+    const maxScore = Math.max(...scores);
     if (maxScore <= 5) {
       return {min: 0, max: 5};
     }
@@ -168,7 +182,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
             marginBottom: "24px",
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gridTemplateRows: "repeat(2, minmax(348px, auto))",
+            gridTemplateRows: "repeat(2, minmax(400px, auto))",
             gap: "24px",
           }}
         >
