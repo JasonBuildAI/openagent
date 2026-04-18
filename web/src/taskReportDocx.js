@@ -122,7 +122,7 @@ function buildMetaSection(result) {
 
 /**
  * @param {object} result
- * @param {{ fileName: string, chartImages?: { radar?: string, bar?: string, pie?: string } }} options
+ * @param {{ fileName: string, chartImages?: { radar?: string, bar?: string, pie?: string, lowScoreBar?: string } }} options
  */
 export async function downloadTaskAnalysisReportDocx(result, options) {
   const fileName = options.fileName || "task_report.docx";
@@ -159,7 +159,7 @@ export async function downloadTaskAnalysisReportDocx(result, options) {
     {firstLineIndent: true, after: 320}
   ));
 
-  const hasAnyChart = chartImages.radar || chartImages.bar || chartImages.pie;
+  const hasAnyChart = chartImages.radar || chartImages.bar || chartImages.pie || chartImages.lowScoreBar;
   if (hasAnyChart) {
     children.push(new Paragraph({
       text: i18next.t("task:III. Chart Analysis"),
@@ -171,6 +171,7 @@ export async function downloadTaskAnalysisReportDocx(result, options) {
       {key: "radar", cap: i18next.t("task:Radar chart"), url: chartImages.radar},
       {key: "bar", cap: i18next.t("task:Bar chart"), url: chartImages.bar},
       {key: "pie", cap: i18next.t("task:Pie chart"), url: chartImages.pie},
+      {key: "lowScoreBar", cap: i18next.t("task:Low score vertical bar chart"), url: chartImages.lowScoreBar},
     ];
     chartBlocks.forEach(({cap, url}) => {
       if (!url) {

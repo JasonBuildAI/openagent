@@ -27,6 +27,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
   const radarRef = useRef(null);
   const barRef = useRef(null);
   const pieRef = useRef(null);
+  const lowScoreBarRef = useRef(null);
   const [downloading, setDownloading] = useState(false);
   if (!result) {
     return null;
@@ -103,6 +104,10 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
       if (p) {
         chartImages.pie = p;
       }
+      const lb = getChartDataUrl(lowScoreBarRef);
+      if (lb) {
+        chartImages.lowScoreBar = lb;
+      }
       await downloadTaskAnalysisReportDocx(result, {
         fileName: downloadFileName || "task_report.docx",
         chartImages,
@@ -134,15 +139,26 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
         </Button>
       </div>
       {hasCharts && (
-        <div style={{marginBottom: "24px", height: "320px", display: "flex", gap: "24px"}}>
-          <div style={{flex: 1, minWidth: 0}}>
+        <div
+          style={{
+            marginBottom: "24px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridTemplateRows: "320px 320px",
+            gap: "24px",
+          }}
+        >
+          <div style={{minWidth: 0, minHeight: 0}}>
             <TaskAnalysisRadarChart categories={categories} radarMin={radarAxis.min} radarMax={radarAxis.max} chartRef={radarRef} />
           </div>
-          <div style={{flex: 1, minWidth: 0}}>
+          <div style={{minWidth: 0, minHeight: 0}}>
             <TaskAnalysisBarChart categories={categories} chartRef={barRef} />
           </div>
-          <div style={{flex: 1, minWidth: 0}}>
+          <div style={{minWidth: 0, minHeight: 0}}>
             <TaskAnalysisPieChart categories={categories} chartRef={pieRef} />
+          </div>
+          <div style={{minWidth: 0, minHeight: 0}}>
+            <TaskAnalysisBarChart categories={categories} chartRef={lowScoreBarRef} orientation="vertical" maxScoreExclusive={70} />
           </div>
         </div>
       )}

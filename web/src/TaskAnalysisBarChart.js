@@ -55,24 +55,94 @@ function getScoreRange(categories) {
   return {min: axisMin, max: Math.max(axisMax, axisMin + 10)};
 }
 
-export default function TaskAnalysisBarChart({categories, chartRef}) {
-  const items = flattenItems(categories);
+function shortLabel(name) {
+  return name.length > ITEM_NAME_MAX_LEN ? name.slice(0, ITEM_NAME_MAX_LEN) + "…" : name;
+}
+
+/** Y-axis for the vertical sub-70 chart: default 50–80; extend min when any score falls below 50. */
+function getLowScoreVerticalAxisBounds(items) {
+  const minScore = Math.min(...items.map((it) => Number(it.score) || 0));
+  const yMax = 80;
+  if (minScore >= 50) {
+    return {yMin: 50, yMax};
+  }
+  let yMin = Math.max(0, Math.floor(minScore / 10) * 10 - 10);
+  if (minScore < yMin) {
+    yMin = Math.max(0, minScore - 10);
+  }
+  return {yMin, yMax};
+}
+
+export default function TaskAnalysisBarChart({categories, chartRef, orientation = "horizontal", maxScoreExclusive}) {
+  let items = flattenItems(categories);
+  if (maxScoreExclusive !== undefined && maxScoreExclusive !== null) {
+    items = items.filter((it) => it.score < maxScoreExclusive);
+  }
   if (items.length === 0) {
     return null;
   }
+
+  const tooltipFormatter = (params) => {
+    const idx = params[0].dataIndex;
+    const it = items[idx];
+    return `${it.categoryName}<br/>${it.name}<br/>${i18next.t("task:Score")}: ${it.score}`;
+  };
+
+  if (orientation === "vertical") {
+    const xData = items.map((it) => shortLabel(it.name));
+    const isLowScoreChart = maxScoreExclusive !== undefined && maxScoreExclusive !== null;
+    const {yMin, yMax} = isLowScoreChart
+      ? getLowScoreVerticalAxisBounds(items)
+      : {yMin: 0, yMax: 100};
+    const option = {
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {type: "shadow"},
+        formatter: tooltipFormatter,
+      },
+      grid: {left: "10%", right: "6%", top: "10%", bottom: "22%", containLabel: false},
+      xAxis: {
+        type: "category",
+        data: xData,
+        axisLabel: {fontSize: 10, color: "#000", rotate: 35, interval: 0},
+        axisLine: {show: true},
+        axisTick: {show: false},
+      },
+      yAxis: {
+        type: "value",
+        min: yMin,
+        max: yMax,
+        axisLabel: {color: "#000", fontSize: 11},
+        splitLine: {lineStyle: {opacity: 0.3}},
+      },
+      series: [{
+        type: "bar",
+        data: items.map((it) => it.score),
+        ...(isLowScoreChart
+          ? {barMaxWidth: 26, barCategoryGap: "55%"}
+          : {}),
+        itemStyle: {
+          color: "#1677ff",
+          borderRadius: [4, 4, 0, 0],
+        },
+        label: {
+          show: true,
+          position: "top",
+          formatter: "{c}",
+          color: "#000",
+          fontSize: 10,
+        },
+      }],
+    };
+    return <ReactEcharts ref={chartRef} option={option} style={{width: "100%", height: "100%"}} notMerge />;
+  }
+
   const {min: xMin, max: xMax} = getScoreRange(categories);
-  const yData = items.map((it) => {
-    const short = it.name.length > ITEM_NAME_MAX_LEN ? it.name.slice(0, ITEM_NAME_MAX_LEN) + "…" : it.name;
-    return short;
-  });
+  const yData = items.map((it) => shortLabel(it.name));
   const option = {
     tooltip: {
       trigger: "axis",
-      formatter: (params) => {
-        const idx = params[0].dataIndex;
-        const it = items[idx];
-        return `${it.categoryName}<br/>${it.name}<br/>${i18next.t("task:Score")}: ${it.score}`;
-      },
+      formatter: tooltipFormatter,
     },
     grid: {left: "8%", right: "12%", top: "4%", bottom: "4%", containLabel: true},
     xAxis: {
