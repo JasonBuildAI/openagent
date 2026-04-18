@@ -20,6 +20,7 @@ import TaskAnalysisRadarChart from "./TaskAnalysisRadarChart";
 import TaskAnalysisBarChart from "./TaskAnalysisBarChart";
 import TaskAnalysisPieChart from "./TaskAnalysisPieChart";
 import {downloadTaskAnalysisReportDocx} from "./taskReportDocx";
+import {formatCategoryHeading} from "./taskResultFormat";
 import * as Setting from "./Setting";
 
 export default function TaskAnalysisReport({result, downloadFileName}) {
@@ -148,7 +149,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
       {categories.map((cat, idx) => (
         <div key={idx} style={{marginBottom: "24px"}}>
           <div style={{fontWeight: 600, marginBottom: "8px", fontSize: "14px"}}>
-            {idx + 1}. {cat.name}（{i18next.t("task:Score")}：{cat.score}{i18next.t("task:Score Unit")}）
+            {formatCategoryHeading(cat, idx)}（{i18next.t("task:Score")}：{cat.score}{i18next.t("task:Score Unit")}）
           </div>
           <Table
             size="small"

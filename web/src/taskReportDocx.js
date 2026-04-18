@@ -24,6 +24,7 @@ import {
 } from "docx";
 import {saveAs} from "file-saver";
 import i18next from "i18next";
+import {formatCategoryTitleForDocx} from "./taskResultFormat";
 
 const BODY_SIZE = 24;
 const LABEL_SIZE = 24;
@@ -196,9 +197,10 @@ export async function downloadTaskAnalysisReportDocx(result, options) {
     }));
 
     categories.forEach((cat, catIdx) => {
+      const baseName = formatCategoryTitleForDocx(cat, catIdx, zh);
       const catTitle = zh
-        ? `${catIdx + 1}、${cat.name}（${i18next.t("task:Score")}：${displayOrDash(cat.score)}${su}）`
-        : `${catIdx + 1}. ${cat.name} (${i18next.t("task:Score")}: ${displayOrDash(cat.score)}${su})`;
+        ? `${baseName}（${i18next.t("task:Score")}：${displayOrDash(cat.score)}${su}）`
+        : `${baseName} (${i18next.t("task:Score")}: ${displayOrDash(cat.score)}${su})`;
 
       children.push(new Paragraph({
         text: catTitle,
