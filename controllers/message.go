@@ -48,6 +48,11 @@ func (c *ApiController) GetGlobalMessages() {
 	} else {
 		limitInt := util.ParseInt(limit)
 		username := c.GetSessionUsername()
+		var isolationOk bool
+		store, isolationOk = c.EnforceStoreIsolation(store)
+		if !isolationOk {
+			return
+		}
 
 		var count int64
 		var messages []*object.Message
@@ -67,6 +72,9 @@ func (c *ApiController) GetGlobalMessages() {
 			if err2 != nil {
 				c.ResponseError(err2.Error())
 				return
+			}
+			if store != "" {
+				storeNames = []string{store}
 			}
 			count, err = object.GetMessageCountByStoreNames(storeNames, field, value)
 			if err != nil {

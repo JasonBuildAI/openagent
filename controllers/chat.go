@@ -50,6 +50,11 @@ func (c *ApiController) GetGlobalChats() {
 	} else {
 		limitInt := util.ParseInt(limit)
 		username := c.GetSessionUsername()
+		var isolationOk bool
+		store, isolationOk = c.EnforceStoreIsolation(store)
+		if !isolationOk {
+			return
+		}
 
 		var count int64
 		var chats []*object.Chat
@@ -69,6 +74,10 @@ func (c *ApiController) GetGlobalChats() {
 			if err2 != nil {
 				c.ResponseError(err2.Error())
 				return
+			}
+			// When the client requests a specific store (top bar), narrow results like get-vectors
+			if store != "" {
+				storeNames = []string{store}
 			}
 			count, err = object.GetChatCountByStoreNames(storeNames, field, value)
 			if err != nil {
