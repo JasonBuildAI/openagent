@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -73,6 +74,23 @@ func ListFiles(path string) []string {
 	return res
 }
 
+// joinQueryValuesForDisplay builds a query string from decoded url.Values without
+// re-applying percent-encoding, so non-ASCII characters remain readable in logs.
+func joinQueryValuesForDisplay(v url.Values) string {
+	keys := make([]string, 0, len(v))
+	for k := range v {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	parts := make([]string, 0, len(keys)*2)
+	for _, k := range keys {
+		for _, val := range v[k] {
+			parts = append(parts, k+"="+val)
+		}
+	}
+	return strings.Join(parts, "&")
+}
+
 func FilterQuery(urlString string, blackList []string) string {
 	urlData, err := url.Parse(urlString)
 	if err != nil {
@@ -81,9 +99,8 @@ func FilterQuery(urlString string, blackList []string) string {
 
 	queries := urlData.Query()
 	retQuery := make(url.Values)
-	inBlackList := false
 	for key, value := range queries {
-		inBlackList = false
+		inBlackList := false
 		for _, blackListItem := range blackList {
 			if blackListItem == key {
 				inBlackList = true
@@ -94,11 +111,14 @@ func FilterQuery(urlString string, blackList []string) string {
 			retQuery[key] = value
 		}
 	}
-	if len(retQuery) > 0 {
-		return urlData.Path + "?" + strings.ReplaceAll(retQuery.Encode(), "%2F", "/")
-	} else {
-		return urlData.Path
+	path := urlData.Path
+	if p, err := url.PathUnescape(path); err == nil {
+		path = p
 	}
+	if len(retQuery) > 0 {
+		return path + "?" + joinQueryValuesForDisplay(retQuery)
+	}
+	return path
 }
 
 func CopyFile(dest string, src string) {
