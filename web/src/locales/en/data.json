@@ -839,6 +839,7 @@
     "Memory limit": "Memory limit",
     "Memory limit - Tooltip": "Max context tokens for conversation history",
     "Message count": "Message count",
+    "Vector count": "Vector count",
     "Move": "Move",
     "Navbar items": "Navbar items",
     "Navbar items - Tooltip": "Navigation bar menu items configuration",

@@ -310,6 +310,20 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("store:Vector count"),
+        dataIndex: "vectorCount",
+        key: "vectorCount",
+        width: "150px",
+        sorter: (a, b) => a.vectorCount - b.vectorCount,
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${record.name}/vectors`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
@@ -479,7 +493,7 @@ class StoreListPage extends BaseListPage {
 
     if (this.state.hideChat) {
       filteredColumns = filteredColumns.filter(column =>
-        column.key !== "chatCount" && column.key !== "messageCount" && column.key !== "imageProvider" && column.key !== "modelProvider" && column.key !== "embeddingProvider" &&
+        column.key !== "chatCount" && column.key !== "messageCount" && column.key !== "vectorCount" && column.key !== "imageProvider" && column.key !== "modelProvider" && column.key !== "embeddingProvider" &&
         column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "memoryLimit"
       );
     }

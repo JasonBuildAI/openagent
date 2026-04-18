@@ -31,7 +31,10 @@ class VectorListPage extends BaseListPage {
 
   newVector() {
     const randomName = Setting.getRandomName();
-    const storeName = Setting.isDefaultStoreSelected(this.props.account) ? "store-built-in" : Setting.getRequestStore(this.props.account);
+    let storeName = this.getApiStoreName();
+    if (!storeName && Setting.isDefaultStoreSelected(this.props.account)) {
+      storeName = "store-built-in";
+    }
     return {
       owner: "admin",
       name: `vector_${randomName}`,
@@ -296,7 +299,7 @@ class VectorListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    VectorBackend.getVectors("admin", Setting.getRequestStore(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    VectorBackend.getVectors("admin", this.getApiStoreName(), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

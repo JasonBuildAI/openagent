@@ -198,6 +198,10 @@ routeManager.registerApp("stores", {
       path: "/stores/:owner/:storeName/messages",
       component: () => import("../MessageListPage"),
     },
+    {
+      path: "/stores/:owner/:storeName/vectors",
+      component: () => import("../VectorListPage"),
+    },
   ],
 });
 

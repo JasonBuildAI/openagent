@@ -839,6 +839,7 @@
     "Memory limit": "历史会话限制",
     "Memory limit - Tooltip": "上下文记忆的最大token数",
     "Message count": "消息数量",
+    "Vector count": "向量数量",
     "Move": "移动",
     "Navbar items": "导航栏项",
     "Navbar items - Tooltip": "导航栏菜单项配置",

@@ -70,8 +70,14 @@ func PopulateStoreCounts(stores []*Store) error {
 			return err
 		}
 
+		vectorCount, err := adapter.engine.Count(&Vector{Store: store.Name})
+		if err != nil {
+			return err
+		}
+
 		store.ChatCount = int(chatCount)
 		store.MessageCount = int(messageCount)
+		store.VectorCount = int(vectorCount)
 	}
 
 	return nil
