@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Avatar, Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -246,6 +246,18 @@ class StoreListPage extends BaseListPage {
   renderTable(stores) {
     const columns = [
       {
+        title: i18next.t("general:Avatar"),
+        dataIndex: "avatar",
+        key: "avatar",
+        width: "72px",
+        align: "center",
+        render: (_, record) => {
+          return (
+            <Avatar src={record.avatar || Setting.getDefaultAiAvatar()} size={40} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -285,7 +297,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Chat count"),
         dataIndex: "chatCount",
         key: "chatCount",
-        width: "150px",
+        width: "130px",
         sorter: (a, b) => a.chatCount - b.chatCount,
         render: (text, record, index) => {
           return (
@@ -299,7 +311,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Message count"),
         dataIndex: "messageCount",
         key: "messageCount",
-        width: "150px",
+        width: "130px",
         sorter: (a, b) => a.messageCount - b.messageCount,
         render: (text, record, index) => {
           return (
@@ -313,7 +325,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Vector count"),
         dataIndex: "vectorCount",
         key: "vectorCount",
-        width: "150px",
+        width: "130px",
         sorter: (a, b) => a.vectorCount - b.vectorCount,
         render: (text, record, index) => {
           return (
