@@ -37,6 +37,9 @@ class ChatListPage extends BaseListPage {
       providerMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
       maximizeMessages: this.getMaximizeMessagesFromStorage(),
+      sortField: "",
+      sortOrder: "",
+      downloadLoading: false,
     };
   }
 
@@ -137,6 +140,105 @@ class ChatListPage extends BaseListPage {
   deleteItem = async(i) => {
     return ChatBackend.deleteChat(this.state.data[i]);
   };
+
+  fetchAllChatsForExport = async() => {
+    const total = this.state.pagination.total;
+    if (!total) {
+      return [];
+    }
+    const field = this.state.searchedColumn ?? "";
+    const value = this.state.searchText ?? "";
+    const {sortField, sortOrder} = this.state;
+    const store = this.getApiStoreName();
+    const chunkSize = 10000;
+    const pageSize = Math.min(chunkSize, total);
+    const all = [];
+    let page = 1;
+    while (all.length < total) {
+      const res = await ChatBackend.getGlobalChats(page, pageSize, field, value, sortField, sortOrder, store);
+      if (res.status !== "ok") {
+        Setting.showMessage("error", res.msg);
+        return null;
+      }
+      const batch = res.data || [];
+      all.push(...batch);
+      if (batch.length === 0 || batch.length < pageSize) {
+        break;
+      }
+      page += 1;
+    }
+    return all;
+  };
+
+  buildChatExportRows(chats) {
+    const data = [];
+    chats.forEach(item => {
+      const row = {};
+      row[i18next.t("general:Name")] = item.name;
+      row[i18next.t("general:Store")] = item.store;
+      row[i18next.t("general:Created time")] = Setting.getFormattedDate(item.createdTime);
+      row[i18next.t("general:Updated time")] = Setting.getFormattedDate(item.updatedTime);
+      row[i18next.t("general:Display name")] = item.displayName;
+      row[i18next.t("general:User")] = item.user;
+      row[i18next.t("general:Model")] = item.modelProvider;
+      row[i18next.t("general:Client IP")] = [item.clientIp, item.clientIpDesc].filter(Boolean).join(" ").trim();
+      row[i18next.t("general:Count")] = item.messageCount;
+      row[i18next.t("chat:Token count")] = item.tokenCount;
+      row[i18next.t("chat:Price")] = Setting.getDisplayPrice(item.price, item.currency);
+      row[i18next.t("general:Is deleted")] = item.isDeleted ? i18next.t("general:ON") : i18next.t("general:OFF");
+      data.push(row);
+    });
+    return data;
+  }
+
+  downloadChats = async() => {
+    const total = this.state.pagination.total;
+    if (!total) {
+      Setting.showMessage("info", i18next.t("general:No data"));
+      return;
+    }
+    this.setState({downloadLoading: true});
+    try {
+      const chats = await this.fetchAllChatsForExport();
+      if (chats === null) {
+        return;
+      }
+      const sorted = [...chats].sort((a, b) => {
+        const ta = a.createdTime || a.updatedTime || "";
+        const tb = b.createdTime || b.updatedTime || "";
+        const byTime = ta.localeCompare(tb);
+        if (byTime !== 0) {
+          return byTime;
+        }
+        return (a.name || "").localeCompare(b.name || "");
+      });
+      const data = this.buildChatExportRows(sorted);
+      const sheet = Setting.json2sheet(data);
+      sheet["!cols"] = [
+        {wch: 18},
+        {wch: 14},
+        {wch: 22},
+        {wch: 22},
+        {wch: 28},
+        {wch: 12},
+        {wch: 14},
+        {wch: 28},
+        {wch: 8},
+        {wch: 10},
+        {wch: 12},
+        {wch: 10},
+      ];
+      Setting.saveSheetToFile(sheet, i18next.t("general:Chats"), `${i18next.t("general:Chats")}-${Setting.getFormattedDate(moment().format())}.xlsx`);
+    } finally {
+      this.setState({downloadLoading: false});
+    }
+  };
+
+  renderDownloadXlsxButton() {
+    return (
+      <Button size="small" style={{marginRight: "10px"}} loading={this.state.downloadLoading} onClick={this.downloadChats}>{i18next.t("general:Download")}</Button>
+    );
+  }
 
   deleteChat(record) {
     ChatBackend.deleteChat(record)
@@ -559,6 +661,8 @@ class ChatListPage extends BaseListPage {
                   </Button>
                 </Popconfirm>
               )}
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {this.renderDownloadXlsxButton()}
               <span style={{marginLeft: 32}}>
                 {i18next.t("chat:Maximize messages")}:
                 <Switch checked={this.state.maximizeMessages} onChange={this.toggleMaximizeMessages} style={{marginLeft: 8}} />
@@ -604,7 +708,7 @@ class ChatListPage extends BaseListPage {
 
   fetch = (params = {}) => {
     let field = params.searchedColumn, value = params.searchText;
-    const sortField = params.sortField, sortOrder = params.sortOrder;
+    const sortField = params.sortField ?? "", sortOrder = params.sortOrder ?? "";
     if (params.type !== undefined && params.type !== null) {
       field = "type";
       value = params.type;
@@ -630,6 +734,8 @@ class ChatListPage extends BaseListPage {
             },
             searchText: params.searchText,
             searchedColumn: params.searchedColumn,
+            sortField,
+            sortOrder,
           });
 
           chats.forEach((chat) => {
