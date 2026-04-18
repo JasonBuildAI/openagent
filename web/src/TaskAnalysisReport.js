@@ -23,6 +23,30 @@ import {downloadTaskAnalysisReportDocx} from "./taskReportDocx";
 import {formatCategoryHeading} from "./taskResultFormat";
 import * as Setting from "./Setting";
 
+const taskChartCardStyle = {
+  minWidth: 0,
+  minHeight: 0,
+  display: "flex",
+  flexDirection: "column",
+  border: "1px solid #ebeef2",
+  borderRadius: "10px",
+  background: "#fff",
+  boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06)",
+  padding: "12px 14px 10px",
+  overflow: "hidden",
+};
+
+const taskChartCaptionStyle = {
+  fontSize: "16px",
+  fontWeight: 600,
+  marginBottom: "10px",
+  paddingBottom: "10px",
+  borderBottom: "1px solid #f0f0f0",
+  color: "rgba(0, 0, 0, 0.85)",
+  textAlign: "center",
+  lineHeight: 1.45,
+};
+
 export default function TaskAnalysisReport({result, downloadFileName}) {
   const radarRef = useRef(null);
   const barRef = useRef(null);
@@ -144,21 +168,41 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
             marginBottom: "24px",
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gridTemplateRows: "320px 320px",
+            gridTemplateRows: "repeat(2, minmax(348px, auto))",
             gap: "24px",
           }}
         >
-          <div style={{minWidth: 0, minHeight: 0}}>
-            <TaskAnalysisRadarChart categories={categories} radarMin={radarAxis.min} radarMax={radarAxis.max} chartRef={radarRef} />
+          <div style={taskChartCardStyle}>
+            <div style={taskChartCaptionStyle}>
+              {i18next.t("task:Chart caption radar")}
+            </div>
+            <div style={{flex: 1, minHeight: 0}}>
+              <TaskAnalysisRadarChart categories={categories} radarMin={radarAxis.min} radarMax={radarAxis.max} chartRef={radarRef} />
+            </div>
           </div>
-          <div style={{minWidth: 0, minHeight: 0}}>
-            <TaskAnalysisBarChart categories={categories} chartRef={barRef} />
+          <div style={taskChartCardStyle}>
+            <div style={taskChartCaptionStyle}>
+              {i18next.t("task:Chart caption bar ranked")}
+            </div>
+            <div style={{flex: 1, minHeight: 0}}>
+              <TaskAnalysisBarChart categories={categories} chartRef={barRef} />
+            </div>
           </div>
-          <div style={{minWidth: 0, minHeight: 0}}>
-            <TaskAnalysisPieChart categories={categories} chartRef={pieRef} />
+          <div style={taskChartCardStyle}>
+            <div style={taskChartCaptionStyle}>
+              {i18next.t("task:Chart caption pie")}
+            </div>
+            <div style={{flex: 1, minHeight: 0}}>
+              <TaskAnalysisPieChart categories={categories} chartRef={pieRef} />
+            </div>
           </div>
-          <div style={{minWidth: 0, minHeight: 0}}>
-            <TaskAnalysisBarChart categories={categories} chartRef={lowScoreBarRef} orientation="vertical" maxScoreExclusive={70} />
+          <div style={taskChartCardStyle}>
+            <div style={taskChartCaptionStyle}>
+              {i18next.t("task:Chart caption priority dimensions")}
+            </div>
+            <div style={{flex: 1, minHeight: 0}}>
+              <TaskAnalysisBarChart categories={categories} chartRef={lowScoreBarRef} orientation="vertical" maxScoreExclusive={70} />
+            </div>
           </div>
         </div>
       )}
