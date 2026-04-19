@@ -231,6 +231,14 @@ class TaskListPage extends BaseListPage {
         ...this.getColumnSearchProps("displayName"),
       },
       {
+        title: i18next.t("general:Created time"),
+        dataIndex: "createdTime",
+        key: "createdTime",
+        width: "160px",
+        sorter: (a, b) => (a.createdTime || "").localeCompare(b.createdTime || ""),
+        render: (text) => Setting.getFormattedDate(text),
+      },
+      {
         title: i18next.t("provider:Model provider"),
         dataIndex: "provider",
         key: "provider",

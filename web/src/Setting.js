@@ -2697,6 +2697,7 @@ export function getFormTypeItems(formType) {
     return [
       {name: "name", label: "general:Name", visible: true, width: "160"},
       {name: "displayName", label: "general:Display name", visible: true, width: "200"},
+      {name: "createdTime", label: "general:Created time", visible: true, width: "160"},
       {name: "provider", label: "provider:Model provider", visible: true, width: "250"},
       {name: "type", label: "general:Type", visible: true, width: "90"},
       {name: "subject", label: "store:Subject", visible: true, width: "200"},
