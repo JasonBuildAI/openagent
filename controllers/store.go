@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"sort"
 
 	"github.com/beego/beego/utils/pagination"
@@ -176,6 +177,17 @@ func (c *ApiController) UpdateStore() {
 	oldStore, err := object.GetStore(id)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+	if oldStore == nil {
+		oldStore, err = object.GetStoreForGetApi(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+	if oldStore == nil {
+		c.ResponseError(fmt.Sprintf("store: %s not found", id))
 		return
 	}
 

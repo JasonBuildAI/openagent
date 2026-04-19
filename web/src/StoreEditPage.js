@@ -885,7 +885,7 @@ class StoreEditPage extends React.Component {
     }
 
     store.fileTree = undefined;
-    StoreBackend.updateStore(this.state.store.owner, this.state.storeName, store)
+    StoreBackend.updateStore(this.state.owner, this.state.storeName, store)
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
