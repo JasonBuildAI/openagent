@@ -562,6 +562,9 @@ func collectProviderNames(store *Store) []string {
 	if store.AgentProvider != "" {
 		providerNames = append(providerNames, store.AgentProvider)
 	}
+	if store.ToolProviders != nil {
+		providerNames = append(providerNames, store.ToolProviders...)
+	}
 	if store.ChildModelProviders != nil {
 		providerNames = append(providerNames, store.ChildModelProviders...)
 	}

@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casibase/casibase/agent"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
@@ -177,7 +176,7 @@ func (c *ApiController) GetMessageAnswer() {
 	if questionMessage != nil {
 		webSearchEnabled = questionMessage.WebSearchEnabled
 	}
-	agentClients = agent.MergeBuiltinAndWebSearchTools(agentClients, store.BuiltinTools, webSearchEnabled)
+	agentClients = object.MergeAgentToolClients(agentClients, store, webSearchEnabled, c.GetAcceptLanguage())
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {

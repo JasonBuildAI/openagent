@@ -12,24 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package builtin_tool
+package tool
 
 import (
 	"context"
 	"fmt"
-	"time"
+	stdtime "time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/casibase/casibase/agent/builtin_tool"
 )
 
-// TimeTool provides date/time operations in one MCP tool (operation selects behavior).
-type TimeTool struct{}
+// TimeProvider is the Tool provider Type "Time" (single TimeTool).
+type TimeProvider struct{}
 
-func (t *TimeTool) GetName() string {
+func (p *TimeProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+	return []builtin_tool.BuiltinTool{&timeBuiltin{}}
+}
+
+type timeBuiltin struct{}
+
+func (t *timeBuiltin) GetName() string {
 	return "TimeTool"
 }
 
-func (t *TimeTool) GetDescription() string {
+func (t *timeBuiltin) GetDescription() string {
 	return `Date and time utilities. Set "operation" to choose the action:
 - current: current date/time in an optional timezone (use "timezone", default UTC).
 - localtime_to_timestamp: convert local time string to Unix seconds ("localtime", optional "timezone", default Asia/Shanghai).
@@ -38,7 +45,7 @@ func (t *TimeTool) GetDescription() string {
 - weekday: weekday for a calendar date ("year", "month", "day").`
 }
 
-func (t *TimeTool) GetInputSchema() interface{} {
+func (t *timeBuiltin) GetInputSchema() interface{} {
 	return map[string]interface{}{
 		"type": "object",
 		"properties": map[string]interface{}{
@@ -94,19 +101,19 @@ func (t *TimeTool) GetInputSchema() interface{} {
 	}
 }
 
-func (t *TimeTool) Execute(ctx context.Context, arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func (t *timeBuiltin) Execute(ctx context.Context, arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	op, _ := arguments["operation"].(string)
 	switch op {
 	case "current":
-		return timeExecuteCurrent(arguments)
+		return timeExecCurrent(arguments)
 	case "localtime_to_timestamp":
-		return timeExecuteLocaltimeToTimestamp(arguments)
+		return timeExecLocaltimeToTimestamp(arguments)
 	case "timestamp_to_localtime":
-		return timeExecuteTimestampToLocaltime(arguments)
+		return timeExecTimestampToLocaltime(arguments)
 	case "timezone_conversion":
-		return timeExecuteTimezoneConversion(arguments)
+		return timeExecTimezoneConversion(arguments)
 	case "weekday":
-		return timeExecuteWeekday(arguments)
+		return timeExecWeekday(arguments)
 	default:
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -117,17 +124,17 @@ func (t *TimeTool) Execute(ctx context.Context, arguments map[string]interface{}
 	}
 }
 
-func timeExecuteCurrent(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func timeExecCurrent(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	tzName := "UTC"
 	if tz, ok := arguments["timezone"].(string); ok && tz != "" {
 		tzName = tz
 	}
 
-	var now time.Time
+	var now stdtime.Time
 	if tzName == "UTC" {
-		now = time.Now().UTC()
+		now = stdtime.Now().UTC()
 	} else {
-		location, err := time.LoadLocation(tzName)
+		location, err := stdtime.LoadLocation(tzName)
 		if err != nil {
 			return &protocol.CallToolResult{
 				IsError: true,
@@ -136,7 +143,7 @@ func timeExecuteCurrent(arguments map[string]interface{}) (*protocol.CallToolRes
 				},
 			}, nil
 		}
-		now = time.Now().In(location)
+		now = stdtime.Now().In(location)
 	}
 
 	weekday := now.Weekday().String()
@@ -150,7 +157,7 @@ func timeExecuteCurrent(arguments map[string]interface{}) (*protocol.CallToolRes
 	}, nil
 }
 
-func timeExecuteLocaltimeToTimestamp(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func timeExecLocaltimeToTimestamp(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	localtimeStr, ok := arguments["localtime"].(string)
 	if !ok || localtimeStr == "" {
 		return &protocol.CallToolResult{
@@ -166,7 +173,7 @@ func timeExecuteLocaltimeToTimestamp(arguments map[string]interface{}) (*protoco
 		tzName = tz
 	}
 
-	location, err := time.LoadLocation(tzName)
+	location, err := stdtime.LoadLocation(tzName)
 	if err != nil {
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -185,10 +192,10 @@ func timeExecuteLocaltimeToTimestamp(arguments map[string]interface{}) (*protoco
 		"2006-01-02",
 	}
 
-	var parsedTime time.Time
+	var parsedTime stdtime.Time
 	var parseErr error
 	for _, layout := range layouts {
-		parsedTime, parseErr = time.ParseInLocation(layout, localtimeStr, location)
+		parsedTime, parseErr = stdtime.ParseInLocation(layout, localtimeStr, location)
 		if parseErr == nil {
 			break
 		}
@@ -211,7 +218,7 @@ func timeExecuteLocaltimeToTimestamp(arguments map[string]interface{}) (*protoco
 	}, nil
 }
 
-func timeExecuteTimestampToLocaltime(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func timeExecTimestampToLocaltime(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	var ts int64
 	switch v := arguments["timestamp"].(type) {
 	case float64:
@@ -234,7 +241,7 @@ func timeExecuteTimestampToLocaltime(arguments map[string]interface{}) (*protoco
 		tzName = tz
 	}
 
-	location, err := time.LoadLocation(tzName)
+	location, err := stdtime.LoadLocation(tzName)
 	if err != nil {
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -244,7 +251,7 @@ func timeExecuteTimestampToLocaltime(arguments map[string]interface{}) (*protoco
 		}, nil
 	}
 
-	localTime := time.Unix(ts, 0).In(location)
+	localTime := stdtime.Unix(ts, 0).In(location)
 	return &protocol.CallToolResult{
 		IsError: false,
 		Content: []protocol.Content{
@@ -253,7 +260,7 @@ func timeExecuteTimestampToLocaltime(arguments map[string]interface{}) (*protoco
 	}, nil
 }
 
-func timeExecuteTimezoneConversion(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func timeExecTimezoneConversion(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	datetimeStr, ok := arguments["datetime"].(string)
 	if !ok || datetimeStr == "" {
 		return &protocol.CallToolResult{
@@ -284,7 +291,7 @@ func timeExecuteTimezoneConversion(arguments map[string]interface{}) (*protocol.
 		}, nil
 	}
 
-	fromLocation, err := time.LoadLocation(fromTz)
+	fromLocation, err := stdtime.LoadLocation(fromTz)
 	if err != nil {
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -294,7 +301,7 @@ func timeExecuteTimezoneConversion(arguments map[string]interface{}) (*protocol.
 		}, nil
 	}
 
-	toLocation, err := time.LoadLocation(toTz)
+	toLocation, err := stdtime.LoadLocation(toTz)
 	if err != nil {
 		return &protocol.CallToolResult{
 			IsError: true,
@@ -311,10 +318,10 @@ func timeExecuteTimezoneConversion(arguments map[string]interface{}) (*protocol.
 		"2006-01-02",
 	}
 
-	var parsedTime time.Time
+	var parsedTime stdtime.Time
 	var parseErr error
 	for _, layout := range layouts {
-		parsedTime, parseErr = time.ParseInLocation(layout, datetimeStr, fromLocation)
+		parsedTime, parseErr = stdtime.ParseInLocation(layout, datetimeStr, fromLocation)
 		if parseErr == nil {
 			break
 		}
@@ -338,7 +345,7 @@ func timeExecuteTimezoneConversion(arguments map[string]interface{}) (*protocol.
 	}, nil
 }
 
-func timeExecuteWeekday(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+func timeExecWeekday(arguments map[string]interface{}) (*protocol.CallToolResult, error) {
 	var year int
 	switch v := arguments["year"].(type) {
 	case float64:
@@ -402,7 +409,7 @@ func timeExecuteWeekday(arguments map[string]interface{}) (*protocol.CallToolRes
 		}, nil
 	}
 
-	date := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+	date := stdtime.Date(year, stdtime.Month(month), day, 0, 0, 0, 0, stdtime.UTC)
 	weekday := date.Weekday().String()
 	monthName := date.Month().String()
 	readableDate := fmt.Sprintf("%s %d, %d", monthName, date.Day(), date.Year())

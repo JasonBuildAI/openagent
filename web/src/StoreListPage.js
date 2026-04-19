@@ -453,6 +453,18 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("store:Tool providers"),
+        dataIndex: "toolProviders",
+        key: "toolProviders",
+        width: "280px",
+        render: (arr) => {
+          if (!arr || !arr.length) {
+            return "";
+          }
+          return arr.join(", ");
+        },
+      },
+      {
         title: i18next.t("store:Memory limit"),
         dataIndex: "memoryLimit",
         key: "memoryLimit",
@@ -538,7 +550,7 @@ class StoreListPage extends BaseListPage {
     if (this.state.hideChat) {
       filteredColumns = filteredColumns.filter(column =>
         column.key !== "chatCount" && column.key !== "messageCount" && column.key !== "vectorCount" && column.key !== "imageProvider" && column.key !== "modelProvider" && column.key !== "embeddingProvider" &&
-        column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "memoryLimit"
+        column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "toolProviders" && column.key !== "memoryLimit"
       );
     }
 

@@ -33,13 +33,9 @@ type ToolRegistry struct {
 }
 
 func NewToolRegistry() *ToolRegistry {
-	registry := &ToolRegistry{
+	return &ToolRegistry{
 		tools: make(map[string]BuiltinTool),
 	}
-
-	registry.RegisterTool(&TimeTool{})
-
-	return registry
 }
 
 func (r *ToolRegistry) RegisterTool(tool BuiltinTool) {
@@ -62,12 +58,12 @@ func (r *ToolRegistry) GetToolsAsProtocolTools() []*protocol.Tool {
 		schemaInterface := tool.GetInputSchema()
 		schemaBytes, err := json.Marshal(schemaInterface)
 		if err != nil {
-			continue // 跳过无法序列化的工具
+			continue
 		}
 
 		var inputSchema protocol.InputSchema
 		if err := json.Unmarshal(schemaBytes, &inputSchema); err != nil {
-			continue // 跳过无法反序列化的工具
+			continue
 		}
 
 		tools = append(tools, &protocol.Tool{

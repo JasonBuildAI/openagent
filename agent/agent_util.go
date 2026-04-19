@@ -17,9 +17,6 @@ package agent
 import (
 	"errors"
 	"strings"
-
-	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/casibase/casibase/agent/builtin_tool"
 )
 
 func GetServerNameAndToolNameFromId(id string) (string, string) {
@@ -38,80 +35,4 @@ func GetServerNameAndToolNameFromId(id string) (string, string) {
 
 func GetIdFromServerNameAndToolName(ServerName, toolName string) string {
 	return ServerName + "__" + toolName
-}
-
-// legacyBuiltinTimeToolNames are former tool ids merged into the single TimeTool.
-var legacyBuiltinTimeToolNames = map[string]struct{}{
-	"current_time":             {},
-	"localtime_to_timestamp": {},
-	"timestamp_to_localtime": {},
-	"timezone_conversion":      {},
-	"weekday":                  {},
-	"time":                     {},
-}
-
-func normalizeLegacyBuiltinToolNames(selectedTools []string) []string {
-	seen := make(map[string]bool)
-	var out []string
-	addTimeTool := false
-	for _, name := range selectedTools {
-		if _, legacy := legacyBuiltinTimeToolNames[name]; legacy || name == "TimeTool" {
-			addTimeTool = true
-			continue
-		}
-		if seen[name] {
-			continue
-		}
-		seen[name] = true
-		out = append(out, name)
-	}
-	if addTimeTool {
-		out = append(out, "TimeTool")
-	}
-	return out
-}
-
-func MergeBuiltinAndWebSearchTools(agentClients *AgentClients, selectedTools []string, webSearchEnabled bool) *AgentClients {
-	if webSearchEnabled {
-		if agentClients == nil {
-			agentClients = &AgentClients{}
-		}
-		agentClients.WebSearchEnabled = true
-	}
-
-	selectedTools = normalizeLegacyBuiltinToolNames(selectedTools)
-
-	if len(selectedTools) == 0 {
-		return agentClients
-	}
-
-	builtinToolReg := builtin_tool.NewToolRegistry()
-	allBuiltinTools := builtinToolReg.GetToolsAsProtocolTools()
-
-	toolMap := make(map[string]*protocol.Tool, len(allBuiltinTools))
-	for _, tool := range allBuiltinTools {
-		toolMap[tool.Name] = tool
-	}
-
-	selectedBuiltinTools := make([]*protocol.Tool, 0, len(selectedTools))
-	for _, selectedName := range selectedTools {
-		if tool, ok := toolMap[selectedName]; ok {
-			selectedBuiltinTools = append(selectedBuiltinTools, tool)
-		}
-	}
-
-	if len(selectedBuiltinTools) == 0 {
-		return agentClients
-	}
-
-	if agentClients == nil {
-		return &AgentClients{
-			Tools:          selectedBuiltinTools,
-			BuiltinToolReg: builtinToolReg,
-		}
-	}
-
-	agentClients.Tools = append(agentClients.Tools, selectedBuiltinTools...)
-	agentClients.BuiltinToolReg = builtinToolReg
-	return agentClients
 }

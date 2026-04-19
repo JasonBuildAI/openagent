@@ -352,6 +352,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Scan") {
                 this.updateProviderField("type", "Nmap");
                 this.updateProviderField("subType", "Default");
+              } else if (value === "Tool") {
+                this.updateProviderField("type", "Time");
+                this.updateProviderField("subType", "Default");
               }
             })}>
               {
@@ -360,6 +363,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
                   {id: "Agent", name: "Agent"},
+                  {id: "Tool", name: "Tool"},
                   {id: "Public Cloud", name: "Public Cloud"},
                   {id: "Private Cloud", name: "Private Cloud"},
                   {id: "Blockchain", name: "Blockchain"},
@@ -457,6 +461,10 @@ class ProviderEditPage extends React.Component {
                 if (value === "MCP") {
                   this.updateProviderField("subType", "Default");
                 } else if (value === "A2A") {
+                  this.updateProviderField("subType", "Default");
+                }
+              } else if (this.state.provider.category === "Tool") {
+                if (value === "Time") {
                   this.updateProviderField("subType", "Default");
                 }
               } else if (this.state.provider.category === "Text-to-Speech") {
@@ -695,6 +703,7 @@ class ProviderEditPage extends React.Component {
             (this.state.provider.category === "Agent" && this.state.provider.type === "MCP") ||
             (this.state.provider.category === "Blockchain" && this.state.provider.type === "ChainMaker") ||
             this.state.provider.category === "Scan" ||
+            this.state.provider.category === "Tool" ||
             this.state.provider.type === "Dummy" ||
             this.state.provider.type === "Ollama"
           ) ? null : (

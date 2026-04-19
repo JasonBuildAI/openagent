@@ -48,6 +48,7 @@ class StoreEditPage extends React.Component {
       textToSpeechProviders: [],
       speechToTextProviders: [],
       agentProviders: [],
+      toolProvidersProviders: [],
       builtinTools: [],
       enableTtsStreaming: false,
       store: null,
@@ -154,6 +155,7 @@ class StoreEditPage extends React.Component {
             textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
             speechToTextProviders: res.data.filter(provider => provider.category === "Speech-to-Text"),
             agentProviders: res.data.filter(provider => provider.category === "Agent"),
+            toolProvidersProviders: res.data.filter(provider => provider.category === "Tool"),
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -510,6 +512,26 @@ class StoreEditPage extends React.Component {
                   <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
                   {
                     this.state.agentProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("store:Tool providers"), i18next.t("store:Tool providers - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Select
+                  virtual={false}
+                  mode="multiple"
+                  allowClear
+                  style={{width: "100%"}}
+                  placeholder={i18next.t("store:Select tool providers")}
+                  value={this.state.store.toolProviders || []}
+                  onChange={(value => {this.updateStoreField("toolProviders", value || []);})}
+                >
+                  {
+                    this.state.toolProvidersProviders.map((provider, index) => this.renderProviderOption(provider, index))
                   }
                 </Select>
               </Col>

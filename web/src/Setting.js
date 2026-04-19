@@ -1048,6 +1048,12 @@ export function getOtherProviderInfo() {
         url: "https://agent2agent.info/",
       },
     },
+    Tool: {
+      "Time": {
+        logo: `${StaticBaseUrl}/img/social_mcp.png`,
+        url: "https://github.com/casibase/casibase",
+      },
+    },
     "Public Cloud": {
       "Aliyun": {
         logo: `${StaticBaseUrl}/img/social_aliyun.png`,
@@ -1361,6 +1367,10 @@ export function getProviderTypeOptions(category) {
       {id: "MCP", name: "MCP"},
       {id: "A2A", name: "A2A"},
     ]);
+  } else if (category === "Tool") {
+    return [
+      {id: "Time", name: "Time"},
+    ];
   } else if (category === "Public Cloud") {
     return ([
       {id: "Amazon Web Services", name: "Amazon Web Services"},
@@ -2099,6 +2109,12 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "Default", name: "Default"},
       ];
     }
+  } else if (category === "Tool") {
+    if (type === "Time") {
+      return [
+        {id: "Default", name: "Default"},
+      ];
+    }
   } else if (category === "Text-to-Speech") {
     if (type === "Alibaba Cloud") {
       return [
@@ -2666,6 +2682,7 @@ export function getFormTypeItems(formType) {
       {name: "textToSpeechProvider", label: "store:Text-to-Speech provider", visible: true, width: "300"},
       {name: "speechToTextProvider", label: "store:Speech-to-Text provider", visible: true, width: "200"},
       {name: "agentProvider", label: "store:Agent provider", visible: true, width: "250"},
+      {name: "toolProviders", label: "store:Tool providers", visible: true, width: "280"},
       {name: "memoryLimit", label: "store:Memory limit", visible: true, width: "120"},
       {name: "state", label: "general:State", visible: true, width: "90"},
     ];
@@ -2781,14 +2798,6 @@ export function filterTableColumns(columns, formItems, actionKey = "action") {
 
 export function getBuiltinTools() {
   return [
-    {
-      category: "time",
-      name: "Time Tools",
-      icon: "🕐",
-      tools: [
-        {name: "TimeTool", description: "Date/time: current, convert timestamps, timezones, weekday (operation parameter)"},
-      ],
-    },
     {
       category: "code",
       name: "Code Tools",
