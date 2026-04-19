@@ -220,6 +220,24 @@ class MessageListPage extends BaseListPage {
       //   sorter: (a, b) => a.owner.localeCompare(b.owner),
       // },
       {
+        title: i18next.t("general:Store"),
+        dataIndex: "store",
+        key: "store",
+        width: "130px",
+        sorter: (a, b) => (a.store || "").localeCompare(b.store || ""),
+        ...this.getColumnSearchProps("store"),
+        render: (text, record, index) => {
+          if (!text) {
+            return null;
+          }
+          return (
+            <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -260,24 +278,6 @@ class MessageListPage extends BaseListPage {
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
               {text}
             </a>
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Store"),
-        dataIndex: "store",
-        key: "store",
-        width: "130px",
-        sorter: (a, b) => (a.store || "").localeCompare(b.store || ""),
-        ...this.getColumnSearchProps("store"),
-        render: (text, record, index) => {
-          if (!text) {
-            return null;
-          }
-          return (
-            <Link to={`/stores/${record.owner}/${text}`}>
-              {text}
-            </Link>
           );
         },
       },

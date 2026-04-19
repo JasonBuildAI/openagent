@@ -301,21 +301,6 @@ class ChatListPage extends BaseListPage {
       //   sorter: (a, b) => a.owner.localeCompare(b.owner),
       // },
       {
-        title: i18next.t("general:Name"),
-        dataIndex: "name",
-        key: "name",
-        width: "100px",
-        sorter: (a, b) => a.name.localeCompare(b.name),
-        ...this.getColumnSearchProps("name"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`chats/${text}`}>
-              {text}
-            </Link>
-          );
-        },
-      },
-      {
         title: i18next.t("general:Store"),
         dataIndex: "store",
         key: "store",
@@ -328,6 +313,21 @@ class ChatListPage extends BaseListPage {
           }
           return (
             <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Name"),
+        dataIndex: "name",
+        key: "name",
+        width: "100px",
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        ...this.getColumnSearchProps("name"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`chats/${text}`}>
               {text}
             </Link>
           );

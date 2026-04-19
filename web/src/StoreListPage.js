@@ -257,18 +257,6 @@ class StoreListPage extends BaseListPage {
   renderTable(stores) {
     const columns = [
       {
-        title: i18next.t("general:Avatar"),
-        dataIndex: "avatar",
-        key: "avatar",
-        width: "72px",
-        align: "center",
-        render: (_, record) => {
-          return (
-            <Avatar src={record.avatar || Setting.getDefaultAiAvatar()} size={40} />
-          );
-        },
-      },
-      {
         title: i18next.t("general:Owner"),
         dataIndex: "owner",
         key: "owner",
@@ -309,6 +297,18 @@ class StoreListPage extends BaseListPage {
         // width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
         ...this.getColumnSearchProps("displayName"),
+      },
+      {
+        title: i18next.t("general:Avatar"),
+        dataIndex: "avatar",
+        key: "avatar",
+        width: "72px",
+        align: "center",
+        render: (_, record) => {
+          return (
+            <Avatar src={record.avatar || Setting.getDefaultAiAvatar()} size={40} />
+          );
+        },
       },
       {
         title: i18next.t("store:Is default"),

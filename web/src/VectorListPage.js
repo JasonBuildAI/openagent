@@ -116,6 +116,21 @@ class VectorListPage extends BaseListPage {
   renderTable(vectors) {
     const columns = [
       {
+        title: i18next.t("general:Store"),
+        dataIndex: "store",
+        key: "store",
+        width: "130px",
+        sorter: (a, b) => a.store.localeCompare(b.store),
+        ...this.getColumnSearchProps("store"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -137,21 +152,6 @@ class VectorListPage extends BaseListPage {
       //   width: "200px",
       //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       // },
-      {
-        title: i18next.t("general:Store"),
-        dataIndex: "store",
-        key: "store",
-        width: "130px",
-        sorter: (a, b) => a.store.localeCompare(b.store),
-        ...this.getColumnSearchProps("store"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/stores/${record.owner}/${text}`}>
-              {text}
-            </Link>
-          );
-        },
-      },
       {
         title: i18next.t("general:Provider"),
         dataIndex: "provider",

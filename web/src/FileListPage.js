@@ -136,6 +136,21 @@ class FileListPage extends BaseListPage {
   renderTable(files) {
     const columns = [
       {
+        title: i18next.t("general:Store"),
+        dataIndex: "store",
+        key: "store",
+        width: "130px",
+        sorter: (a, b) => a.store.localeCompare(b.store),
+        ...this.getColumnSearchProps("store"),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -166,21 +181,6 @@ class FileListPage extends BaseListPage {
         sorter: (a, b) => a.size - b.size,
         render: (text, record, index) => {
           return Setting.getFormattedSize(text);
-        },
-      },
-      {
-        title: i18next.t("general:Store"),
-        dataIndex: "store",
-        key: "store",
-        width: "130px",
-        sorter: (a, b) => a.store.localeCompare(b.store),
-        ...this.getColumnSearchProps("store"),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/stores/${record.owner}/${text}`}>
-              {text}
-            </Link>
-          );
         },
       },
       {
