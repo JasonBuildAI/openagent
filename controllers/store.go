@@ -316,6 +316,55 @@ func (c *ApiController) DeleteStore() {
 	c.ResponseOk(success)
 }
 
+// ClaimStore
+// @Title ClaimStore
+// @Tag Store API
+// @Description claim a store owned by "admin" and transfer ownership to the current store admin
+// @Param id query string true "The id (owner/name) of the store to claim"
+// @Success 200 {object} controllers.Response The Response object
+// @router /claim-store [post]
+func (c *ApiController) ClaimStore() {
+	if !c.RequireAdmin() {
+		return
+	}
+	if c.IsGlobalAdmin() {
+		c.ResponseError("global admin does not need to claim a store")
+		return
+	}
+
+	id := c.Input().Get("id")
+	store, err := object.GetStore(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if store == nil {
+		store, err = object.GetStoreForGetApi(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+	if store == nil {
+		c.ResponseError(fmt.Sprintf("store: %s not found", id))
+		return
+	}
+	if store.Owner != "admin" {
+		c.ResponseError("only stores owned by admin can be claimed")
+		return
+	}
+
+	username := c.GetSessionUsername()
+	store.Owner = username
+	_, err = object.UpdateStore(fmt.Sprintf("admin/%s", store.Name), store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(store)
+}
+
 // RefreshStoreVectors
 // @Title RefreshStoreVectors
 // @Tag Store API

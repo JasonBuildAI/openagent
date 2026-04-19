@@ -102,6 +102,16 @@ export function refreshStoreVectors(store) {
   }).then(res => res.json());
 }
 
+export function claimStore(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/claim-store?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
 export function addSharedStore(owner, name, targetUser) {
   return fetch(`${Setting.ServerUrl}/api/add-shared-store`, {
     method: "POST",

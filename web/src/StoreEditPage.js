@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Popover, Row, Select, Spin, Switch} from "antd";
+import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Modal, Popover, Row, Select, Spin, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -236,6 +236,9 @@ class StoreEditPage extends React.Component {
           <Button onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
           {this.state.isNewStore && <Button style={{marginLeft: "20px"}} onClick={() => this.cancelStoreEdit()}>{i18next.t("general:Cancel")}</Button>}
+          {this.state.store.owner === "admin" && Setting.isChatAdminUser(this.props.account) && !Setting.isAdminUser(this.props.account) && (
+            <Button style={{marginLeft: "20px"}} onClick={() => this.claimStore()}>{i18next.t("store:Claim")}</Button>
+          )}
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -914,6 +917,34 @@ class StoreEditPage extends React.Component {
       });
   }
 
+  claimStore() {
+    Modal.confirm({
+      title: i18next.t("store:Claim"),
+      okText: i18next.t("general:OK"),
+      cancelText: i18next.t("general:Cancel"),
+      onOk: () => {
+        StoreBackend.claimStore(this.state.store.owner, this.state.store.name)
+          .then((res) => {
+            if (res.status === "ok") {
+              Setting.showMessage("success", i18next.t("general:Successfully saved"));
+              window.dispatchEvent(new Event("storesChanged"));
+              this.setState({
+                store: res.data,
+                owner: res.data.owner,
+                storeName: res.data.name,
+              });
+              this.props.history.push(`/stores/${res.data.owner}/${res.data.name}`);
+            } else {
+              Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+            }
+          })
+          .catch(error => {
+            Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
+          });
+      },
+    });
+  }
+
   cancelStoreEdit() {
     if (this.state.isNewStore) {
       StoreBackend.deleteStore(this.state.store)
@@ -944,6 +975,9 @@ class StoreEditPage extends React.Component {
           <Button size="large" onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
           {this.state.isNewStore && <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.cancelStoreEdit()}>{i18next.t("general:Cancel")}</Button>}
+          {this.state.store !== null && this.state.store.owner === "admin" && Setting.isChatAdminUser(this.props.account) && !Setting.isAdminUser(this.props.account) && (
+            <Button style={{marginLeft: "20px"}} size="large" onClick={() => this.claimStore()}>{i18next.t("store:Claim")}</Button>
+          )}
         </div>
       </div>
     );
