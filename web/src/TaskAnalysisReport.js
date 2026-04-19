@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React, {useRef, useState} from "react";
-import {Button, Table, Tag} from "antd";
-import {DownloadOutlined} from "@ant-design/icons";
+import {Button, Modal, Table, Tag} from "antd";
+import {DownloadOutlined, FullscreenOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import TaskAnalysisRadarChart from "./TaskAnalysisRadarChart";
 import TaskAnalysisBarChart from "./TaskAnalysisBarChart";
@@ -44,8 +44,11 @@ const taskChartCaptionStyle = {
   paddingBottom: "10px",
   borderBottom: "1px solid #f0f0f0",
   color: "rgba(0, 0, 0, 0.85)",
-  textAlign: "center",
   lineHeight: 1.45,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "relative",
 };
 
 export default function TaskAnalysisReport({result, downloadFileName}) {
@@ -54,6 +57,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
   const pieRef = useRef(null);
   const lowScoreBarRef = useRef(null);
   const [downloading, setDownloading] = useState(false);
+  const [fullscreenChart, setFullscreenChart] = useState(null);
   if (!result) {
     return null;
   }
@@ -207,6 +211,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
           <div style={taskChartCardStyle}>
             <div style={taskChartCaptionStyle}>
               {i18next.t("task:Chart caption radar")}
+              <Button type="text" size="small" icon={<FullscreenOutlined />} style={{position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", color: "#8c8c8c"}} onClick={() => setFullscreenChart("radar")} />
             </div>
             <div style={{flex: 1, minHeight: 0}}>
               <TaskAnalysisRadarChart categories={categories} radarMin={radarAxis.min} radarMax={radarAxis.max} chartRef={radarRef} />
@@ -215,6 +220,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
           <div style={taskChartCardStyle}>
             <div style={taskChartCaptionStyle}>
               {i18next.t("task:Chart caption bar ranked")}
+              <Button type="text" size="small" icon={<FullscreenOutlined />} style={{position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", color: "#8c8c8c"}} onClick={() => setFullscreenChart("bar")} />
             </div>
             <div style={{flex: 1, minHeight: 0}}>
               <TaskAnalysisBarChart categories={categories} chartRef={barRef} />
@@ -223,6 +229,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
           <div style={taskChartCardStyle}>
             <div style={taskChartCaptionStyle}>
               {i18next.t("task:Chart caption pie")}
+              <Button type="text" size="small" icon={<FullscreenOutlined />} style={{position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", color: "#8c8c8c"}} onClick={() => setFullscreenChart("pie")} />
             </div>
             <div style={{flex: 1, minHeight: 0}}>
               <TaskAnalysisPieChart categories={categories} chartRef={pieRef} />
@@ -231,6 +238,7 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
           <div style={taskChartCardStyle}>
             <div style={taskChartCaptionStyle}>
               {i18next.t("task:Chart caption priority dimensions")}
+              <Button type="text" size="small" icon={<FullscreenOutlined />} style={{position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", color: "#8c8c8c"}} onClick={() => setFullscreenChart("lowscore")} />
             </div>
             <div style={{flex: 1, minHeight: 0}}>
               <TaskAnalysisBarChart categories={categories} chartRef={lowScoreBarRef} orientation="vertical" maxScoreExclusive={70} />
@@ -238,6 +246,27 @@ export default function TaskAnalysisReport({result, downloadFileName}) {
           </div>
         </div>
       )}
+      <Modal
+        open={fullscreenChart !== null}
+        footer={null}
+        onCancel={() => setFullscreenChart(null)}
+        width="95vw"
+        style={{top: 20, maxWidth: "95vw"}}
+        styles={{body: {height: "80vh", padding: "16px", display: "flex", flexDirection: "column"}}}
+        title={
+          fullscreenChart === "radar" ? i18next.t("task:Chart caption radar") :
+            fullscreenChart === "bar" ? i18next.t("task:Chart caption bar ranked") :
+              fullscreenChart === "pie" ? i18next.t("task:Chart caption pie") :
+                fullscreenChart === "lowscore" ? i18next.t("task:Chart caption priority dimensions") : ""
+        }
+      >
+        <div style={{flex: 1, minHeight: 0}}>
+          {fullscreenChart === "radar" && <TaskAnalysisRadarChart categories={categories} radarMin={radarAxis.min} radarMax={radarAxis.max} />}
+          {fullscreenChart === "bar" && <TaskAnalysisBarChart categories={categories} />}
+          {fullscreenChart === "pie" && <TaskAnalysisPieChart categories={categories} />}
+          {fullscreenChart === "lowscore" && <TaskAnalysisBarChart categories={categories} orientation="vertical" maxScoreExclusive={70} />}
+        </div>
+      </Modal>
       {categories.map((cat, idx) => (
         <div key={idx} style={{marginBottom: "24px"}}>
           <div style={{fontWeight: 600, marginBottom: "8px", fontSize: "14px"}}>
