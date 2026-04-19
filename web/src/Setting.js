@@ -1114,6 +1114,12 @@ export function getOtherProviderInfo() {
         url: "https://cloud.tencent.com/",
       },
     },
+    "Chat": {
+      "Telegram": {
+        logo: `${StaticBaseUrl}/img/social_telegram.png`,
+        url: "https://telegram.org/",
+      },
+    },
     "Scan": {
       "Nmap": {
         logo: `${StaticBaseUrl}/img/social_nmap.png`,
@@ -1399,6 +1405,10 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Bot") {
     return [
       {id: "Tencent", name: "Tencent"},
+    ];
+  } else if (category === "Chat") {
+    return [
+      {id: "Telegram", name: "Telegram"},
     ];
   } else if (category === "Scan") {
     return [

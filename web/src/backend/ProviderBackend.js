@@ -103,3 +103,13 @@ export function testMcpProvider(provider) {
     body: JSON.stringify(newProvider),
   }).then(res => res.json());
 }
+
+export function setTelegramWebhook(id) {
+  return fetch(`${Setting.ServerUrl}/api/set-telegram-webhook?id=${encodeURIComponent(id)}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}

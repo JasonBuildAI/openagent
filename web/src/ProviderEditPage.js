@@ -82,6 +82,9 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("provider:Bot ID"), i18next.t("provider:Bot ID - Tooltip"));
       }
     }
+    if (provider.category === "Chat") {
+      return Setting.getLabel(i18next.t("provider:Model provider"), i18next.t("provider:Model provider - Tooltip"));
+    }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
@@ -137,6 +140,10 @@ class ProviderEditPage extends React.Component {
     } else if (provider.category === "Bot") {
       if (provider.type === "Tencent") {
         return Setting.getLabel(i18next.t("provider:Token"), i18next.t("provider:Token - Tooltip"));
+      }
+    } else if (provider.category === "Chat") {
+      if (provider.type === "Telegram") {
+        return Setting.getLabel(i18next.t("provider:Bot token"), i18next.t("provider:Bot token - Tooltip"));
       }
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
@@ -340,6 +347,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Bot") {
                 this.updateProviderField("type", "Tencent");
                 this.updateProviderField("subType", "WeCom Bot");
+              } else if (value === "Chat") {
+                this.updateProviderField("type", "Telegram");
               } else if (value === "Scan") {
                 this.updateProviderField("type", "Nmap");
                 this.updateProviderField("subType", "Default");
@@ -358,6 +367,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
                   {id: "Speech-to-Text", name: "Speech-to-Text"},
                   {id: "Bot", name: "Bot"},
+                  {id: "Chat", name: "Chat"},
                   {id: "Scan", name: "Scan"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
@@ -1131,6 +1141,34 @@ class ProviderEditPage extends React.Component {
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
         {
+          this.state.provider.category === "Chat" ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Domain"), i18next.t("provider:Domain - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Input prefix={<LinkOutlined />} disabled={isRemote} value={this.state.provider.domain} onChange={e => {
+                  this.updateProviderField("domain", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Chat" && this.state.provider.type === "Telegram") ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {Setting.getLabel(i18next.t("provider:Webhook"), i18next.t("provider:Webhook - Tooltip"))} :
+              </Col>
+              <Col span={22} >
+                <Button disabled={isRemote} type="primary" onClick={() => this.setTelegramWebhook()}>
+                  {i18next.t("provider:Set Webhook")}
+                </Button>
+              </Col>
+            </Row>
+          ) : null
+        }
+        {
           this.state.provider.category === "Model" ? (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -1247,6 +1285,21 @@ class ProviderEditPage extends React.Component {
         </Row>
       </Card>
     );
+  }
+
+  setTelegramWebhook() {
+    const id = `${this.state.provider.owner}/${this.state.provider.name}`;
+    ProviderBackend.setTelegramWebhook(id)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", `${i18next.t("provider:Webhook set successfully")}: ${res.data}`);
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
+      });
   }
 
   refreshMcpTools() {

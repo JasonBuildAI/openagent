@@ -21,6 +21,7 @@ import (
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/agent"
+	"github.com/casibase/casibase/chat"
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/i18n"
 	"github.com/casibase/casibase/model"
@@ -51,6 +52,7 @@ type Provider struct {
 	ProviderUrl        string            `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string            `xorm:"varchar(100)" json:"apiVersion"`
 	CompatibleProvider string            `xorm:"varchar(100)" json:"compatibleProvider"`
+	Domain             string            `xorm:"varchar(200)" json:"domain"`
 	McpTools           []*agent.McpTools `xorm:"text" json:"mcpTools"`
 	Text               string            `xorm:"mediumtext" json:"text"`
 	ConfigText         string            `xorm:"mediumtext" json:"configText"`
@@ -405,6 +407,19 @@ func (p *Provider) GetSpeechToTextProvider(lang string) (stt.SpeechToTextProvide
 
 	if pProvider == nil {
 		return nil, fmt.Errorf(i18n.Translate(lang, "object:the STT provider type: %s is not supported"), p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetChatProvider(lang string) (chat.ChatProvider, error) {
+	pProvider, err := chat.GetChatProvider(p.Type, p.ClientSecret, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf(i18n.Translate(lang, "object:the chat provider type: %s is not supported"), p.Type)
 	}
 
 	return pProvider, nil
