@@ -1060,6 +1060,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/casibase/casibase",
       },
+      "Shell": {
+        logo: `${StaticBaseUrl}/img/social_mcp.png`,
+        url: "https://github.com/casibase/casibase",
+      },
     },
     "Public Cloud": {
       "Aliyun": {
@@ -1377,6 +1381,7 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Tool") {
     return [
       {id: "Time", name: "Time"},
+      {id: "Shell", name: "Shell"},
     ];
   } else if (category === "Public Cloud") {
     return ([
@@ -2118,6 +2123,10 @@ export function getProviderSubTypeOptions(category, type) {
     }
   } else if (category === "Tool") {
     if (type === "Time") {
+      return [
+        {id: "Default", name: "Default"},
+      ];
+    } else if (type === "Shell") {
       return [
         {id: "Default", name: "Default"},
       ];

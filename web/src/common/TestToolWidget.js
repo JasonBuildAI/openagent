@@ -22,6 +22,7 @@ import Editor from "./Editor";
 
 const DEFAULT_TOOL_CONTENT = {
   Time: JSON.stringify({tool: "TimeTool", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
+  Shell: JSON.stringify({tool: "ShellTool", arguments: {command: "echo hello"}}, null, 2),
 };
 
 function isValidToolTestJson(content) {

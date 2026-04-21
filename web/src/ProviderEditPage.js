@@ -493,6 +493,8 @@ class ProviderEditPage extends React.Component {
               } else if (this.state.provider.category === "Tool") {
                 if (value === "Time") {
                   this.updateProviderField("subType", "Default");
+                } else if (value === "Shell") {
+                  this.updateProviderField("subType", "Default");
                 }
               } else if (this.state.provider.category === "Text-to-Speech") {
                 if (value === "Alibaba Cloud") {
