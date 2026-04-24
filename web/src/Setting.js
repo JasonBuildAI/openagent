@@ -1060,6 +1060,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/casibase/casibase",
       },
+      "WebSearch": {
+        logo: `${StaticBaseUrl}/img/social_mcp.png`,
+        url: "https://github.com/casibase/casibase",
+      },
       "Shell": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/casibase/casibase",
@@ -1381,6 +1385,7 @@ export function getProviderTypeOptions(category) {
   } else if (category === "Tool") {
     return [
       {id: "Time", name: "Time"},
+      {id: "WebSearch", name: "WebSearch"},
       {id: "Shell", name: "Shell"},
     ];
   } else if (category === "Public Cloud") {
@@ -2125,6 +2130,13 @@ export function getProviderSubTypeOptions(category, type) {
     if (type === "Time") {
       return [
         {id: "Default", name: "Default"},
+      ];
+    } else if (type === "WebSearch") {
+      return [
+        {id: "DuckDuckGo", name: "DuckDuckGo"},
+        {id: "Bing", name: "Bing"},
+        {id: "Google", name: "Google"},
+        {id: "Baidu", name: "Baidu"},
       ];
     } else if (type === "Shell") {
       return [

@@ -706,8 +706,15 @@ func TestMcpProvider(p *Provider, lang string) (string, error) {
 
 // TestToolProvider parses provider.testContent as {"tool":"...","arguments":{}} and invokes one builtin tool.
 func TestToolProvider(p *Provider, lang string) (string, error) {
+	return p.testToolProviderWithLoader(lang, getProvider)
+}
+
+func (p *Provider) testToolProviderWithLoader(lang string, loadProvider func(owner string, name string) (*Provider, error)) (string, error) {
 	if p.Category != "Tool" {
 		return "", fmt.Errorf(i18n.Translate(lang, "object:provider is not a Tool provider"))
+	}
+	if err := p.restoreMaskedToolProviderSecrets(loadProvider); err != nil {
+		return "", err
 	}
 
 	var payload struct {
@@ -724,7 +731,7 @@ func TestToolProvider(p *Provider, lang string) (string, error) {
 		payload.Arguments = map[string]interface{}{}
 	}
 
-	tp, err := tool.NewProvider(p.Category, p.Type, lang)
+	tp, err := tool.NewProvider(getToolProviderConfig(p), lang)
 	if err != nil {
 		return "", err
 	}
@@ -758,6 +765,55 @@ func TestToolProvider(p *Provider, lang string) (string, error) {
 		return "", fmt.Errorf("%s", output)
 	}
 	return output, nil
+}
+
+func getToolProviderConfig(p *Provider) tool.ProviderConfig {
+	return tool.ProviderConfig{
+		Category:     p.Category,
+		Type:         p.Type,
+		SubType:      p.SubType,
+		ProviderUrl:  p.ProviderUrl,
+		ClientId:     p.ClientId,
+		ClientSecret: p.ClientSecret,
+	}
+}
+
+func (p *Provider) restoreMaskedToolProviderSecrets(loadProvider func(owner string, name string) (*Provider, error)) error {
+	if p == nil {
+		return nil
+	}
+
+	maskedClientSecret := p.ClientSecret == "***"
+	maskedUserKey := p.UserKey == "***"
+	maskedSignKey := p.SignKey == "***"
+	if !maskedClientSecret && !maskedUserKey && !maskedSignKey {
+		return nil
+	}
+	if strings.TrimSpace(p.Owner) == "" || strings.TrimSpace(p.Name) == "" {
+		return fmt.Errorf("cannot restore masked tool provider secrets without owner and name")
+	}
+
+	providerDb, err := loadProvider(p.Owner, p.Name)
+	if err != nil {
+		return err
+	}
+	if providerDb == nil {
+		return fmt.Errorf("provider not found: %s/%s", p.Owner, p.Name)
+	}
+
+	p.processProviderParams(providerDb)
+
+	if maskedClientSecret && (p.ClientSecret == "" || p.ClientSecret == "***") {
+		return fmt.Errorf("masked clientSecret could not be restored")
+	}
+	if maskedUserKey && (p.UserKey == "" || p.UserKey == "***") {
+		return fmt.Errorf("masked userKey could not be restored")
+	}
+	if maskedSignKey && (p.SignKey == "" || p.SignKey == "***") {
+		return fmt.Errorf("masked signKey could not be restored")
+	}
+
+	return nil
 }
 
 func (p *Provider) processProviderParams(providerDb *Provider) {

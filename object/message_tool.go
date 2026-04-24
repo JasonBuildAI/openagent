@@ -38,7 +38,7 @@ func buildAgentClientsForToolProvider(toolProviderName string, lang string) (*ag
 		return nil, nil
 	}
 
-	tp, err := tool.NewProvider(p.Category, p.Type, lang)
+	tp, err := tool.NewProvider(getToolProviderConfig(p), lang)
 	if err != nil {
 		return nil, err
 	}
