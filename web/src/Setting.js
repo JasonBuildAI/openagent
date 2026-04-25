@@ -2136,6 +2136,7 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "Default", name: "Default"},
       ];
     }
+    return [];
   } else if (category === "Tool") {
     if (type === "Time") {
       return [
@@ -2167,6 +2168,7 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "Default", name: "Default"},
       ];
     }
+    return [];
   } else if (category === "Text-to-Speech") {
     if (type === "Alibaba Cloud") {
       return [
@@ -2192,6 +2194,7 @@ export function getProviderSubTypeOptions(category, type) {
       return [];
     }
   }
+  return [];
 }
 
 export function getProviderAzureApiVersionOptions() {
