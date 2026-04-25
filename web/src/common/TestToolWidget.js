@@ -129,7 +129,7 @@ class TestToolWidget extends React.Component {
       });
   }
 
-  syncFromProvider(provider) {
+  syncFromProvider(provider, prevProvider) {
     const {onUpdateProvider} = this.props;
     if (!provider || provider.category !== "Tool") {
       return;
@@ -140,7 +140,8 @@ class TestToolWidget extends React.Component {
     if (needsDefault && onUpdateProvider) {
       onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
     }
-    if (provider.resultSummary) {
+    const prevSummary = prevProvider ? prevProvider.resultSummary : null;
+    if (provider.resultSummary && provider.resultSummary !== prevSummary) {
       this.setState({testResult: provider.resultSummary});
     }
   }
@@ -176,6 +177,10 @@ class TestToolWidget extends React.Component {
         }
         this.setState({testResult: out});
         Setting.showMessage("success", i18next.t("general:Success"));
+        if (this.props.onUpdateProvider) {
+          this.props.onUpdateProvider("resultSummary", out);
+          this.props.onUpdateProvider("errorText", "");
+        }
         await ProviderBackend.updateProvider(provider.owner, provider.name, {...provider, resultSummary: out, errorText: ""});
       } else {
         Setting.showMessage("error", res.msg || i18next.t("general:Failed to save"));
