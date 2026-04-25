@@ -15,7 +15,9 @@
 package tool
 
 import (
+	"bytes"
 	"context"
+	"encoding/csv"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,6 +26,7 @@ import (
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/carmel/gooxml/document"
 	"github.com/casibase/casibase/agent/builtin_tool"
+	"github.com/xuri/excelize/v2"
 )
 
 // officeSubType enumerates the allowed SubType values for OfficeProvider.
@@ -163,7 +166,7 @@ func (t *wordWriteBuiltin) Execute(_ context.Context, arguments map[string]inter
 	return officeToolText(fmt.Sprintf("Successfully wrote Word file: %s", path)), nil
 }
 
-// ── Excel read (reserved) ─────────────────────────────────────────────────────
+// ── Excel read ────────────────────────────────────────────────────────────────
 
 type excelReadBuiltin struct{}
 
@@ -172,8 +175,8 @@ func (t *excelReadBuiltin) GetName() string { return "excel_read" }
 func (t *excelReadBuiltin) GetDescription() string {
 	return `Read data from an Excel (.xlsx) file and return it as CSV-formatted text.
 - path (required): absolute or relative path to the .xlsx file.
-- sheet: sheet name to read (default: first sheet).
-NOTE: This tool is reserved and not yet implemented.`
+- sheet: sheet name to read; if omitted the first sheet is used.
+The response header reports the sheet name, row count, and other available sheet names.`
 }
 
 func (t *excelReadBuiltin) GetInputSchema() interface{} {
@@ -193,22 +196,32 @@ func (t *excelReadBuiltin) GetInputSchema() interface{} {
 	}
 }
 
-func (t *excelReadBuiltin) Execute(_ context.Context, _ map[string]interface{}) (*protocol.CallToolResult, error) {
-	return officeToolError("excel_read is not yet implemented"), nil
+func (t *excelReadBuiltin) Execute(_ context.Context, arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+	path, ok := arguments["path"].(string)
+	if !ok || strings.TrimSpace(path) == "" {
+		return officeToolError("Missing required parameter: path"), nil
+	}
+	sheetName, _ := arguments["sheet"].(string)
+	sheetName = strings.TrimSpace(sheetName)
+
+	result, err := readExcelFile(path, sheetName)
+	if err != nil {
+		return officeToolError(fmt.Sprintf("Failed to read Excel file: %s", err.Error())), nil
+	}
+	return officeToolText(result), nil
 }
 
-// ── Excel write (reserved) ────────────────────────────────────────────────────
+// ── Excel write ───────────────────────────────────────────────────────────────
 
 type excelWriteBuiltin struct{}
 
 func (t *excelWriteBuiltin) GetName() string { return "excel_write" }
 
 func (t *excelWriteBuiltin) GetDescription() string {
-	return `Write data to an Excel (.xlsx) file.
+	return `Write data to an Excel (.xlsx) file. Creates the file if it does not exist; overwrites otherwise.
 - path (required): output path for the .xlsx file.
-- data (required): CSV-formatted text representing the cell data.
-- sheet: sheet name (default: Sheet1).
-NOTE: This tool is reserved and not yet implemented.`
+- data (required): CSV-formatted text. Each line is a row; cells are comma-separated. Quoted fields with embedded commas or newlines are supported.
+- sheet: sheet name (default: Sheet1).`
 }
 
 func (t *excelWriteBuiltin) GetInputSchema() interface{} {
@@ -221,7 +234,7 @@ func (t *excelWriteBuiltin) GetInputSchema() interface{} {
 			},
 			"data": map[string]interface{}{
 				"type":        "string",
-				"description": "CSV-formatted text representing the rows and columns to write.",
+				"description": "CSV-formatted text: rows separated by newlines, cells by commas.",
 			},
 			"sheet": map[string]interface{}{
 				"type":        "string",
@@ -232,8 +245,29 @@ func (t *excelWriteBuiltin) GetInputSchema() interface{} {
 	}
 }
 
-func (t *excelWriteBuiltin) Execute(_ context.Context, _ map[string]interface{}) (*protocol.CallToolResult, error) {
-	return officeToolError("excel_write is not yet implemented"), nil
+func (t *excelWriteBuiltin) Execute(_ context.Context, arguments map[string]interface{}) (*protocol.CallToolResult, error) {
+	path, ok := arguments["path"].(string)
+	if !ok || strings.TrimSpace(path) == "" {
+		return officeToolError("Missing required parameter: path"), nil
+	}
+	data, ok := arguments["data"].(string)
+	if !ok {
+		return officeToolError("Missing required parameter: data"), nil
+	}
+	sheetName, _ := arguments["sheet"].(string)
+	sheetName = strings.TrimSpace(sheetName)
+	if sheetName == "" {
+		sheetName = "Sheet1"
+	}
+
+	rowCount, colCount, err := writeExcelFile(path, sheetName, data)
+	if err != nil {
+		return officeToolError(fmt.Sprintf("Failed to write Excel file: %s", err.Error())), nil
+	}
+	return officeToolText(fmt.Sprintf(
+		"Successfully wrote Excel file: %s\nSheet: %s, %d rows × %d columns",
+		path, sheetName, rowCount, colCount,
+	)), nil
 }
 
 // ── PowerPoint read (reserved) ────────────────────────────────────────────────
@@ -298,6 +332,119 @@ func (t *pptxWriteBuiltin) GetInputSchema() interface{} {
 
 func (t *pptxWriteBuiltin) Execute(_ context.Context, _ map[string]interface{}) (*protocol.CallToolResult, error) {
 	return officeToolError("pptx_write is not yet implemented"), nil
+}
+
+// ── excelize helpers ──────────────────────────────────────────────────────────
+
+// readExcelFile opens an xlsx file and returns the content of the target sheet
+// as a CSV string prefixed with a metadata header line.
+// If sheetName is empty the first sheet is used.
+func readExcelFile(path, sheetName string) (string, error) {
+	f, err := excelize.OpenFile(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	sheets := f.GetSheetList()
+	if len(sheets) == 0 {
+		return "", fmt.Errorf("the Excel file contains no sheets")
+	}
+
+	target := sheetName
+	if target == "" {
+		target = sheets[0]
+	} else {
+		found := false
+		for _, s := range sheets {
+			if s == target {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return "", fmt.Errorf("sheet %q not found; available sheets: %s",
+				target, strings.Join(sheets, ", "))
+		}
+	}
+
+	rows, err := f.GetRows(target)
+	if err != nil {
+		return "", fmt.Errorf("failed to read sheet %q: %w", target, err)
+	}
+
+	var buf bytes.Buffer
+	w := csv.NewWriter(&buf)
+	for _, row := range rows {
+		if err := w.Write(row); err != nil {
+			return "", fmt.Errorf("failed to encode row as CSV: %w", err)
+		}
+	}
+	w.Flush()
+	if err := w.Error(); err != nil {
+		return "", err
+	}
+
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "Sheet: %s (%d rows)\n", target, len(rows))
+	if len(sheets) > 1 {
+		others := make([]string, 0, len(sheets)-1)
+		for _, s := range sheets {
+			if s != target {
+				others = append(others, s)
+			}
+		}
+		fmt.Fprintf(&sb, "Other sheets: %s\n", strings.Join(others, ", "))
+	}
+	sb.WriteString(buf.String())
+	return sb.String(), nil
+}
+
+// writeExcelFile creates (or overwrites) an xlsx file from CSV-formatted text.
+// It returns the number of rows and the maximum column count written.
+func writeExcelFile(path, sheetName, csvData string) (rowCount, colCount int, err error) {
+	dir := filepath.Dir(path)
+	if mkErr := os.MkdirAll(dir, 0o755); mkErr != nil {
+		return 0, 0, fmt.Errorf("failed to create directory %q: %w", dir, mkErr)
+	}
+
+	r := csv.NewReader(strings.NewReader(csvData))
+	r.FieldsPerRecord = -1
+	records, err := r.ReadAll()
+	if err != nil {
+		return 0, 0, fmt.Errorf("invalid CSV data: %w", err)
+	}
+
+	f := excelize.NewFile()
+	defer f.Close()
+
+	defaultSheet := f.GetSheetName(f.GetActiveSheetIndex())
+	if defaultSheet != sheetName {
+		if renameErr := f.SetSheetName(defaultSheet, sheetName); renameErr != nil {
+			return 0, 0, fmt.Errorf("failed to set sheet name: %w", renameErr)
+		}
+	}
+
+	maxCols := 0
+	for rowIdx, record := range records {
+		if len(record) > maxCols {
+			maxCols = len(record)
+		}
+		for colIdx, cellValue := range record {
+			cellAddr, addrErr := excelize.CoordinatesToCellName(colIdx+1, rowIdx+1)
+			if addrErr != nil {
+				return 0, 0, fmt.Errorf("invalid cell coordinates (%d,%d): %w", colIdx+1, rowIdx+1, addrErr)
+			}
+			if setErr := f.SetCellValue(sheetName, cellAddr, cellValue); setErr != nil {
+				return 0, 0, fmt.Errorf("failed to write cell %s: %w", cellAddr, setErr)
+			}
+		}
+	}
+
+	if saveErr := f.SaveAs(path); saveErr != nil {
+		return 0, 0, fmt.Errorf("failed to save file: %w", saveErr)
+	}
+	return len(records), maxCols, nil
 }
 
 // ── gooxml helpers ────────────────────────────────────────────────────────────
