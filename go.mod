@@ -32,6 +32,7 @@ require (
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/casibase/pdf v1.2.0
 	github.com/cenkalti/backoff/v4 v4.3.0
+	github.com/chromedp/chromedp v0.9.5
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/digitalocean/go-libvirt v0.0.0-20250207191401-950a7b2d7eaf
@@ -92,6 +93,8 @@ require (
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/carapace-sh/carapace-shlex v1.0.1 // indirect
+	github.com/chromedp/cdproto v0.0.0-20240202021202-6d0b6a386732 // indirect
+	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/consensys/gnark-crypto v0.18.0 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
@@ -178,6 +181,9 @@ require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/gobwas/httphead v0.1.0 // indirect
+	github.com/gobwas/pool v0.2.1 // indirect
+	github.com/gobwas/ws v1.3.2 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
