@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Tag, Tooltip, message, theme} from "antd";
-import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
+import {QuestionCircleOutlined, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
@@ -2560,7 +2560,7 @@ export function getLabel(text, tooltip) {
     <React.Fragment>
       <span style={{marginRight: 4}}>{text}</span>
       <Tooltip placement="top" title={tooltip}>
-        <QuestionCircleTwoTone twoToneColor="rgb(45,120,213)" />
+        <QuestionCircleOutlined style={{color: "var(--ant-color-primary)"}} />
       </Tooltip>
     </React.Fragment>
   );
