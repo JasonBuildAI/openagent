@@ -151,6 +151,58 @@ code {
   padding: 0 0 5px 0 !important;
 }
 
+.custom-link {
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.custom-link:hover {
+  opacity: 0.65 !important;
+  color: rgb(80 80 80) !important;
+}
+
+.custom-link:active {
+  opacity: 0.4 !important;
+  color: rgb(40 40 40) !important;
+  transition: opacity 0.08s ease, color 0.08s ease;
+}
+
+/* Ant Design Typography links */
+.ant-typography a,
+a.ant-typography-link {
+  transition: opacity 0.2s ease;
+}
+
+.ant-typography a:hover,
+a.ant-typography-link:hover {
+  opacity: 0.7 !important;
+}
+
+.ant-typography a:active,
+a.ant-typography-link:active {
+  opacity: 0.45 !important;
+  transition: opacity 0.08s ease;
+}
+
+/* Raw <a> tags without Ant Design classes (table cell links, mailto, plain hrefs, etc.) */
+a:not([class]):not(.login-link),
+a[class=""],
+a[href^="mailto:"] {
+  transition: opacity 0.2s ease;
+}
+
+a:not([class]):not(.login-link):hover,
+a[class=""]:hover,
+a[href^="mailto:"]:hover {
+  opacity: 0.65;
+}
+
+a:not([class]):not(.login-link):active,
+a[class=""]:active,
+a[href^="mailto:"]:active {
+  opacity: 0.4;
+  transition: opacity 0.08s ease;
+}
+
 /* Bold overrides for key UI elements */
 
 /* Sidebar menu: item labels */
