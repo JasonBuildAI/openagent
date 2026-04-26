@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
-import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
+import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, CommentOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
 import "./App.less";
 import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
@@ -696,30 +696,29 @@ class App extends Component {
       return res;
     } else {
       const textColor = this.state.themeAlgorithm.includes("dark") ? "white" : "black";
-      const twoToneColor = this.state.themeData.colorPrimary;
 
       res.pop();
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeOutlined />, [
         Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
         Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"),
         Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbOutlined />, [
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreOutlined />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
         Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudOutlined />, [
         Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
         Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store"),
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
@@ -732,7 +731,7 @@ class App extends Component {
         Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraOutlined />, [
         Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
         Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
         Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
@@ -752,13 +751,13 @@ class App extends Component {
         Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletOutlined />, [
         Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
         Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"),
         Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockOutlined />, [
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
             {i18next.t("general:Users")}
@@ -776,7 +775,7 @@ class App extends Component {
           </a>, "/permissions"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
