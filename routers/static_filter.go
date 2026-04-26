@@ -43,6 +43,20 @@ func getWebBuildFolder() string {
 	}
 
 	path = filepath.Join(frontendBaseDir, "web/build")
+	if util.FileExist(filepath.Join(path, "index.html")) {
+		return path
+	}
+
+	// Fallback: if frontendBaseDir points to "../openagent" but the directory
+	// doesn't exist, try "../casibase" for backward compatibility.
+	casibaseDir := filepath.Join(filepath.Dir(frontendBaseDir), "casibase")
+	if util.FileExist(filepath.Join(casibaseDir, "index.html")) {
+		return casibaseDir
+	}
+	if util.FileExist(filepath.Join(casibaseDir, "web/build", "index.html")) {
+		return filepath.Join(casibaseDir, "web/build")
+	}
+
 	return path
 }
 
