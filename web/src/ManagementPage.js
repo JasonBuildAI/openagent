@@ -725,7 +725,7 @@ function ManagementPage(props) {
     );
   }
 
-  const siderWidth = 220;
+  const siderWidth = 256;
   const siderCollapsedWidth = 80;
   const showSider = !Setting.isMobile() && !isHiddenHeaderAndFooter();
   const contentMarginLeft = showSider ? (siderCollapsed ? siderCollapsedWidth : siderWidth) : 0;
