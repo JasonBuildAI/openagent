@@ -49,7 +49,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           ],
         },
         {
-          title: i18next.t("general:Cloud Resources"),
+          title: i18next.t("general:Cloud"),
           key: "/cloud",
           children: [
             {title: i18next.t("general:Templates"), key: "/templates"},
@@ -80,7 +80,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           ],
         },
         {
-          title: i18next.t("general:Logging & Auditing"),
+          title: i18next.t("general:Logging"),
           key: "/logs",
           children: [
             {title: i18next.t("general:Sessions"), key: "/sessions"},
@@ -89,7 +89,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           ],
         },
         {
-          title: i18next.t("general:Identity & Access Management"),
+          title: i18next.t("general:Identity"),
           key: "/identity",
           children: [
             {title: i18next.t("general:Users"), key: "/users"},

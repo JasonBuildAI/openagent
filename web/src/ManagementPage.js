@@ -447,7 +447,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud")}</Link>, "/cloud", <CloudOutlined />, [
         Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
         Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store"),
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
@@ -480,13 +480,13 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging")}</Link>, "/logs", <WalletOutlined />, [
         Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
         Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"),
         Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity")}</Link>, "/identity", <LockOutlined />, [
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/users")}>
             {i18next.t("general:Users")}
