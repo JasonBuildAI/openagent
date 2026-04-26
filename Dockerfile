@@ -4,7 +4,7 @@ COPY ./web .
 RUN yarn install --frozen-lockfile --network-timeout 1000000 && yarn run build
 
 
-FROM --platform=$BUILDPLATFORM golang:1.23.6 AS BACK
+FROM --platform=$BUILDPLATFORM golang:1.24 AS BACK
 WORKDIR /go/src/casibase
 COPY . .
 RUN chmod +x ./build.sh
