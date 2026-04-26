@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Popconfirm, Row, Select} from "antd";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as TemplateBackend from "./backend/TemplateBackend";
@@ -345,7 +346,7 @@ class ApplicationEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.application !== null ? this.renderApplication() : null
+          this.state.application !== null ? this.renderApplication() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitApplicationEdit(false)}>{i18next.t("general:Save")}</Button>

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Modal, Popover, Row, Select, Spin, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
@@ -991,7 +992,7 @@ class StoreEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.store !== null ? this.renderStore() : null
+          this.state.store !== null ? this.renderStore() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>

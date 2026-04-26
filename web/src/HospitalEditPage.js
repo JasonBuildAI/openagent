@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as HospitalBackend from "./backend/HospitalBackend";
@@ -146,7 +147,7 @@ class HospitalEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.hospital !== null ? this.renderHospital() : null
+          this.state.hospital !== null ? this.renderHospital() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitHospitalEdit(false)}>{i18next.t("general:Save")}</Button>

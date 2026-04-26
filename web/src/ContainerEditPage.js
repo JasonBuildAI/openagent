@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as ContainerBackend from "./backend/ContainerBackend";
 import * as Setting from "./Setting";
@@ -262,7 +263,7 @@ class ContainerEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.container !== null ? this.renderContainer() : null
+          this.state.container !== null ? this.renderContainer() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitContainerEdit(false)}>{i18next.t("general:Save")}</Button>

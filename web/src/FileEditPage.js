@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
@@ -198,7 +199,7 @@ class FileEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.file !== null ? this.renderFile() : null
+          this.state.file !== null ? this.renderFile() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitFileEdit(false)}>{i18next.t("general:Save")}</Button>

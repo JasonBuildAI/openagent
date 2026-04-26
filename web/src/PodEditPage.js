@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as PodBackend from "./backend/PodBackend";
 import * as Setting from "./Setting";
@@ -221,7 +222,7 @@ class PodEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.pod !== null ? this.renderPod() : null
+          this.state.pod !== null ? this.renderPod() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitPodEdit(false)}>{i18next.t("general:Save")}</Button>

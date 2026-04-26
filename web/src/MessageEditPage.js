@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
@@ -392,7 +393,7 @@ class MessageEditPage extends React.Component {
   render() {
     return (
       <div>
-        {this.state.message !== null ? this.renderMessage() : null}
+        {this.state.message !== null ? this.renderMessage() : <Loading type="page" tip={i18next.t("general:Loading")} />}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>

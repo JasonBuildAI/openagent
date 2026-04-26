@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as AssetBackend from "./backend/AssetBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -327,7 +328,7 @@ class AssetEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.asset !== null ? this.renderAsset() : null
+          this.state.asset !== null ? this.renderAsset() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         {this.state.asset !== null && (
           <Card size="small" title={i18next.t("scan:Related Scans")} style={{marginTop: "20px", marginLeft: "5px"}} type="inner">

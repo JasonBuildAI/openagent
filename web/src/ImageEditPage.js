@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as ImageBackend from "./backend/ImageBackend";
 import * as Setting from "./Setting";
@@ -291,7 +292,7 @@ class ImageEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.image !== null ? this.renderImage() : null
+          this.state.image !== null ? this.renderImage() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitImageEdit(false)}>{i18next.t("general:Save")}</Button>

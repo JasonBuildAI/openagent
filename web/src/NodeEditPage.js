@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as NodeBackend from "./backend/NodeBackend";
 import * as Setting from "./Setting";
@@ -402,7 +403,7 @@ class NodeEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.node !== null ? this.renderNode() : null
+          this.state.node !== null ? this.renderNode() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitNodeEdit(false)}>{i18next.t("general:Save")}</Button>

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Affix, Button, Card, Col, Input, Popover, Row, Select} from "antd";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
@@ -479,7 +480,7 @@ class ArticleEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.article !== null ? this.renderArticle() : null
+          this.state.article !== null ? this.renderArticle() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitArticleEdit(false)}>{i18next.t("general:Save")}</Button>

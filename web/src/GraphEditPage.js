@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, DatePicker, Input, Row, Select} from "antd";
 import * as GraphBackend from "./backend/GraphBackend";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -400,7 +401,7 @@ class GraphEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.graph !== null ? this.renderGraph() : null
+          this.state.graph !== null ? this.renderGraph() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         {
           this.renderFilteredChatsSection()

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Mentions, Popover, Row} from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
@@ -312,7 +313,7 @@ class WorkflowEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.workflow !== null ? this.renderWorkflow() : null
+          this.state.workflow !== null ? this.renderWorkflow() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitWorkflowEdit(false)}>{i18next.t("general:Save")}</Button>

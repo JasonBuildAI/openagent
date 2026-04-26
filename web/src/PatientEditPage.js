@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as PatientBackend from "./backend/PatientBackend";
@@ -315,7 +316,7 @@ class PatientEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.patient !== null ? this.renderPatient() : null
+          this.state.patient !== null ? this.renderPatient() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         {canEdit ? (
           <div style={{marginTop: "20px", marginLeft: "40px"}}>

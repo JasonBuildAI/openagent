@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 // import {LinkOutlined} from "@ant-design/icons";
 import * as ConsultationBackend from "./backend/ConsultationBackend";
@@ -252,7 +253,7 @@ class ConsultationEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.consultation !== null ? this.renderConsultation() : null
+          this.state.consultation !== null ? this.renderConsultation() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitConsultationEdit(false)}>{i18next.t("general:Save")}</Button>

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as DoctorBackend from "./backend/DoctorBackend";
 import * as HospitalBackend from "./backend/HospitalBackend";
@@ -269,7 +270,7 @@ class DoctorEditPage extends React.Component {
   render() {
     return (
       <div>
-        {this.state.doctor !== null ? this.renderDoctor() : null}
+        {this.state.doctor !== null ? this.renderDoctor() : <Loading type="page" tip={i18next.t("general:Loading")} />}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitDoctorEdit(false)}>
             {i18next.t("general:Save")}

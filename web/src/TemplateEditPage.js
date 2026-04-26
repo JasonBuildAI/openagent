@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Switch} from "antd";
 import * as TemplateBackend from "./backend/TemplateBackend";
 import * as StoreBackend from "./backend/StoreBackend";
@@ -245,7 +246,7 @@ class TemplateEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.template !== null ? this.renderTemplate() : null
+          this.state.template !== null ? this.renderTemplate() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitTemplateEdit(false)}>{i18next.t("general:Save")}</Button>

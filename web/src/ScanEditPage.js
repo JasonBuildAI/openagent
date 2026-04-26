@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as ScanBackend from "./backend/ScanBackend";
 import * as Setting from "./Setting";
@@ -181,7 +182,7 @@ class ScanEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.scan !== null ? this.renderScan() : null
+          this.state.scan !== null ? this.renderScan() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitScanEdit(false)}>{i18next.t("general:Save")}</Button>

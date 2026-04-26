@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider, Switch} from "antd";
 import {LinkOutlined} from "@ant-design/icons";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -1508,7 +1509,7 @@ class ProviderEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.provider !== null ? this.renderProvider() : null
+          this.state.provider !== null ? this.renderProvider() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         {!isRemote && (
           <div style={{marginTop: "20px", marginLeft: "40px"}}>

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import * as MachineBackend from "./backend/MachineBackend";
 import * as Setting from "./Setting";
@@ -332,7 +333,7 @@ class MachineEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.machine !== null ? this.renderMachine() : null
+          this.state.machine !== null ? this.renderMachine() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitMachineEdit(false)}>{i18next.t("general:Save")}</Button>

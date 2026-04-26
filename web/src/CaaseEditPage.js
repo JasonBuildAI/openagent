@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as CaaseBackend from "./backend/CaaseBackend";
 import * as PatientBackend from "./backend/PatientBackend";
@@ -461,7 +462,7 @@ class CaaseEditPage extends React.Component {
   render() {
     return (
       <div>
-        {this.state.caase !== null ? this.renderCaase() : null}
+        {this.state.caase !== null ? this.renderCaase() : <Loading type="page" tip={i18next.t("general:Loading")} />}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitCaaseEdit(false)}>
             {i18next.t("general:Save")}

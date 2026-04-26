@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
@@ -834,7 +835,7 @@ class VideoEditPage extends React.Component {
                   <React.Fragment>
                     <Affix offsetTop={50}>
                       {
-                        this.state.video !== null ? this.renderVideoContent() : null
+                        this.state.video !== null ? this.renderVideoContent() : <Loading type="page" tip={i18next.t("general:Loading")} />
                       }
                       {
                         this.state.video.dataUrl !== "" ? this.renderDataContent() : null
@@ -906,7 +907,7 @@ class VideoEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.video !== null ? this.renderVideo() : null
+          this.state.video !== null ? this.renderVideo() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           {

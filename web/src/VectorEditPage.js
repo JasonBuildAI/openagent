@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, InputNumber, Row} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
@@ -248,7 +249,7 @@ class VectorEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.vector !== null ? this.renderVector() : null
+          this.state.vector !== null ? this.renderVector() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         {!isViewMode && (
           <div style={{marginTop: "20px", marginLeft: "40px"}}>

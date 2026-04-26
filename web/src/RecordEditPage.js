@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as RecordBackend from "./backend/RecordBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -378,7 +379,7 @@ class RecordEditPage extends React.Component {
     return (
       <div>
         {
-          this.state.record !== null ? this.renderRecord() : null
+          this.state.record !== null ? this.renderRecord() : <Loading type="page" tip={i18next.t("general:Loading")} />
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           {this.state.mode !== "123" ? (

@@ -4,6 +4,7 @@
 // you may not use this file except in compliance with the License.
 
 import React from "react";
+import Loading from "./common/Loading";
 import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as ScaleBackend from "./backend/ScaleBackend";
 import * as Setting from "./Setting";
@@ -121,7 +122,7 @@ class ScaleEditPage extends React.Component {
   render() {
     return (
       <div>
-        {this.state.scale !== null ? this.renderScale() : null}
+        {this.state.scale !== null ? this.renderScale() : <Loading type="page" tip={i18next.t("general:Loading")} />}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
           <Button size="large" onClick={() => this.submitScaleEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitScaleEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
