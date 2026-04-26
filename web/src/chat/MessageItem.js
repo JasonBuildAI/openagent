@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button, Col, Collapse, Row} from "antd";
+import {Alert, Avatar, Button, Col, Collapse, Row} from "antd";
 import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
@@ -325,10 +325,7 @@ const MessageItem = ({
               step: 2,
               interval: 50,
             } : undefined}
-            avatar={{
-              src: avatarSrc,
-              onError: handleAvatarError,
-            }}
+            avatar={<Avatar src={avatarSrc} onError={handleAvatarError} />}
             styles={{
               content: {
                 borderRadius: "16px",
@@ -429,10 +426,7 @@ const MessageItem = ({
             step: 2,
             interval: 50,
           } : undefined}
-          avatar={{
-            src: avatarSrc,
-            onError: handleAvatarError,
-          }}
+          avatar={<Avatar src={avatarSrc} onError={handleAvatarError} />}
           styles={{
             content: {
               borderRadius: "16px",
