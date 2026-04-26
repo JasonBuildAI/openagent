@@ -106,8 +106,8 @@ const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
   if (!uri) {return null;}
-  if (uri.includes("/chat") || uri.includes("/usages") || uri.includes("/activities") || uri.includes("/desktop")) {return "/home";}
   if (uri.includes("/chats") || uri.includes("/messages")) {return "/ai-chat";}
+  if (uri.includes("/chat") || uri.includes("/usages") || uri.includes("/activities") || uri.includes("/desktop")) {return "/home";}
   if (uri.includes("/stores") || uri.includes("/files") || uri.includes("/providers") || uri.includes("/vectors")) {return "/ai-setting";}
   if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench")) {return "/cloud";}
   if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/hospitals") || uri.includes("/doctors") || uri.includes("/patients") || uri.includes("/caases") || uri.includes("/consultations") || uri.includes("/audit") || uri.includes("/yolov8mi") || uri.includes("/sr") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
