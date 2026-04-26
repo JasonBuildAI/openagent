@@ -16,6 +16,7 @@ import React, {Component} from "react";
 import {withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {ConfigProvider, FloatButton, Layout} from "antd";
+import {AiDots} from "./common/Loading";
 import "./App.less";
 import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
@@ -345,6 +346,7 @@ class App extends Component {
         </Helmet>
         <ConfigProvider
           locale={this.getAntdLocale()}
+          spin={{indicator: <AiDots />}}
           theme={{
             token: {
               ...shadcnThemeToken,

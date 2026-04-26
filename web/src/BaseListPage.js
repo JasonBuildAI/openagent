@@ -19,6 +19,7 @@ import Highlighter from "react-highlight-words";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as FormBackend from "./backend/FormBackend";
+import Loading from "./common/Loading";
 
 const {confirm} = Modal;
 
@@ -36,7 +37,7 @@ class BaseListPage extends React.Component {
     this.state = {
       classes: props,
       storeName: storeNameFromProps(props),
-      data: [],
+      data: null,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -296,6 +297,10 @@ class BaseListPage extends React.Component {
     throw new Error("deleteItem method must be implemented by subclass");
   };
 
+  getTableLoading = () => {
+    return this.state.loading ? {tip: i18next.t("general:Loading")} : false;
+  };
+
   handleSearch = (selectedKeys, confirm, dataIndex) => {
     this.fetch({searchText: selectedKeys[0], searchedColumn: dataIndex, pagination: this.state.pagination});
   };
@@ -327,6 +332,10 @@ class BaseListPage extends React.Component {
           extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>}
         />
       );
+    }
+
+    if (this.state.loading && this.state.data === null) {
+      return <Loading type="page" tip={i18next.t("general:Loading")} />;
     }
 
     return (

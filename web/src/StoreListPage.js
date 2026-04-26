@@ -600,7 +600,7 @@ class StoreListPage extends BaseListPage {
               </span>
             </div>
           )}
-          loading={this.state.loading}
+          loading={this.getTableLoading()}
           onChange={this.handleTableChange}
         />
       </div>

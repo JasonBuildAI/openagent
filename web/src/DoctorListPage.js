@@ -217,7 +217,7 @@ class DoctorListPage extends BaseListPage {
               </Button>
             </div>
           )}
-          loading={this.state.loading}
+          loading={this.getTableLoading()}
           onChange={this.handleTableChange}
         />
       </div>

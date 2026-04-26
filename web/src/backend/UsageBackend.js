@@ -68,3 +68,23 @@ export function getUserTableInfos(serverUrl, storeName, user) {
     },
   }).then(res => res.json());
 }
+
+export function getUsageProviders(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-usage-providers?owner=${owner}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function getUsageHeatmap(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-usage-heatmap?owner=${owner}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}

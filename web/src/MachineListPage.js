@@ -260,7 +260,7 @@ class MachineListPage extends BaseListPage {
               )}
             </div>
           )}
-          loading={this.state.loading}
+          loading={this.getTableLoading()}
           onChange={(pagination, filters, sorter) => {
             this.handleTableChange(pagination, filters, sorter);
           }}

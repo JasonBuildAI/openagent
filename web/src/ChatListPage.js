@@ -696,7 +696,7 @@ class ChatListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={this.state.loading}
+          loading={this.getTableLoading()}
           rowClassName={(record, index) => {
             return record.isDeleted ? "highlight-row" : "";
           }}
