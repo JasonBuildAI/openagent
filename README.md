@@ -4,8 +4,8 @@
   <a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
   </a>
-  <a href="https://hub.docker.com/r/the-open-agent/openagent">
-    <img alt="docker pull the-open-agent/openagent" src="https://img.shields.io/docker/pulls/the-open-agent/openagent.svg">
+  <a href="https://hub.docker.com/r/casbin/openagent">
+    <img alt="docker pull casbin/openagent" src="https://img.shields.io/docker/pulls/casbin/openagent.svg">
   </a>
   <a href="https://github.com/the-open-agent/openagent/actions/workflows/build.yml">
     <img alt="GitHub Workflow Status (branch)" src="https://github.com/the-open-agent/openagent/workflows/Build/badge.svg?style=flat-square">
@@ -13,7 +13,7 @@
   <a href="https://github.com/the-open-agent/openagent/releases/latest">
     <img alt="GitHub Release" src="https://img.shields.io/github/v/release/the-open-agent/openagent.svg">
   </a>
-  <a href="https://hub.docker.com/r/the-open-agent/openagent">
+  <a href="https://hub.docker.com/r/casbin/openagent">
     <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
   </a>
 </p>

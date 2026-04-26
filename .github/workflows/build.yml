@@ -192,7 +192,7 @@ jobs:
           target: STANDARD
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: the-open-agent/openagent:${{ needs.tag-release.outputs.new-release-version }},the-open-agent/openagent:latest
+          tags: casbin/openagent:${{ needs.tag-release.outputs.new-release-version }},casbin/openagent:latest
 
       - name: Push All In One Version to Docker Hub
         uses: docker/build-push-action@v3
@@ -201,7 +201,7 @@ jobs:
           target: ALLINONE
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: the-open-agent/openagent-all-in-one:${{ needs.tag-release.outputs.new-release-version }},the-open-agent/openagent-all-in-one:latest
+          tags: casbin/openagent-all-in-one:${{ needs.tag-release.outputs.new-release-version }},casbin/openagent-all-in-one:latest
 
       - uses: actions/checkout@v3
         with:
