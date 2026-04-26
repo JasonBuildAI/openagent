@@ -30,7 +30,12 @@ export let ShowGithubCorner = false;
 export let DisablePreviewMode = false;
 export let IsDemoMode = false;
 // eslint-disable-next-line
-export let ThemeDefault = {};
+export let ThemeDefault = {
+  themeType: "default",
+  colorPrimary: "#262626",
+  borderRadius: 10,
+  isCompact: false,
+};
 export let AvatarErrorUrl = "";
 
 export function setConfig(config) {
