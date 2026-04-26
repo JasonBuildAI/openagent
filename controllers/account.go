@@ -18,6 +18,7 @@ import (
 	_ "embed"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -30,35 +31,55 @@ func init() {
 	InitAuthConfig()
 }
 
-func InitAuthConfig() {
+func tryInitAuthConfig() error {
 	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	clientId := conf.GetConfigString("clientId")
 	clientSecret := conf.GetConfigString("clientSecret")
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
 
-	if casdoorEndpoint == "" {
-		return
-	}
-
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
+
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if application == nil {
-		panic(fmt.Errorf("The application: %s does not exist", casdoorApplication))
+		return fmt.Errorf("the application %q does not exist", casdoorApplication)
 	}
 
 	cert, err := casdoorsdk.GetCert(application.Cert)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if cert == nil {
-		panic(fmt.Errorf("The cert: %s does not exist", application.Cert))
+		return fmt.Errorf("the cert %q does not exist", application.Cert)
 	}
 
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
+	return nil
+}
+
+func InitAuthConfig() {
+	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
+	if casdoorEndpoint == "" {
+		return
+	}
+
+	if err := tryInitAuthConfig(); err != nil {
+		beego.Warning("InitAuthConfig: casdoor unreachable, will retry in background:", err)
+		go func() {
+			for {
+				time.Sleep(10 * time.Second)
+				if err := tryInitAuthConfig(); err != nil {
+					beego.Warning("InitAuthConfig: retry failed:", err)
+				} else {
+					beego.Info("InitAuthConfig: casdoor connected successfully")
+					return
+				}
+			}
+		}()
+	}
 }
 
 // Signin
