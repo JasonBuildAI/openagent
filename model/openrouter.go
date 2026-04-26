@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/casibase/casibase/i18n"
-	"github.com/casibase/casibase/proxy"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/proxy"
 	"github.com/casibase/go-openrouter"
 )
 
@@ -39,7 +39,7 @@ func NewOpenRouterModelProvider(subType string, secretKey string, temperature fl
 	p := &OpenRouterModelProvider{
 		subType:     subType,
 		secretKey:   secretKey,
-		siteName:    "Casibase",
+		siteName:    "OpenAgent",
 		siteUrl:     "https://casibase.org",
 		temperature: &temperature,
 		topP:        &topP,
@@ -148,7 +148,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 
 	contextLength := getContextLength(p.subType)
 
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+	if strings.HasPrefix(question, "$OpenAgentDryRun$") {
 		modelResult, err := getDefaultModelResult(model, question, "")
 		if err != nil {
 			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))

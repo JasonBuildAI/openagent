@@ -15,7 +15,7 @@
 package object
 
 import (
-	"github.com/casibase/casibase/pkgimage"
+	"github.com/the-open-agent/openagent/pkgimage"
 )
 
 func getImageFromService(owner string, provider string, clientImage *pkgimage.Image) *Image {

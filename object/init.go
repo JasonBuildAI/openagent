@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/util"
 )
 
 func InitDb() {
@@ -66,7 +66,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		MemoryLimit:          10,
 		LimitMinutes:         15,
 		Welcome:              "Hello",
-		WelcomeTitle:         "Hello, this is the Casibase AI Assistant",
+		WelcomeTitle:         "Hello, this is the OpenAgent AI Assistant",
 		WelcomeText:          "I'm here to help answer your questions",
 		Prompt:               "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.",
 		ExampleQuestions:     []ExampleQuestion{},

@@ -1,8 +1,8 @@
-# Casibase - Claude Code Guide
+# OpenAgent - Claude Code Guide
 
 ## Project Overview
 
-Casibase is an open-source enterprise-level AI knowledge base and MCP (Model Context Protocol) / A2A (Agent-to-Agent) management platform. It supports 30+ AI model providers (OpenAI, Claude, Gemini, Ollama, etc.) with admin UI, user management, and SSO via Casdoor.
+OpenAgent is an open-source enterprise-level AI knowledge base and MCP (Model Context Protocol) / A2A (Agent-to-Agent) management platform. It supports 30+ AI model providers (OpenAI, Claude, Gemini, Ollama, etc.) with admin UI, user management, and SSO via Casdoor.
 
 ## Architecture
 
@@ -14,7 +14,7 @@ Full-stack application:
 ## Directory Structure
 
 ```
-casibase/
+openagent/
 ├── main.go                 # Entry point
 ├── go.mod                  # Go module
 ├── conf/app.conf           # Beego config
@@ -105,7 +105,7 @@ cd web && yarn lint
 2. Frontend build (Node.js 20 + Yarn)
 3. Go binary build
 4. golangci-lint
-5. Semantic release + Docker push to `casbin/casibase`
+5. Semantic release + Docker push to `the-open-agent/openagent`
 
 ## Configuration
 

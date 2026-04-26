@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import (
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
 	_ "github.com/beego/beego/session/redis"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/proxy"
-	"github.com/casibase/casibase/routers"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/proxy"
+	"github.com/the-open-agent/openagent/routers"
+	"github.com/the-open-agent/openagent/util"
 )
 
 func main() {
@@ -58,7 +58,7 @@ func main() {
 	beego.InsertFilter("*", beego.AfterExec, routers.SecureCookieFilter, false)
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
-	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
+	beego.BConfig.WebConfig.Session.SessionName = "openagent_session_id"
 	if conf.GetConfigString("redisEndpoint") == "" {
 		beego.BConfig.WebConfig.Session.SessionProvider = "file"
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"

@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/casibase/casibase/i18n"
-	"github.com/casibase/casibase/model"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/model"
 )
 
 func GetRangeUsages(rangeType string, count int, user string, storeName string, lang string) ([]*Usage, error) {

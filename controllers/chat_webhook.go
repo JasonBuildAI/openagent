@@ -1,4 +1,4 @@
-// Copyright 2026 The Casibase Authors. All Rights Reserved.
+// Copyright 2026 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/util"
 )
 
 // TelegramWebhook receives incoming updates from Telegram for a given Chat provider.

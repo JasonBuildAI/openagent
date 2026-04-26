@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,18 +14,18 @@
 
 // Package routers
 // @APIVersion 1.70.0
-// @Title Casibase RESTful API
-// @Description Swagger Docs of Casibase Backend API
+// @Title OpenAgent RESTful API
+// @Description Swagger Docs of OpenAgent Backend API
 // @Contact admin@casibase.org
 // @SecurityDefinition AccessToken apiKey Authorization header
 // @Schemes https,http
-// @ExternalDocs Find out more about Casibase
+// @ExternalDocs Find out more about OpenAgent
 // @ExternalDocsUrl https://casibase.org/
 package routers
 
 import (
 	"github.com/beego/beego"
-	"github.com/casibase/casibase/controllers"
+	"github.com/the-open-agent/openagent/controllers"
 )
 
 func init() {

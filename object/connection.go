@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2024 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/casibase/casibase/util"
-	"github.com/casibase/casibase/util/guacamole"
+	"github.com/the-open-agent/openagent/util"
+	"github.com/the-open-agent/openagent/util/guacamole"
 	"xorm.io/core"
 )
 

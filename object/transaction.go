@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import (
 
 	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/util"
 	"github.com/robfig/cron/v3"
 )
 
-var CasibaseHost = ""
+var OpenAgentHost = ""
 
 // createTransactionFromMessage creates a transaction object from a message.
 // This is a helper function to reduce code duplication.
@@ -34,8 +34,8 @@ func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
 		Owner:       conf.GetConfigString("casdoorOrganization"),
 		CreatedTime: message.CreatedTime,
 		Application: conf.GetConfigString("casdoorApplication"),
-		Domain:      CasibaseHost,
-		Category:    "Casibase Chat",
+		Domain:      OpenAgentHost,
+		Category:    "OpenAgent Chat",
 		Type:        message.Chat,
 		Subtype:     message.Name,
 		Provider:    message.ModelProvider,

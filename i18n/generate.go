@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/util"
 )
 
 type I18nData map[string]map[string]string

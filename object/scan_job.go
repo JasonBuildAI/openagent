@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import (
 	"os"
 
 	"github.com/beego/beego/logs"
-	scanpkg "github.com/casibase/casibase/scan"
-	"github.com/casibase/casibase/util"
+	scanpkg "github.com/the-open-agent/openagent/scan"
+	"github.com/the-open-agent/openagent/util"
 	"github.com/robfig/cron/v3"
 )
 
@@ -135,7 +135,7 @@ func claimScanJob(scan *Scan, hostname string) (bool, error) {
 			return false, nil
 		}
 		// Check if the asset name matches the current hostname
-		// This ensures only the Casibase instance on the target machine picks up the job
+		// This ensures only the OpenAgent instance on the target machine picks up the job
 		if asset.DisplayName != hostname {
 			if provider.Type == "OS Patch" {
 				return false, nil

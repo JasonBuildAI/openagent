@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/casibase/casibase/i18n"
-	"github.com/casibase/casibase/proxy"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/proxy"
 	"github.com/openai/openai-go/v2"
 	"github.com/openai/openai-go/v2/option"
 	"github.com/openai/openai-go/v2/packages/param"
@@ -315,7 +315,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			messages = openaiRawMessagesToMessages(rawMessages)
 		}
 
-		if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		if strings.HasPrefix(question, "$OpenAgentDryRun$") {
 			promptTokenCount, err := openaiNumTokensFromMessages(messages, model)
 			if err != nil {
 				return nil, err
@@ -430,7 +430,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 		return modelResult, nil
 	} else if getOpenAiModelType(model) == "imagesGenerations" {
-		if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		if strings.HasPrefix(question, "$OpenAgentDryRun$") {
 			return modelResult, nil
 		}
 		quality := getGenerateImageQuality(model)

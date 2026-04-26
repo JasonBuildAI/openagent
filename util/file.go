@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/proxy"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 func parseJsonToFloats(s string) []float64 {
@@ -158,7 +158,7 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 	frontendBaseDir := conf.GetConfigString("frontendBaseDir")
 
 	// GitHub repo for the data files
-	repoURL := "https://github.com/casibase/data"
+	repoURL := "https://github.com/the-open-agent/data"
 
 	// Helper function to download and save a file
 	downloadAndSave := func(filename string) error {

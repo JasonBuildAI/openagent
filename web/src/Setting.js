@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1058,27 +1058,27 @@ export function getOtherProviderInfo() {
     Tool: {
       "Time": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
       "Web Search": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
       "Shell": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
       "Office": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
       "Web Fetch": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
       "Web Browser": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/casibase/casibase",
+        url: "https://github.com/the-open-agent/openagent",
       },
     },
     "Public Cloud": {
@@ -2274,7 +2274,7 @@ export function loadChatGenerationMode(owner, chatName) {
   if (!owner || !chatName) {
     return "text";
   }
-  const raw = localStorage.getItem(`casibase_chat_generation_mode:${owner}:${chatName}`);
+  const raw = localStorage.getItem(`openagent_chat_generation_mode:${owner}:${chatName}`);
   return raw === "image" ? "image" : "text";
 }
 
@@ -2283,7 +2283,7 @@ export function saveChatGenerationMode(owner, chatName, mode) {
     return;
   }
   if (mode === "image" || mode === "text") {
-    localStorage.setItem(`casibase_chat_generation_mode:${owner}:${chatName}`, mode);
+    localStorage.setItem(`openagent_chat_generation_mode:${owner}:${chatName}`, mode);
   }
 }
 
@@ -2636,7 +2636,7 @@ export function getAlgorithm(themeAlgorithmNames) {
 }
 
 export function getHtmlTitle(storeHtmlTitle) {
-  const defaultHtmlTitle = "Casibase";
+  const defaultHtmlTitle = "OpenAgent";
   let htmlTitle = Conf.HtmlTitle;
   if (storeHtmlTitle && storeHtmlTitle !== defaultHtmlTitle) {
     htmlTitle = storeHtmlTitle;
@@ -2672,7 +2672,7 @@ export function getLogo(themes, storeLogoUrl) {
 }
 
 export function getFooterHtml(themes, storeFooterHtml) {
-  const defaultFooterHtml = "Powered by <a target=\"_blank\" href=\"https://github.com/casibase/casibase\" rel=\"noreferrer\"><img style=\"padding-bottom: 3px;\" height=\"20\" alt=\"Casibase\" src=\"https://cdn.casibase.org/img/casibase-logo_1200x256.png\" /></a>";
+  const defaultFooterHtml = "Powered by <a target=\"_blank\" href=\"https://github.com/the-open-agent/openagent\" rel=\"noreferrer\"><img style=\"padding-bottom: 3px;\" height=\"20\" alt=\"Casibase\" src=\"https://cdn.casibase.org/img/casibase-logo_1200x256.png\" /></a>";
   let footerHtml = Conf.FooterHtml;
   if (storeFooterHtml && storeFooterHtml !== defaultFooterHtml) {
     footerHtml = storeFooterHtml;

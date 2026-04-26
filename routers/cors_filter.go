@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import (
 
 	"github.com/beego/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/object"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/object"
 )
 
 const (
@@ -74,8 +74,8 @@ func CorsFilter(ctx *context.Context) {
 		responseError(ctx, fmt.Sprintf("CORS error: origin [%s] is not allowed, path: %s", origin, ctx.Request.URL.Path))
 	}
 
-	if object.CasibaseHost == "" {
-		object.CasibaseHost = origin
+	if object.OpenAgentHost == "" {
+		object.OpenAgentHost = origin
 	}
 }
 

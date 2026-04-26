@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 
 	"github.com/beego/beego/utils/pagination"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/util"
 )
 
 // GetImages

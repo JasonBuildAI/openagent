@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import (
 
 // DryRunPrefix is a special prefix that triggers model providers to estimate
 // token count and price without actually calling the AI model APIs.
-const DryRunPrefix = "$CasibaseDryRun$"
+const DryRunPrefix = "$OpenAgentDryRun$"
 
 type ModelResult struct {
 	PromptTokenCount   int

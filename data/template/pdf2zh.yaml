@@ -25,10 +25,10 @@ metadata:
   name: {{ .application.name }}
   annotations:
     originImageName: byaidu/pdf2zh:1.9.6
-    casibase/minReplicas: '1'
-    casibase/maxReplicas: '1'
+    openagent/minReplicas: '1'
+    openagent/maxReplicas: '1'
   labels:
-    casibase/app-deploy-manager: {{ .application.name }}
+    openagent/app-deploy-manager: {{ .application.name }}
     app: {{ .application.name }}
 spec:
   replicas: 1
@@ -68,7 +68,7 @@ kind: Service
 metadata:
   name: {{ .application.name }}
   labels:
-    casibase/app-deploy-manager: {{ .application.name }}
+    openagent/app-deploy-manager: {{ .application.name }}
 spec:
   ports:
     - port: 7860
@@ -81,8 +81,8 @@ kind: Ingress
 metadata:
   name: {{ .application.name }}
   labels:
-    casibase/app-deploy-manager: {{ .application.name }}
-    casibase/app-deploy-manager-domain: {{ .options.host }}
+    openagent/app-deploy-manager: {{ .application.name }}
+    openagent/app-deploy-manager-domain: {{ .options.host }}
 spec:
   rules:
     - host: {{ .options.host }}

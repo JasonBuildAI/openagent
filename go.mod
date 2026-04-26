@@ -1,4 +1,4 @@
-module github.com/casibase/casibase
+module github.com/the-open-agent/openagent
 
 go 1.24.0
 

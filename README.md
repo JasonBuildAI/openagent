@@ -1,38 +1,38 @@
-<h1 align="center" style="border-bottom: none;">📦⚡️ Casibase</h1>
+<h1 align="center" style="border-bottom: none;">📦⚡️ OpenAgent</h1>
 <h3 align="center">AI Cloud OS: Open-source enterprise-level AI knowledge base and MCP (model-context-protocol)/A2A (agent-to-agent) management platform with admin UI, user management and Single-Sign-On⚡️, supports ChatGPT, Claude, Llama, Ollama, HuggingFace, etc.</h3>
 <p align="center">
   <a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
   </a>
-  <a href="https://hub.docker.com/r/casbin/casibase">
-    <img alt="docker pull casbin/casibase" src="https://img.shields.io/docker/pulls/casbin/casibase.svg">
+  <a href="https://hub.docker.com/r/the-open-agent/openagent">
+    <img alt="docker pull the-open-agent/openagent" src="https://img.shields.io/docker/pulls/the-open-agent/openagent.svg">
   </a>
-  <a href="https://github.com/casibase/casibase/actions/workflows/build.yml">
-    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casibase/casibase/workflows/Build/badge.svg?style=flat-square">
+  <a href="https://github.com/the-open-agent/openagent/actions/workflows/build.yml">
+    <img alt="GitHub Workflow Status (branch)" src="https://github.com/the-open-agent/openagent/workflows/Build/badge.svg?style=flat-square">
   </a>
-  <a href="https://github.com/casibase/casibase/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casibase/casibase.svg">
+  <a href="https://github.com/the-open-agent/openagent/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/the-open-agent/openagent.svg">
   </a>
-  <a href="https://hub.docker.com/r/casbin/casibase">
+  <a href="https://hub.docker.com/r/the-open-agent/openagent">
     <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://goreportcard.com/report/github.com/casibase/casibase">
-    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casibase/casibase?style=flat-square">
+  <a href="https://goreportcard.com/report/github.com/the-open-agent/openagent">
+    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/the-open-agent/openagent?style=flat-square">
   </a>
-  <a href="https://github.com/casibase/casibase/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/casibase/casibase?style=flat-square" alt="license">
+  <a href="https://github.com/the-open-agent/openagent/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/the-open-agent/openagent?style=flat-square" alt="license">
   </a>
-  <a href="https://github.com/casibase/casibase/issues">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/casibase/casibase?style=flat-square">
+  <a href="https://github.com/the-open-agent/openagent/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/the-open-agent/openagent?style=flat-square">
   </a>
   <a href="#">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casibase/casibase?style=flat-square">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/the-open-agent/openagent?style=flat-square">
   </a>
-  <a href="https://github.com/casibase/casibase/network">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/casibase/casibase?style=flat-square">
+  <a href="https://github.com/the-open-agent/openagent/network">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/the-open-agent/openagent?style=flat-square">
   </a>
   <a href="https://crowdin.com/project/casibase">
     <img alt="Crowdin" src="https://badges.crowdin.net/casibase/localized.svg">
@@ -60,12 +60,12 @@ https://casibase.org
 
 ## Architecture
 
-Casibase contains 2 parts:
+OpenAgent contains 2 parts:
 
 | **Name**       | **Description**                                   | **Language**                            |
 |----------------|---------------------------------------------------|-----------------------------------------|
-| Frontend       | User interface for Casibase                       | JavaScript + React                      |
-| Backend        | Server-side logic and API for Casibase            | Golang + Beego + Python + Flask + MySQL |
+| Frontend       | User interface for OpenAgent                       | JavaScript + React                      |
+| Backend        | Server-side logic and API for OpenAgent            | Golang + Beego + Python + Flask + MySQL |
 
 ![0-Architecture-casibase](assets/0-Architecture-casibase.png)
 
@@ -139,8 +139,8 @@ Discord: <https://discord.gg/5rPsrAzK7S>
 
 ## Contribute
 
-For Casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
+For OpenAgent, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
 
 ## License
 
-[Apache-2.0](https://github.com/casibase/casibase/blob/master/LICENSE)
+[Apache-2.0](https://github.com/the-open-agent/openagent/blob/master/LICENSE)

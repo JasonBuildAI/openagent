@@ -1,4 +1,4 @@
-// Copyright 2026 The Casibase Authors. All Rights Reserved.
+// Copyright 2026 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/txt"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/txt"
 )
 
 // UploadTaskDocument
@@ -99,7 +99,7 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Upload file to storage
-	filePath := fmt.Sprintf("casibase/task-documents/%s/%s", userName, fileName)
+	filePath := fmt.Sprintf("openagent/task-documents/%s/%s", userName, fileName)
 	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
 	if err != nil {
 		c.ResponseError(err.Error())

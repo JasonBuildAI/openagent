@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -161,7 +161,7 @@ class ApplicationListPage extends BaseListPage {
       displayName: `${i18next.t("application:New Application")} - ${randomName}`,
       description: "",
       template: this.state.templates[0]?.name || "",
-      namespace: `casibase-application-${randomName}`,
+      namespace: `openagent-application-${randomName}`,
       parameters: defaultParameters,
       status: "Not Deployed",
     };

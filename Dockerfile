@@ -5,14 +5,14 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000 && yarn run build
 
 
 FROM --platform=$BUILDPLATFORM golang:1.24 AS BACK
-WORKDIR /go/src/casibase
+WORKDIR /go/src/openagent
 COPY . .
 RUN chmod +x ./build.sh
 RUN ./build.sh
 
 
 FROM alpine:latest AS STANDARD
-LABEL MAINTAINER="https://casibase.org/"
+LABEL MAINTAINER="https://github.com/the-open-agent/openagent"
 ARG USER=casibase
 ARG TARGETOS
 ARG TARGETARCH
@@ -33,9 +33,9 @@ RUN adduser -D $USER -u 1000 \
 
 USER 1000
 WORKDIR /
-COPY --from=BACK --chown=$USER:$USER /go/src/casibase/server_${BUILDX_ARCH} ./server
-COPY --from=BACK --chown=$USER:$USER /go/src/casibase/data ./data
-COPY --from=BACK --chown=$USER:$USER /go/src/casibase/conf/app.conf ./conf/app.conf
+COPY --from=BACK --chown=$USER:$USER /go/src/openagent/server_${BUILDX_ARCH} ./server
+COPY --from=BACK --chown=$USER:$USER /go/src/openagent/data ./data
+COPY --from=BACK --chown=$USER:$USER /go/src/openagent/conf/app.conf ./conf/app.conf
 COPY --from=FRONT --chown=$USER:$USER /web/build ./web/build
 ENV RUNNING_IN_DOCKER=true
 
@@ -51,7 +51,7 @@ RUN apt update \
 
 
 FROM db AS ALLINONE
-LABEL MAINTAINER="https://casibase.org/"
+LABEL MAINTAINER="https://github.com/the-open-agent/openagent"
 ARG TARGETOS
 ARG TARGETARCH
 ENV BUILDX_ARCH="${TARGETOS:-linux}_${TARGETARCH:-amd64}"
@@ -59,10 +59,10 @@ ENV BUILDX_ARCH="${TARGETOS:-linux}_${TARGETARCH:-amd64}"
 RUN apt update && apt install -y ca-certificates && update-ca-certificates
 
 WORKDIR /
-COPY --from=BACK /go/src/casibase/server_${BUILDX_ARCH} ./server
-COPY --from=BACK /go/src/casibase/data ./data
-COPY --from=BACK /go/src/casibase/docker-entrypoint.sh /docker-entrypoint.sh
-COPY --from=BACK /go/src/casibase/conf/app.conf ./conf/app.conf
+COPY --from=BACK /go/src/openagent/server_${BUILDX_ARCH} ./server
+COPY --from=BACK /go/src/openagent/data ./data
+COPY --from=BACK /go/src/openagent/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --from=BACK /go/src/openagent/conf/app.conf ./conf/app.conf
 COPY --from=FRONT /web/build ./web/build
 ENV RUNNING_IN_DOCKER=true
 

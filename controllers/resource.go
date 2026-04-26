@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casibase/casibase/object"
+	"github.com/the-open-agent/openagent/object"
 )
 
 // UploadFile
@@ -58,7 +58,7 @@ func (c *ApiController) UploadFile() {
 		return
 	}
 
-	filePath := fmt.Sprintf("casibase/avatars/%s/%s", userName, fileName)
+	filePath := fmt.Sprintf("openagent/avatars/%s/%s", userName, fileName)
 
 	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadStoreAvatar", filePath, fileBytes)
 	if err != nil {

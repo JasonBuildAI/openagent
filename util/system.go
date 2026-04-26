@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ func getMemoryUsage() (uint64, uint64, error) {
 	return memInfo.RSS, virtualMem.Total, nil
 }
 
-// getDiskUsage gets disk usage for Casibase's data directory
+// getDiskUsage gets disk usage for OpenAgent's data directory
 func getDiskUsage() (uint64, uint64, error) {
 	// Get the root path of the project
 	_, filename, _, _ := runtime.Caller(0)
@@ -116,7 +116,7 @@ func getDiskUsage() (uint64, uint64, error) {
 	return size, diskStat.Total, nil
 }
 
-// getNetworkUsage gets Casibase process's own network I/O usage
+// getNetworkUsage gets OpenAgent process's own network I/O usage
 func getNetworkUsage() (uint64, uint64, uint64, error) {
 	proc, err := process.NewProcess(int32(os.Getpid()))
 	if err != nil {

@@ -1,4 +1,4 @@
-// Copyright 2026 The Casibase Authors. All Rights Reserved.
+// Copyright 2026 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/casibase/casibase/agent/builtin_tool"
-	"github.com/casibase/casibase/proxy"
+	"github.com/the-open-agent/openagent/agent/builtin_tool"
+	"github.com/the-open-agent/openagent/proxy"
 	"github.com/chromedp/chromedp"
 	"golang.org/x/net/html"
 )

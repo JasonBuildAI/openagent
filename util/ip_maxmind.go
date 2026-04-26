@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import (
 	"path/filepath"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/conf"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/oschwald/geoip2-golang"
 )
 

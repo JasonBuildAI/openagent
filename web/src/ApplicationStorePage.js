@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ class ApplicationStorePage extends React.Component {
       displayName: `${template.displayName} - ${randomName}`,
       description: template.description,
       template: template.name,
-      namespace: `casibase-application-${randomName}`,
+      namespace: `openagent-application-${randomName}`,
       parameters: "",
       status: "Not Deployed",
     };

@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,17 +22,17 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
-	"github.com/casibase/casibase/agent"
-	"github.com/casibase/casibase/chat"
-	"github.com/casibase/casibase/embedding"
-	"github.com/casibase/casibase/i18n"
-	"github.com/casibase/casibase/model"
-	"github.com/casibase/casibase/scan"
-	"github.com/casibase/casibase/storage"
-	"github.com/casibase/casibase/stt"
-	"github.com/casibase/casibase/tool"
-	"github.com/casibase/casibase/tts"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/agent"
+	"github.com/the-open-agent/openagent/chat"
+	"github.com/the-open-agent/openagent/embedding"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/model"
+	"github.com/the-open-agent/openagent/scan"
+	"github.com/the-open-agent/openagent/storage"
+	"github.com/the-open-agent/openagent/stt"
+	"github.com/the-open-agent/openagent/tool"
+	"github.com/the-open-agent/openagent/tts"
+	"github.com/the-open-agent/openagent/util"
 	"xorm.io/core"
 	"xorm.io/xorm"
 )

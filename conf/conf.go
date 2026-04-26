@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ func GetConfigString(key string) string {
 		if key == "staticBaseUrl" {
 			res = "https://cdn.casibase.org"
 		} else if key == "logConfig" {
-			res = "{\"filename\": \"logs/casibase.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
+			res = "{\"filename\": \"logs/openagent.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
 		} else if key == "avatarErrorUrl" {
 			res = "https://cdn.casibase.org/gravatar/error.png"
 		}

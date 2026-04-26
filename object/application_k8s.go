@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casibase/casibase/i18n"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/util"
 	"gopkg.in/yaml.v3"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -39,7 +39,7 @@ const (
 	StatusUnknown     = string(v1.PodUnknown) // "Unknown"
 	StatusFailed      = string(v1.PodFailed)
 	StatusTerminating = "Terminating"
-	NamespaceFormat   = "casibase-%s"
+	NamespaceFormat   = "openagent-%s"
 )
 
 func UpdateApplicationStatus(owner string, name string, status string, lang string) error {

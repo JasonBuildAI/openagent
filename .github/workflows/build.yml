@@ -15,7 +15,7 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_DATABASE: casibase
+          MYSQL_DATABASE: openagent
           MYSQL_ROOT_PASSWORD: 123456
         ports:
           - 3306:3306
@@ -43,7 +43,7 @@ jobs:
       - run: yarn install && CI=false yarn run build
         working-directory: ./web
       - name: Upload build artifacts
-        if: github.repository == 'casibase/casibase' && github.event_name == 'push'
+        if: github.repository == 'the-open-agent/openagent' && github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build-${{ github.run_id }}
@@ -92,7 +92,7 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'casibase/casibase' && github.event_name == 'push'
+    if: github.repository == 'the-open-agent/openagent' && github.event_name == 'push'
     needs: [ frontend, backend, linter ]
     outputs:
       new-release-published: ${{ steps.semantic.outputs.new_release_published }}
@@ -113,7 +113,7 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'casibase/casibase' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
+    if: github.repository == 'the-open-agent/openagent' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
     needs: [ tag-release ]
     steps:
       - name: Checkout
@@ -158,7 +158,7 @@ jobs:
     permissions:
       contents: write
       issues: write
-    if: github.repository == 'casibase/casibase' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
+    if: github.repository == 'the-open-agent/openagent' && github.event_name == 'push' && needs.tag-release.outputs.new-release-published == 'true'
     needs: [ tag-release ]
     steps:
       - name: Checkout
@@ -188,7 +188,7 @@ jobs:
           target: STANDARD
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: casbin/casibase:${{ needs.tag-release.outputs.new-release-version }},casbin/casibase:latest
+          tags: the-open-agent/openagent:${{ needs.tag-release.outputs.new-release-version }},the-open-agent/openagent:latest
 
       - name: Push All In One Version to Docker Hub
         uses: docker/build-push-action@v3
@@ -197,22 +197,22 @@ jobs:
           target: ALLINONE
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: casbin/casibase-all-in-one:${{ needs.tag-release.outputs.new-release-version }},casbin/casibase-all-in-one:latest
+          tags: the-open-agent/openagent-all-in-one:${{ needs.tag-release.outputs.new-release-version }},the-open-agent/openagent-all-in-one:latest
 
       - uses: actions/checkout@v3
         with:
-          repository: casibase/casibase-helm
+          repository: the-open-agent/openagent-helm
           ref: 'master'
           token: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Update Helm Chart
         run: |
           # Set the appVersion and version of the chart to the current tag
-          sed -i "s/appVersion: .*/appVersion: ${{ needs.tag-release.outputs.new-release-version }}/g" ./casibase-helm-chart/Chart.yaml
-          sed -i "s/version: .*/version: ${{ needs.tag-release.outputs.new-release-version }}/g" ./casibase-helm-chart/Chart.yaml
+          sed -i "s/appVersion: .*/appVersion: ${{ needs.tag-release.outputs.new-release-version }}/g" ./openagent-helm-chart/Chart.yaml
+          sed -i "s/version: .*/version: ${{ needs.tag-release.outputs.new-release-version }}/g" ./openagent-helm-chart/Chart.yaml
 
           REGISTRY=oci://registry-1.docker.io/casbin
-          cd casibase-helm-chart
+          cd openagent-helm-chart
           helm package .
           PKG_NAME=$(ls *.tgz)
           helm repo index . --url $REGISTRY --merge index.yaml

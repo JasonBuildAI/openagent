@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import (
 	"sort"
 
 	"github.com/beego/beego/utils/pagination"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/util"
 )
 
 // GetGlobalStores
@@ -199,7 +199,7 @@ func (c *ApiController) UpdateStore() {
 	}
 
 	if oldStore.IsDefault && !store.IsDefault {
-		c.ResponseError(c.T("store:given that there must be one default store in Casibase, you cannot set this store to non-default. You can directly set another store as default"))
+		c.ResponseError(c.T("store:given that there must be one default store in OpenAgent, you cannot set this store to non-default. You can directly set another store as default"))
 		return
 	}
 

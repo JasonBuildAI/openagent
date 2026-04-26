@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import (
 	"fmt"
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/i18n"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type CasdoorProvider struct {
@@ -56,7 +56,7 @@ func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 }
 
 func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
-	fileUrl, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
+	fileUrl, _, err := casdoorsdk.UploadResource(user, "OpenAgent", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
 	if err != nil {
 		return "", err
 	}

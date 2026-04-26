@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/casibase/casibase/i18n"
+	"github.com/the-open-agent/openagent/i18n"
 	cohere "github.com/cohere-ai/cohere-go/v2"
 	cohereclient "github.com/cohere-ai/cohere-go/v2/client"
 )
@@ -99,7 +99,7 @@ func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 
 	// if p.maxTokens > 0, use p.maxTokens, otherwise use model's default Maxtokens
 	maxTokens := getContextLength(p.subType)
-	if strings.HasPrefix(message, "$CasibaseDryRun$") {
+	if strings.HasPrefix(message, "$OpenAgentDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, message, "")
 		if err != nil {
 			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))

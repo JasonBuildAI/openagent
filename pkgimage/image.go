@@ -17,7 +17,7 @@ package pkgimage
 import (
 	"fmt"
 
-	"github.com/casibase/casibase/i18n"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type ImageClientInterface interface {

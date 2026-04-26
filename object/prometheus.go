@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,28 +44,28 @@ type HistogramVecInfo struct {
 
 var (
 	ApiThroughput = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "casibase_api_throughput",
+		Name: "openagent_api_throughput",
 		Help: "The throughput of each api access",
 	}, []string{"path", "method"})
 
 	ApiLatency = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "casibase_api_latency",
+		Name: "openagent_api_latency",
 		Help: "API processing latency in milliseconds",
 	}, []string{"path", "method"})
 
 	CpuUsage = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "casibase_cpu_usage",
-		Help: "casibase cpu usage",
+		Name: "openagent_cpu_usage",
+		Help: "openagent cpu usage",
 	}, []string{"cpuNum"})
 
 	MemoryUsage = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "casibase_memory_usage",
-		Help: "casibase memory usage in Byte",
+		Name: "openagent_memory_usage",
+		Help: "openagent memory usage in Byte",
 	}, []string{"type"})
 
 	TotalThroughput = promauto.NewGauge(prometheus.GaugeOpts{
-		Name: "casibase_total_throughput",
-		Help: "The total throughput of casibase",
+		Name: "openagent_total_throughput",
+		Help: "The total throughput of openagent",
 	})
 )
 
@@ -86,11 +86,11 @@ func GetPrometheusInfo() (*PrometheusInfo, error) {
 	}
 	for _, metricFamily := range metricFamilies {
 		switch metricFamily.GetName() {
-		case "casibase_api_throughput":
+		case "openagent_api_throughput":
 			res.ApiThroughput = getGaugeVecInfo(metricFamily)
-		case "casibase_api_latency":
+		case "openagent_api_latency":
 			res.ApiLatency = getHistogramVecInfo(metricFamily)
-		case "casibase_total_throughput":
+		case "openagent_total_throughput":
 			res.TotalThroughput = metricFamily.GetMetric()[0].GetGauge().GetValue()
 		}
 	}

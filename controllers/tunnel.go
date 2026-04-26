@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import (
 	"strconv"
 
 	"github.com/beego/beego/logs"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
-	"github.com/casibase/casibase/util/guacamole"
+	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/object"
+	"github.com/the-open-agent/openagent/util"
+	"github.com/the-open-agent/openagent/util/guacamole"
 	"github.com/gorilla/websocket"
 )
 

@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casibase/casibase/i18n"
+	"github.com/the-open-agent/openagent/i18n"
 	"github.com/leverly/ChatGLM/client"
 )
 
@@ -85,7 +85,7 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil
 	}
 
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+	if strings.HasPrefix(question, "$OpenAgentDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf(i18n.Translate(lang, "model:cannot calculate tokens"))
