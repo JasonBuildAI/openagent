@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Popover, Table, Tooltip} from "antd";
+import {Button, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -24,11 +24,30 @@ import BpmnComponent from "./BpmnComponent";
 import {DeleteOutlined} from "@ant-design/icons";
 import Editor from "./common/Editor";
 
-const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
     super(props);
   }
+
+  getEditorLang(text) {
+    if (!text) {
+      return undefined;
+    }
+    try {
+      JSON.parse(text);
+      return "json";
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  getEditorHeight(text) {
+    const lineHeight = 22;
+    const lines = (text || "").split("\n").length;
+    const visibleRows = Math.min(30, Math.max(10, lines));
+    return `${visibleRows * lineHeight}px`;
+  }
+
   newWorkflow() {
     const randomName = Setting.getRandomName();
     return {
@@ -195,7 +214,7 @@ class WorkflowListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" styles={{body: {width: "815px", maxHeight: "355px"}}} title={
-              <TextArea autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {}} />
+              <Editor value={text} lang={this.getEditorLang(text)} dark readOnly height={this.getEditorHeight(text)} fillWidth />
             }>
               <div style={{maxWidth: "300px"}}>
                 {Setting.getShortText(text, 100)}
@@ -219,10 +238,13 @@ class WorkflowListPage extends BaseListPage {
               title={i18next.t("task:Question")}
               content={
                 <div style={{display: "flex"}}>
-                  <TextArea
-                    style={{width: "400px", height: "400px"}}
+                  <Editor
                     value={text}
+                    lang="text"
+                    dark
                     readOnly
+                    height="400px"
+                    width="400px"
                   />
                   <div style={{width: "400px", height: "400px"}}>
                     <Editor

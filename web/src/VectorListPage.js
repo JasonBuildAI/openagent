@@ -14,15 +14,14 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Input, Popconfirm, Popover, Table, Tooltip} from "antd";
+import {Button, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
 import {DeleteOutlined} from "@ant-design/icons";
-
-const {TextArea} = Input;
+import Editor from "./common/Editor";
 
 class VectorListPage extends BaseListPage {
   constructor(props) {
@@ -192,7 +191,7 @@ class VectorListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <Popover placement="left" content={
-              <TextArea style={{width: "800px", backgroundColor: "black", color: "white"}} autoSize={{minRows: 1, maxRows: 100}} value={text} onChange={e => {}} />
+              <Editor value={text} lang="text" dark readOnly height="300px" width="800px" />
             } title="" trigger="hover">
               <div style={{maxWidth: "200px"}}>
                 {Setting.getShortText(text, 60)}
