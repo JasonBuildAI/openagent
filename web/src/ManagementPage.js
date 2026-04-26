@@ -733,9 +733,16 @@ function ManagementPage(props) {
           }}>
             <Link to="/">
               <img
-                src={siderLogo}
+                src={siderCollapsed ? (store?.avatar || siderLogo) : siderLogo}
                 alt="logo"
-                style={{height: 40, maxWidth: siderCollapsed ? 40 : 160, objectFit: "contain", transition: "max-width 0.2s"}}
+                style={{
+                  height: siderCollapsed ? 28 : 40,
+                  width: siderCollapsed ? 28 : undefined,
+                  maxWidth: siderCollapsed ? 28 : 160,
+                  objectFit: "contain",
+                  borderRadius: siderCollapsed ? 4 : 0,
+                  transition: "max-width 0.2s, height 0.2s, width 0.2s",
+                }}
               />
             </Link>
           </div>
