@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/beego/beego/logs"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/the-open-agent/openagent/embedding"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/model"
@@ -30,7 +31,6 @@ import (
 	"github.com/the-open-agent/openagent/storage"
 	"github.com/the-open-agent/openagent/txt"
 	"github.com/the-open-agent/openagent/util"
-	"github.com/cenkalti/backoff/v4"
 )
 
 func filterTextFiles(files []*storage.Object) []*storage.Object {

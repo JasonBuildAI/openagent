@@ -17,8 +17,8 @@ package embedding
 import (
 	"context"
 
-	"github.com/the-open-agent/openagent/proxy"
 	huggingfaceembedder "github.com/henomis/lingoose/embedder/huggingface"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 type HuggingFaceEmbeddingProvider struct {

@@ -25,8 +25,8 @@ import (
 
 	dashscopego "github.com/casibase/dashscope-go-sdk"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/casibase/dashscope-go-sdk/paraformer"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type AlibabacloudSpeechToTextProvider struct {

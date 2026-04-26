@@ -21,8 +21,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/the-open-agent/openagent/util"
 	"github.com/schollz/progressbar/v3"
+	"github.com/the-open-agent/openagent/util"
 )
 
 func TestUpdateRecordsLocation(t *testing.T) {

@@ -21,8 +21,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type LocalEmbeddingProvider struct {

@@ -15,8 +15,8 @@
 package embedding
 
 import (
-	"github.com/the-open-agent/openagent/proxy"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 func NewOpenAiEmbeddingProvider(typ string, subType string, secretKey string) (*LocalEmbeddingProvider, error) {

@@ -20,9 +20,9 @@ import (
 
 	"github.com/beego/beego/logs"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/robfig/cron/v3"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
-	"github.com/robfig/cron/v3"
 )
 
 var OpenAgentHost = ""

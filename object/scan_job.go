@@ -19,9 +19,9 @@ import (
 	"os"
 
 	"github.com/beego/beego/logs"
+	"github.com/robfig/cron/v3"
 	scanpkg "github.com/the-open-agent/openagent/scan"
 	"github.com/the-open-agent/openagent/util"
-	"github.com/robfig/cron/v3"
 )
 
 var scanJobCron *cron.Cron

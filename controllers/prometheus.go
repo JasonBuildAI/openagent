@@ -15,8 +15,8 @@
 package controllers
 
 import (
-	"github.com/the-open-agent/openagent/object"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/the-open-agent/openagent/object"
 )
 
 // GetPrometheusInfo

@@ -19,8 +19,8 @@ import (
 	"path/filepath"
 
 	"github.com/beego/beego/logs"
-	"github.com/the-open-agent/openagent/conf"
 	"github.com/oschwald/geoip2-golang"
+	"github.com/the-open-agent/openagent/conf"
 )
 
 var (

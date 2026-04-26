@@ -19,11 +19,11 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	cvm "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm/v20170312"
+	"github.com/the-open-agent/openagent/i18n"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )

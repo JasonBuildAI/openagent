@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/digitalocean/go-libvirt"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type MachineKvmClient struct {

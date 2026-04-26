@@ -17,11 +17,11 @@ package chain
 import (
 	"fmt"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	tbaas "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas/v20180416"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type ChainTencentChainmakerClient struct {

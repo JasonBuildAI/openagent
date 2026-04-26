@@ -23,14 +23,14 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/the-open-agent/openagent/i18n"
-	"github.com/the-open-agent/openagent/proxy"
 	"github.com/openai/openai-go/v2"
 	"github.com/openai/openai-go/v2/option"
 	"github.com/openai/openai-go/v2/packages/param"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/openai/openai-go/v2/shared"
 	"github.com/pkoukk/tiktoken-go"
+	"github.com/the-open-agent/openagent/i18n"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 type OpenAiModelProvider struct {

@@ -19,10 +19,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/the-open-agent/openagent/model"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
-	"github.com/sashabaranov/go-openai"
 )
 
 // ChatCompletions implements the OpenAI-compatible chat completions API

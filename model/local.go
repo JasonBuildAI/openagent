@@ -25,8 +25,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type LocalModelProvider struct {

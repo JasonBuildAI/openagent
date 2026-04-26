@@ -22,9 +22,9 @@ import (
 	"time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
+	"github.com/chromedp/chromedp"
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 	"github.com/the-open-agent/openagent/proxy"
-	"github.com/chromedp/chromedp"
 	"golang.org/x/net/html"
 )
 

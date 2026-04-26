@@ -18,10 +18,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	hunyuan "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan/v20230901"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type TencentCloudEmbeddingProvider struct {

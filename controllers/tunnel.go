@@ -20,11 +20,11 @@ import (
 	"strconv"
 
 	"github.com/beego/beego/logs"
+	"github.com/gorilla/websocket"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 	"github.com/the-open-agent/openagent/util/guacamole"
-	"github.com/gorilla/websocket"
 )
 
 const (

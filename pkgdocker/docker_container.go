@@ -19,9 +19,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type Container struct {

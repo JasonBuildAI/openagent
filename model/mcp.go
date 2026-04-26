@@ -22,10 +22,10 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/the-open-agent/openagent/agent"
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/openai/openai-go/v2/responses"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/agent"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type AgentMessages struct {

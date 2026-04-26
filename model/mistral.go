@@ -19,8 +19,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/gage-technologies/mistral-go"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type MistralModelProvider struct {

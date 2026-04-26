@@ -21,9 +21,9 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type RawMessage struct {

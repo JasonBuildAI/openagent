@@ -20,9 +20,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/hupe1980/go-huggingface"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/proxy"
-	"github.com/hupe1980/go-huggingface"
 )
 
 type HuggingFaceModelProvider struct {

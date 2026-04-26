@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/the-open-agent/openagent/i18n"
 	"github.com/leverly/ChatGLM/client"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type ChatGLMModelProvider struct {

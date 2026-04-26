@@ -15,8 +15,8 @@
 package model
 
 import (
-	"github.com/the-open-agent/openagent/proxy"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 func NewAzureModelProvider(typ string, subType string, deploymentName string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (*LocalModelProvider, error) {

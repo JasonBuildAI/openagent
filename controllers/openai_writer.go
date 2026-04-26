@@ -20,8 +20,8 @@ import (
 	"fmt"
 
 	"github.com/beego/beego/context"
-	"github.com/the-open-agent/openagent/util"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/util"
 )
 
 // OpenAIWriter implements a writer that formats responses in OpenAI format

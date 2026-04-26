@@ -19,8 +19,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/the-open-agent/openagent/util"
 	"github.com/sashabaranov/go-openai"
+	"github.com/the-open-agent/openagent/util"
 	"xorm.io/xorm"
 )
 

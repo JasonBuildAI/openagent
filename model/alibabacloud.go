@@ -23,11 +23,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/the-open-agent/openagent/i18n"
 	dashscopesdk "github.com/casibase/dashscope-go-sdk"
 	"github.com/casibase/dashscope-go-sdk/wanx"
 	"github.com/casibase/dashscopego"
 	"github.com/casibase/dashscopego/qwen"
+	"github.com/the-open-agent/openagent/i18n"
 )
 
 type AlibabacloudModelProvider struct {

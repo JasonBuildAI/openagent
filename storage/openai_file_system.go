@@ -21,8 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/the-open-agent/openagent/model"
 	"github.com/openai/openai-go/v2"
+	"github.com/the-open-agent/openagent/model"
 )
 
 type OpenAIFileSystemStorageProvider struct {

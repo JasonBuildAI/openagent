@@ -17,8 +17,8 @@ package controllers
 import (
 	"context"
 
-	"github.com/the-open-agent/openagent/util/guacamole"
 	"github.com/gorilla/websocket"
+	"github.com/the-open-agent/openagent/util/guacamole"
 )
 
 type GuacamoleHandler struct {
