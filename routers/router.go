@@ -141,6 +141,8 @@ func initAPI() {
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
 	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
 	beego.Router("/api/get-user-table-infos", &controllers.ApiController{}, "GET:GetUserTableInfos")
+	beego.Router("/api/get-usage-providers", &controllers.ApiController{}, "GET:GetUsageProviders")
+	beego.Router("/api/get-usage-heatmap", &controllers.ApiController{}, "GET:GetUsageHeatmap")
 
 	beego.Router("/api/get-activities", &controllers.ApiController{}, "GET:GetActivities")
 	// beego.Router("/api/get-range-activities", &controllers.ApiController{}, "GET:GetRangeActivities")

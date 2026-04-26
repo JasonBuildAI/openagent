@@ -114,3 +114,39 @@ func (c *ApiController) GetUserTableInfos() {
 	}
 	c.ResponseOk(userInfos)
 }
+
+// GetUsageProviders
+// @Title GetUsageProviders
+// @Tag Usage API
+// @Description get provider category distribution for usage page
+// @Success 200 {object} controllers.Response The Response object
+// @router /get-usage-providers [get]
+func (c *ApiController) GetUsageProviders() {
+	owner := c.Input().Get("owner")
+
+	data, err := object.GetUsageProviderDistribution(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(data)
+}
+
+// GetUsageHeatmap
+// @Title GetUsageHeatmap
+// @Tag Usage API
+// @Description get daily message activity heatmap for usage page
+// @Success 200 {object} controllers.Response The Response object
+// @router /get-usage-heatmap [get]
+func (c *ApiController) GetUsageHeatmap() {
+	owner := c.Input().Get("owner")
+
+	data, err := object.GetUsageMessageHeatmap(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(data)
+}

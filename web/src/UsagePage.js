@@ -22,6 +22,13 @@ import * as Conf from "./Conf";
 import i18next from "i18next";
 import UsageTable from "./UsageTable";
 
+// Multi-hue palette shared across charts
+const CHART_COLORS = [
+  "#1677ff", "#0ea5e9", "#06b6d4", "#14b8a6", "#6366f1",
+  "#8b5cf6", "#0958d9", "#0284c7", "#0891b2", "#0f766e",
+  "#5734d3", "#7c3aed", "#38bdf8", "#5eead4",
+];
+
 const {Option} = Select;
 
 class UsagePage extends BaseListPage {
@@ -37,6 +44,8 @@ class UsagePage extends BaseListPage {
       selectedUser: "All",
       userTableInfo: null,
       selectedTableInfo: null,
+      providerData: null,
+      heatmapData: null,
     };
   }
 
@@ -106,10 +115,32 @@ class UsagePage extends BaseListPage {
             this.getUsages("");
             this.getRangeUsagesAll("");
             this.getUserTableInfos("");
+            this.getUsageProviders();
+            this.getUsageHeatmap();
           }
           );
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getUsageProviders() {
+    const owner = this.props.account?.owner ?? "admin";
+    UsageBackend.getUsageProviders(owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({providerData: res.data});
+        }
+      });
+  }
+
+  getUsageHeatmap() {
+    const owner = this.props.account?.owner ?? "admin";
+    UsageBackend.getUsageHeatmap(owner)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({heatmapData: res.data});
         }
       });
   }
@@ -143,6 +174,112 @@ class UsagePage extends BaseListPage {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
+  }
+
+  renderProviderChart() {
+    const {providerData} = this.state;
+    if (!providerData || providerData.length === 0) {
+      return null;
+    }
+    const option = {
+      color: CHART_COLORS,
+      tooltip: {trigger: "item", formatter: "{b}: {c} ({d}%)"},
+      legend: {
+        type: "scroll",
+        orient: "vertical",
+        right: 8,
+        left: "56%",
+        top: "center",
+        textStyle: {fontSize: 12},
+      },
+      series: [{
+        type: "pie",
+        radius: ["42%", "68%"],
+        center: ["26%", "50%"],
+        avoidLabelOverlap: true,
+        itemStyle: {borderRadius: 5, borderColor: "#fff", borderWidth: 2},
+        label: {show: false},
+        emphasis: {
+          label: {show: true, fontSize: 13, fontWeight: "bold"},
+          itemStyle: {shadowBlur: 10, shadowOffsetX: 0, shadowColor: "rgba(0,0,0,0.25)"},
+        },
+        data: providerData.map(p => ({
+          name: p.category || i18next.t("general:Unknown"),
+          value: p.count,
+        })),
+      }],
+    };
+    return (
+      <ReactEcharts
+        option={option}
+        style={{height: "260px", width: "100%"}}
+      />
+    );
+  }
+
+  renderHeatmapChart() {
+    const {heatmapData} = this.state;
+    if (!heatmapData || !heatmapData.data) {
+      return null;
+    }
+    const range = (heatmapData.dateRange && heatmapData.dateRange.length === 2)
+      ? heatmapData.dateRange
+      : (() => {
+        const end = new Date();
+        const start = new Date(end);
+        start.setFullYear(end.getFullYear() - 1);
+        return [start.toISOString().slice(0, 10), end.toISOString().slice(0, 10)];
+      })();
+    const option = {
+      tooltip: {
+        position: "top",
+        formatter: (params) => {
+          const [date, count] = params.data;
+          return `${date} &nbsp; <b>${count}</b>`;
+        },
+      },
+      visualMap: {
+        min: 0,
+        max: Math.max(heatmapData.maxCount, 1),
+        show: false,
+        inRange: {color: ["#f3f0ff", "#d9d1f7", "#b5a8ef", "#7c5ce0", "#5734d3"]},
+      },
+      calendar: {
+        top: 28,
+        left: 36,
+        right: 8,
+        bottom: 0,
+        range,
+        cellSize: [13, 13],
+        itemStyle: {
+          color: "#f3f0ff",
+          borderWidth: 2,
+          borderColor: "#fff",
+          borderRadius: 2,
+        },
+        dayLabel: {
+          firstDay: 0,
+          nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+          fontSize: 10,
+          color: "#888",
+        },
+        monthLabel: {fontSize: 11, color: "#555"},
+        yearLabel: {show: false},
+        splitLine: {show: false},
+      },
+      series: [{
+        type: "heatmap",
+        coordinateSystem: "calendar",
+        data: heatmapData.data.map(d => [d.date, d.count]),
+        itemStyle: {borderRadius: 2},
+      }],
+    };
+    return (
+      <ReactEcharts
+        option={option}
+        style={{height: "200px", width: "100%"}}
+      />
+    );
   }
 
   renderLeftChart(usages) {
@@ -768,6 +905,26 @@ class UsagePage extends BaseListPage {
             {this.renderChart()}
           </Col>
         </Row>
+        {(this.state.providerData || this.state.heatmapData) && (
+          <Row gutter={16} style={{marginTop: "20px"}}>
+            {this.state.providerData && this.state.providerData.length > 0 && (
+              <Col xs={24} xl={8}>
+                <div style={{border: "1px solid #e8e8e8", borderRadius: 8, padding: "16px 16px 8px"}}>
+                  <div style={{marginBottom: 8, fontWeight: 500}}>{i18next.t("application:Providers")}</div>
+                  {this.renderProviderChart()}
+                </div>
+              </Col>
+            )}
+            {this.state.heatmapData && (
+              <Col xs={24} xl={this.state.providerData && this.state.providerData.length > 0 ? 16 : 24}>
+                <div style={{border: "1px solid #e8e8e8", borderRadius: 8, padding: "16px 16px 8px"}}>
+                  <div style={{marginBottom: 8, fontWeight: 500}}>{i18next.t("general:Messages")}</div>
+                  {this.renderHeatmapChart()}
+                </div>
+              </Col>
+            )}
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col span={24} >
             <UsageTable account={this.props.account} data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
@@ -778,7 +935,7 @@ class UsagePage extends BaseListPage {
   }
 
   fetch = () => {
-    const reset = {usages: null, userTableInfo: null, selectedTableInfo: null};
+    const reset = {usages: null, userTableInfo: null, selectedTableInfo: null, providerData: null, heatmapData: null};
     if (this.state.rangeType !== "All") {
       reset[`rangeUsages${this.state.rangeType}`] = null;
     }
