@@ -187,13 +187,13 @@ function ManagementPage(props) {
   function renderAvatar() {
     if (account.avatar === "") {
       return (
-        <Avatar style={{backgroundColor: Setting.getAvatarColor(account.name), verticalAlign: "middle"}} size="large">
+        <Avatar style={{backgroundColor: Setting.getAvatarColor(account.name), verticalAlign: "middle", marginLeft: 8}} size="large">
           {Setting.getShortName(account.name)}
         </Avatar>
       );
     } else {
       return (
-        <Avatar src={account.avatar} style={{verticalAlign: "middle"}} size="large">
+        <Avatar src={account.avatar} style={{verticalAlign: "middle", marginLeft: 8}} size="large">
           {Setting.getShortName(account.name)}
         </Avatar>
       );
