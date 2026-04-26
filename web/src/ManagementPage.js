@@ -15,7 +15,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
-import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, CommentOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
+import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import AuthCallback from "./AuthCallback";
@@ -218,7 +218,6 @@ function ManagementPage(props) {
     const items = [];
     if (!Setting.isAnonymousUser(account)) {
       items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>, "/account"));
-      items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>, "/chat"));
       items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>, "/logout"));
     } else {
       items.push(Setting.getItem(<><LoginOutlined />&nbsp;&nbsp;{i18next.t("account:Sign In")}</>, "/login"));
@@ -229,8 +228,6 @@ function ManagementPage(props) {
         Setting.openLink(Setting.getMyProfileUrl(account));
       } else if (e.key === "/logout") {
         signout();
-      } else if (e.key === "/chat") {
-        history.push("/chat");
       } else if (e.key === "/login") {
         history.push(window.location.pathname);
         Setting.redirectToLogin();
