@@ -121,18 +121,25 @@ function ManagementPage(props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(() => localStorage.getItem("siderCollapsed") === "true");
   const [menuOpenKeys, setMenuOpenKeys] = useState(() => {
+    if (localStorage.getItem("siderCollapsed") === "true") {
+      return [];
+    }
     const parentKey = getMenuParentKey(props.uri || location.pathname);
     return parentKey ? [parentKey] : [];
   });
 
   useEffect(() => {
+    if (siderCollapsed) {
+      setMenuOpenKeys([]);
+      return;
+    }
     const parentKey = getMenuParentKey(props.uri);
     if (parentKey) {
       setMenuOpenKeys(prev =>
         prev.includes(parentKey) ? prev : [...prev, parentKey]
       );
     }
-  }, [props.uri]);
+  }, [props.uri, siderCollapsed]);
   const {
     account,
     store,
