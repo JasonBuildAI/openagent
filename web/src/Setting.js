@@ -390,7 +390,7 @@ export function setThemeColor(color) {
 }
 
 export function getThemeColor() {
-  return localStorage.getItem("themeColor") ?? "#5734d3";
+  return localStorage.getItem("themeColor") ?? ThemeDefault.colorPrimary;
 }
 
 export function getAcceptLanguage() {

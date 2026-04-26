@@ -141,11 +141,8 @@ class App extends Component {
   initConfig() {
     Setting.initServerUrl();
     Setting.initWebConfig();
-
-    const cachedThemeColor = localStorage.getItem("themeColor");
-    if (cachedThemeColor) {
-      Setting.setThemeColor(cachedThemeColor);
-    }
+    // Prefer theme from server web config (app.conf), not localStorage or store.themeColor.
+    Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
 
     FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
@@ -163,8 +160,10 @@ class App extends Component {
 
   setTheme() {
     StoreBackend.getStore("admin", "_casibase_default_store_").then((res) => {
+      const applyConfigTheme = () => Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
+
       if (res.status !== "ok") {
-        Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
+        applyConfigTheme();
         if (res.msg) {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         } else {
@@ -172,16 +171,10 @@ class App extends Component {
         }
         return;
       }
+      applyConfigTheme();
       // No store for owner admin yet (e.g. fresh DB): GetDefaultStore returns null with status ok.
       if (!res.data) {
-        Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         return;
-      }
-      const color = res.data.themeColor ? res.data.themeColor : Conf.ThemeDefault.colorPrimary;
-      const currentColor = localStorage.getItem("themeColor");
-      if (currentColor !== color) {
-        Setting.setThemeColor(color);
-        localStorage.setItem("themeColor", color);
       }
       this.setState({store: res.data});
     });

@@ -914,7 +914,7 @@ class StoreEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.setThemeColor(this.state.store.themeColor);
+            Setting.setThemeColor(ThemeDefault.colorPrimary);
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
