@@ -204,7 +204,7 @@ class UsagePage extends BaseListPage {
           itemStyle: {shadowBlur: 10, shadowOffsetX: 0, shadowColor: "rgba(0,0,0,0.25)"},
         },
         data: providerData.map(p => ({
-          name: p.category || i18next.t("general:Unknown"),
+          name: p.category || i18next.t("application:Unknown"),
           value: p.count,
         })),
       }],
@@ -910,7 +910,7 @@ class UsagePage extends BaseListPage {
             {this.state.providerData && this.state.providerData.length > 0 && (
               <Col xs={24} xl={8}>
                 <div style={{border: "1px solid #e8e8e8", borderRadius: 8, padding: "16px 16px 8px"}}>
-                  <div style={{marginBottom: 8, fontWeight: 500}}>{i18next.t("application:Providers")}</div>
+                  <div style={{marginBottom: 8, fontWeight: 500}}>{i18next.t("general:Providers")}</div>
                   {this.renderProviderChart()}
                 </div>
               </Col>
