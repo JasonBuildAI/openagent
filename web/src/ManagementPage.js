@@ -24,6 +24,7 @@ import i18next from "i18next";
 import LanguageSelect from "./LanguageSelect";
 import ThemeSelect from "./ThemeSelect";
 import StoreSelect from "./StoreSelect";
+import BreadcrumbBar from "./common/BreadcrumbBar";
 import HomePage from "./HomePage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
@@ -703,6 +704,7 @@ function ManagementPage(props) {
               style={{fontSize: 16, width: 40, height: 40}}
             />
           )}
+          <BreadcrumbBar uri={currentUri} />
         </div>
         <div style={{flexShrink: 0}}>
           {renderAccountMenu()}
