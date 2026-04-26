@@ -124,12 +124,11 @@ class AuthCallback extends React.Component {
 
   render() {
     return (
-      <div style={{textAlign: "center"}}>
+      <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100vh - 120px)"}}>
         {this.state.msg === null ? (
           <Spin
             size="large"
             tip={i18next.t("login:Signing in...")}
-            style={{paddingTop: "10%"}}
           />
         ) : (
           <div style={{display: "inline"}}>
