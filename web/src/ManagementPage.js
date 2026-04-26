@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
 import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, CommentOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
@@ -103,9 +103,35 @@ import ConsultationEditPage from "./ConsultationEditPage";
 
 const {Header, Footer, Content, Sider} = Layout;
 
+function getMenuParentKey(uri) {
+  if (!uri) {return null;}
+  if (uri.includes("/chat") || uri.includes("/usages") || uri.includes("/activities") || uri.includes("/desktop")) {return "/home";}
+  if (uri.includes("/chats") || uri.includes("/messages")) {return "/ai-chat";}
+  if (uri.includes("/stores") || uri.includes("/files") || uri.includes("/providers") || uri.includes("/vectors")) {return "/ai-setting";}
+  if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench")) {return "/cloud";}
+  if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/hospitals") || uri.includes("/doctors") || uri.includes("/patients") || uri.includes("/caases") || uri.includes("/consultations") || uri.includes("/audit") || uri.includes("/yolov8mi") || uri.includes("/sr") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
+  if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
+  if (uri.includes("/users") || uri.includes("/resources") || uri.includes("/permissions")) {return "/identity";}
+  if (uri.includes("/sysinfo") || uri.includes("/swagger")) {return "/admin";}
+  return null;
+}
+
 function ManagementPage(props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(() => localStorage.getItem("siderCollapsed") === "true");
+  const [menuOpenKeys, setMenuOpenKeys] = useState(() => {
+    const parentKey = getMenuParentKey(props.uri || location.pathname);
+    return parentKey ? [parentKey] : [];
+  });
+
+  useEffect(() => {
+    const parentKey = getMenuParentKey(props.uri);
+    if (parentKey) {
+      setMenuOpenKeys(prev =>
+        prev.includes(parentKey) ? prev : [...prev, parentKey]
+      );
+    }
+  }, [props.uri]);
   const {
     account,
     store,
@@ -113,12 +139,14 @@ function ManagementPage(props) {
     themeAlgorithm,
     logo,
     uri,
-    selectedMenuKey,
     setLogoAndThemeAlgorithm,
     signout,
     onMenuClick,
     history,
   } = props;
+
+  const currentUri = uri || location.pathname;
+  const selectedLeafKey = "/" + (currentUri.split("/").filter(Boolean)[0] || "");
 
   const isDark = themeAlgorithm.includes("dark");
   const textColor = isDark ? "white" : "black";
@@ -659,7 +687,9 @@ function ManagementPage(props) {
                 <Menu
                   items={getMenuItems()}
                   mode={"inline"}
-                  selectedKeys={[selectedMenuKey]}
+                  selectedKeys={[selectedLeafKey]}
+                  openKeys={menuOpenKeys}
+                  onOpenChange={setMenuOpenKeys}
                   style={{lineHeight: "48px"}}
                   onClick={onClick}
                 />
@@ -749,7 +779,9 @@ function ManagementPage(props) {
           <Menu
             mode="inline"
             items={getMenuItems()}
-            selectedKeys={[selectedMenuKey]}
+            selectedKeys={[selectedLeafKey]}
+            openKeys={menuOpenKeys}
+            onOpenChange={setMenuOpenKeys}
             theme={isDark ? "dark" : "light"}
             style={{borderRight: 0}}
             onClick={({key}) => onMenuClick({key})}
