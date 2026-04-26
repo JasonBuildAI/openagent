@@ -15,7 +15,7 @@
 import React, {useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
-import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, CommentOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
+import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, CommentOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import AuthCallback from "./AuthCallback";
@@ -101,10 +101,11 @@ import CaaseEditPage from "./CaaseEditPage";
 import ConsultationListPage from "./ConsultationListPage";
 import ConsultationEditPage from "./ConsultationEditPage";
 
-const {Header, Footer, Content} = Layout;
+const {Header, Footer, Content, Sider} = Layout;
 
 function ManagementPage(props) {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [siderCollapsed, setSiderCollapsed] = useState(() => localStorage.getItem("siderCollapsed") === "true");
   const {
     account,
     store,
@@ -118,6 +119,16 @@ function ManagementPage(props) {
     onMenuClick,
     history,
   } = props;
+
+  const isDark = themeAlgorithm.includes("dark");
+  const textColor = isDark ? "white" : "black";
+  const siderLogo = logo || Setting.getLogo(themeAlgorithm, store?.logoUrl);
+
+  const toggleSider = () => {
+    const next = !siderCollapsed;
+    setSiderCollapsed(next);
+    localStorage.setItem("siderCollapsed", String(next));
+  };
 
   const onClose = () => setMenuVisible(false);
   const showMenu = () => setMenuVisible(true);
@@ -387,8 +398,6 @@ function ManagementPage(props) {
 
       return res;
     } else {
-      const textColor = themeAlgorithm.includes("dark") ? "white" : "black";
-
       res.pop();
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeOutlined />, [
@@ -642,13 +651,8 @@ function ManagementPage(props) {
     };
 
     return (
-      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: themeAlgorithm.includes("dark") ? "black" : "white", display: "flex", justifyContent: "space-between"}}>
-        <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
-          {Setting.isMobile() ? null : (
-            <Link to={"/"}>
-              <img className="logo" src={logo || Setting.getLogo(themeAlgorithm, store?.logoUrl)} alt="logo" />
-            </Link>
-          )}
+      <Header style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0", marginBottom: "4px", backgroundColor: isDark ? "black" : "white", position: "sticky", top: 0, zIndex: 99, boxShadow: "0 1px 4px rgba(0,0,0,0.08)"}}>
+        <div style={{display: "flex", alignItems: "center"}}>
           {Setting.isMobile() ? (
             <React.Fragment>
               <Drawer title={i18next.t("general:Close")} placement="left" open={menuVisible} onClose={onClose}>
@@ -665,9 +669,12 @@ function ManagementPage(props) {
               </Button>
             </React.Fragment>
           ) : (
-            <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
-              <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={getMenuItems()} mode={"horizontal"} selectedKeys={[selectedMenuKey]} />
-            </div>
+            <Button
+              icon={siderCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={toggleSider}
+              type="text"
+              style={{fontSize: 16, width: 48, height: 48}}
+            />
           )}
         </div>
         <div style={{flexShrink: 0}}>
@@ -691,18 +698,69 @@ function ManagementPage(props) {
     );
   }
 
+  const siderWidth = 220;
+  const siderCollapsedWidth = 80;
+  const showSider = !Setting.isMobile() && !isHiddenHeaderAndFooter();
+  const contentMarginLeft = showSider ? (siderCollapsed ? siderCollapsedWidth : siderWidth) : 0;
+
   return (
     <React.Fragment>
-      {renderHeader()}
-      <Content style={{display: "flex", flexDirection: "column"}}>
-        {isWithoutCard() ?
-          renderRouter() :
-          <Card className="content-warp-card">
-            {renderRouter()}
-          </Card>
-        }
-      </Content>
-      {renderFooter()}
+      {showSider && (
+        <Sider
+          collapsed={siderCollapsed}
+          collapsedWidth={siderCollapsedWidth}
+          width={siderWidth}
+          trigger={null}
+          theme={isDark ? "dark" : "light"}
+          style={{
+            overflow: "auto",
+            height: "100vh",
+            position: "fixed",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 100,
+            boxShadow: "2px 0 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <div style={{
+            height: 64,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: siderCollapsed ? "center" : "flex-start",
+            padding: siderCollapsed ? "0" : "0 16px",
+            overflow: "hidden",
+          }}>
+            <Link to="/">
+              <img
+                src={siderLogo}
+                alt="logo"
+                style={{height: 40, maxWidth: siderCollapsed ? 40 : 160, objectFit: "contain", transition: "max-width 0.2s"}}
+              />
+            </Link>
+          </div>
+          <Menu
+            mode="inline"
+            items={getMenuItems()}
+            selectedKeys={[selectedMenuKey]}
+            theme={isDark ? "dark" : "light"}
+            style={{borderRight: 0}}
+            onClick={({key}) => onMenuClick({key})}
+          />
+        </Sider>
+      )}
+      <div style={{marginLeft: contentMarginLeft, transition: "margin-left 0.2s", display: "flex", flexDirection: "column", minHeight: "100vh"}}>
+        {renderHeader()}
+        <Content style={{display: "flex", flexDirection: "column"}}>
+          {isWithoutCard() ?
+            renderRouter() :
+            <Card className="content-warp-card">
+              {renderRouter()}
+            </Card>
+          }
+        </Content>
+        {renderFooter()}
+      </div>
     </React.Fragment>
   );
 }
