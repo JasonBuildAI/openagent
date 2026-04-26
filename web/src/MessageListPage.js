@@ -256,7 +256,7 @@ class MessageListPage extends BaseListPage {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "110px",
+        width: "120px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
@@ -374,7 +374,7 @@ class MessageListPage extends BaseListPage {
         title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
-        width: "90px",
+        width: "120px",
         sorter: (a, b) => a.tokenCount - b.tokenCount,
         // ...this.getColumnSearchProps("tokenCount"),
       },
@@ -382,7 +382,7 @@ class MessageListPage extends BaseListPage {
         title: i18next.t("chat:Text token count"),
         dataIndex: "textTokenCount",
         key: "textTokenCount",
-        width: "100px",
+        width: "150px",
         sorter: (a, b) => a.textTokenCount - b.textTokenCount,
         // ...this.getColumnSearchProps("tokenCount"),
       },

@@ -341,7 +341,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Message count"),
         dataIndex: "messageCount",
         key: "messageCount",
-        width: "130px",
+        width: "140px",
         sorter: (a, b) => a.messageCount - b.messageCount,
         render: (text, record, index) => {
           return (
@@ -434,7 +434,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Speech-to-Text provider"),
         dataIndex: "speechToTextProvider",
         key: "speechToTextProvider",
-        width: "200px",
+        width: "280px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
         ...this.getColumnSearchProps("speechToTextProvider"),
         render: (text) => {
@@ -468,7 +468,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Memory limit"),
         dataIndex: "memoryLimit",
         key: "memoryLimit",
-        width: "120px",
+        width: "130px",
         sorter: (a, b) => a.memoryLimit - b.memoryLimit,
       },
       {
