@@ -15,7 +15,60 @@
 import React, {useEffect, useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
-import {AppstoreOutlined, BarsOutlined, BulbOutlined, CloudOutlined, DownOutlined, HomeOutlined, LockOutlined, LoginOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, VideoCameraOutlined, WalletOutlined} from "@ant-design/icons";
+import {
+  ApartmentOutlined,
+  ApiOutlined,
+  AppstoreOutlined,
+  AuditOutlined,
+  BankOutlined,
+  BarsOutlined,
+  BlockOutlined,
+  BranchesOutlined,
+  BulbOutlined,
+  CloudOutlined,
+  CloudServerOutlined,
+  CommentOutlined,
+  ContainerOutlined,
+  DashboardOutlined,
+  DatabaseOutlined,
+  DeploymentUnitOutlined,
+  DesktopOutlined,
+  DownOutlined,
+  ExperimentOutlined,
+  FileOutlined,
+  FileSearchOutlined,
+  FileTextOutlined,
+  FormOutlined,
+  FundOutlined,
+  GoldOutlined,
+  HddOutlined,
+  HomeOutlined,
+  LineChartOutlined,
+  LockOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  MedicineBoxOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  MessageOutlined,
+  OrderedListOutlined,
+  PictureOutlined,
+  PlaySquareOutlined,
+  ReadOutlined,
+  RiseOutlined,
+  SafetyOutlined,
+  ScanOutlined,
+  SettingOutlined,
+  ShareAltOutlined,
+  ShopOutlined,
+  TeamOutlined,
+  ThunderboltOutlined,
+  ToolOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+  WalletOutlined
+} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import AuthCallback from "./AuthCallback";
@@ -321,7 +374,7 @@ function ManagementPage(props) {
   function getMenuItems() {
     const res = [];
 
-    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
+    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/", <HomeOutlined />));
 
     if (account === null || account === undefined) {
       return [];
@@ -330,7 +383,7 @@ function ManagementPage(props) {
     const navItems = store?.navItems;
 
     if (account.type.startsWith("video-")) {
-      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos", <VideoCameraOutlined />));
 
       if (account.type === "video-admin-user") {
         res.push(Setting.getItem(
@@ -338,7 +391,8 @@ function ManagementPage(props) {
             {i18next.t("general:Users")}
             {Setting.renderExternalLink()}
           </a>,
-          "#"));
+          "#",
+          <UserOutlined />));
       }
 
       return res;
@@ -353,32 +407,32 @@ function ManagementPage(props) {
     const domain = Setting.getSubdomain();
 
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
-      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
-      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
-      res.push(Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />));
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />));
+      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes", <CloudServerOutlined />));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions", <OrderedListOutlined />));
+      res.push(Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections", <ApiOutlined />));
+      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records", <DatabaseOutlined />));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
-      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
-      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
-      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
-      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-      res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />));
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />));
+      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <BulbOutlined />));
+      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />));
+      res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />));
       if (Setting.isAdminUser(account)) {
-        res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
+        res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <DashboardOutlined />));
       }
     } else if (Setting.isChatAdminUser(account)) {
-      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
-      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
-      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
-      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-      res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />));
+      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <BulbOutlined />));
+      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />));
+      res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />));
       if (Setting.isAdminUser(account)) {
-        res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"));
+        res.push(Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <DashboardOutlined />));
       }
 
       if (window.location.pathname === "/") {
@@ -390,25 +444,28 @@ function ManagementPage(props) {
           {i18next.t("general:Users")}
           {Setting.renderExternalLink()}
         </a>,
-        "#"));
+        "#",
+        <UserOutlined />));
 
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/resources")}>
           {i18next.t("general:Resources")}
           {Setting.renderExternalLink()}
         </a>,
-        "##"));
+        "##",
+        <TeamOutlined />));
 
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/permissions")}>
           {i18next.t("general:Permissions")}
           {Setting.renderExternalLink()}
         </a>,
-        "###"));
+        "###",
+        <SafetyOutlined />));
     } else if (Setting.isTaskUser(account)) {
-      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks", <UnorderedListOutlined />));
       if (Setting.isAdminUser(account)) {
-        res.push(Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"));
+        res.push(Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales", <FundOutlined />));
       }
 
       if (window.location.pathname === "/") {
@@ -416,14 +473,14 @@ function ManagementPage(props) {
       }
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
-        res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+        res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos", <VideoCameraOutlined />));
       }
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft({props}, "/videos");
       }
     } else if (!Setting.isAdminUser(account) && !Setting.isChatAdminUser(account)) {
-      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft({props}, "/chat");
@@ -434,61 +491,61 @@ function ManagementPage(props) {
       res.pop();
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeOutlined />, [
-        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"),
-        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
-        Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities"),
-        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop"),
+        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />),
+        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
+        Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <DashboardOutlined />),
+        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop", <DesktopOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbOutlined />, [
-        Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
-        Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
+        Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <OrderedListOutlined />),
+        Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreOutlined />, [
-        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
-        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files"),
-        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
-        Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
+        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
+        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FileOutlined />),
+        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />),
+        Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud")}</Link>, "/cloud", <CloudOutlined />, [
-        Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates"),
-        Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store"),
-        Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
-        Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
-        Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
-        Setting.getItem(<Link to="/assets">{i18next.t("general:Assets")}</Link>, "/assets"),
-        Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"),
-        Setting.getItem(<Link to="/containers">{i18next.t("general:Containers")}</Link>, "/containers"),
-        Setting.getItem(<Link to="/pods">{i18next.t("general:Pods")}</Link>, "/pods"),
-        Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"),
+        Setting.getItem(<Link to="/templates">{i18next.t("general:Templates")}</Link>, "/templates", <FileTextOutlined />),
+        Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store", <ShopOutlined />),
+        Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications", <DeploymentUnitOutlined />),
+        Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes", <CloudServerOutlined />),
+        Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines", <HddOutlined />),
+        Setting.getItem(<Link to="/assets">{i18next.t("general:Assets")}</Link>, "/assets", <GoldOutlined />),
+        Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images", <PictureOutlined />),
+        Setting.getItem(<Link to="/containers">{i18next.t("general:Containers")}</Link>, "/containers", <ContainerOutlined />),
+        Setting.getItem(<Link to="/pods">{i18next.t("general:Pods")}</Link>, "/pods", <BlockOutlined />),
+        Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench", <ToolOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraOutlined />, [
-        Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
-        Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
-        Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
-        Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales"),
-        Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms"),
-        Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
-        Setting.getItem(<Link to="/hospitals">{i18next.t("med:Hospitals")}</Link>, "/hospitals"),
-        Setting.getItem(<Link to="/doctors">{i18next.t("med:Doctors")}</Link>, "/doctors"),
-        Setting.getItem(<Link to="/patients">{i18next.t("med:Patients")}</Link>, "/patients"),
-        Setting.getItem(<Link to="/caases">{i18next.t("med:Caases")}</Link>, "/caases"),
-        Setting.getItem(<Link to="/consultations">{i18next.t("med:Consultations")}</Link>, "/consultations"),
-        Setting.getItem(<Link to="/audit">{i18next.t("general:Audit")}</Link>, "/audit"),
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"),
-        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"),
-        Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
-        Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs"),
-        Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans"),
+        Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos", <VideoCameraOutlined />),
+        Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos", <PlaySquareOutlined />),
+        Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks", <UnorderedListOutlined />),
+        Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales", <FundOutlined />),
+        Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms", <FormOutlined />),
+        Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BranchesOutlined />),
+        Setting.getItem(<Link to="/hospitals">{i18next.t("med:Hospitals")}</Link>, "/hospitals", <BankOutlined />),
+        Setting.getItem(<Link to="/doctors">{i18next.t("med:Doctors")}</Link>, "/doctors", <MedicineBoxOutlined />),
+        Setting.getItem(<Link to="/patients">{i18next.t("med:Patients")}</Link>, "/patients", <UserOutlined />),
+        Setting.getItem(<Link to="/caases">{i18next.t("med:Caases")}</Link>, "/caases", <FileSearchOutlined />),
+        Setting.getItem(<Link to="/consultations">{i18next.t("med:Consultations")}</Link>, "/consultations", <TeamOutlined />),
+        Setting.getItem(<Link to="/audit">{i18next.t("general:Audit")}</Link>, "/audit", <AuditOutlined />),
+        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi", <ExperimentOutlined />),
+        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr", <RiseOutlined />),
+        Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles", <ReadOutlined />),
+        Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs", <ShareAltOutlined />),
+        Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans", <ScanOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging")}</Link>, "/logs", <WalletOutlined />, [
-        Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
-        Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections"),
-        Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
+        Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions", <OrderedListOutlined />),
+        Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections", <ApiOutlined />),
+        Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records", <DatabaseOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity")}</Link>, "/identity", <LockOutlined />, [
@@ -496,26 +553,26 @@ function ManagementPage(props) {
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/users")}>
             {i18next.t("general:Users")}
             {Setting.renderExternalLink()}
-          </a>, "/users"),
+          </a>, "/users", <UserOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/resources")}>
             {i18next.t("general:Resources")}
             {Setting.renderExternalLink()}
-          </a>, "/resources"),
+          </a>, "/resources", <TeamOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/permissions")}>
             {i18next.t("general:Permissions")}
             {Setting.renderExternalLink()}
-          </a>, "/permissions"),
+          </a>, "/permissions", <SafetyOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
-        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo", <DashboardOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
             {i18next.t("general:Swagger")}
             {Setting.renderExternalLink()}
-          </a>, "/swagger"),
+          </a>, "/swagger", <ApiOutlined />),
       ]));
 
       return filterMenuItems(res, navItems);
@@ -524,7 +581,7 @@ function ManagementPage(props) {
     const sortedForms = forms.slice().sort((a, b) => a.position.localeCompare(b.position));
     sortedForms.forEach(form => {
       const path = `/forms/${form.name}/data`;
-      res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path));
+      res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path, <FormOutlined />));
     });
 
     return res;
