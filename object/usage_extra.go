@@ -83,7 +83,7 @@ func GetUsageMessageHeatmap(owner string) (*MessageHeatmapData, error) {
 	query := adapter.engine.Table("message").Cols("created_time").
 		Where("created_time >= ?", oneYearAgo)
 	if owner != "" {
-		query = query.And("owner = ?", owner)
+		query = query.And("organization = ?", owner)
 	}
 	if err := query.Find(&items); err != nil {
 		return &MessageHeatmapData{Data: []DayCount{}, MaxCount: 0, DateRange: dateRange}, nil
@@ -91,7 +91,7 @@ func GetUsageMessageHeatmap(owner string) (*MessageHeatmapData, error) {
 
 	dateCounts := make(map[string]int)
 	for _, item := range items {
-		t, err := time.Parse(time.RFC3339, item.CreatedTime)
+		t, err := time.Parse(time.RFC3339Nano, item.CreatedTime)
 		if err != nil {
 			continue
 		}
