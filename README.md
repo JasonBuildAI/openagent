@@ -133,6 +133,31 @@ OpenAgent contains 2 parts:
 
 <https://casibase.org/docs/basic/server-installation>
 
+### Quick start (Docker, one command)
+
+Requires [Docker](https://docs.docker.com/get-docker/) running. Pulls the all-in-one image `casbin/openagent-all-in-one` (includes MariaDB) and starts on **port 14000** by default.
+
+**macOS / Linux / WSL**
+
+```bash
+curl -fsSL --proto '=https' --tlsv1.2 \
+  https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.sh | bash
+```
+
+**Windows (PowerShell)**
+
+```powershell
+irm https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.ps1 | iex
+```
+
+**From a local clone** (same behavior as the one-liners above)
+
+```bash
+bash scripts/install.sh
+```
+
+Optional environment variables: `OPENAGENT_PORT` (host port, default `14000`), `OPENAGENT_TAG`, `OPENAGENT_CONTAINER_NAME`, `MYSQL_ROOT_PASSWORD`, `OPENAGENT_FORCE=1` to replace an existing container. After start, open [http://127.0.0.1:14000/](http://127.0.0.1:14000/).
+
 ## How to contact?
 
 Discord: <https://discord.gg/5rPsrAzK7S>
