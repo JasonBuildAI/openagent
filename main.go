@@ -18,11 +18,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
 	_ "github.com/beego/beego/session/redis"
 	"github.com/the-open-agent/openagent/conf"
+	"github.com/the-open-agent/openagent/internal/cli"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/proxy"
 	"github.com/the-open-agent/openagent/routers"
@@ -30,6 +32,10 @@ import (
 )
 
 func main() {
+	if handled, code := cli.EarlyDispatch(); handled {
+		os.Exit(code)
+	}
+
 	object.InitFlag()
 	object.InitAdapter()
 	object.CreateTables()
