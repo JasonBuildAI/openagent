@@ -99,6 +99,11 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Upload file to storage
+	if !isCasdoorAvailable() {
+		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		return
+	}
+
 	filePath := fmt.Sprintf("openagent/task-documents/%s/%s", userName, fileName)
 	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
 	if err != nil {

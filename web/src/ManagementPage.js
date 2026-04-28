@@ -93,6 +93,7 @@ import ProviderEditPage from "./ProviderEditPage";
 import VectorListPage from "./VectorListPage";
 import VectorEditPage from "./VectorEditPage";
 import SigninPage from "./SigninPage";
+import AccountPage from "./AccountPage";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
@@ -286,12 +287,21 @@ function ManagementPage(props) {
 
     const onClick = (e) => {
       if (e.key === "/account") {
-        Setting.openLink(Setting.getMyProfileUrl(account));
+        if (Setting.isBasicUser(account)) {
+          history.push("/account");
+        } else {
+          Setting.openLink(Setting.getMyProfileUrl(account));
+        }
       } else if (e.key === "/logout") {
         signout();
       } else if (e.key === "/login") {
-        history.push(window.location.pathname);
-        Setting.redirectToLogin();
+        if (Setting.getSigninUrl() !== "") {
+          history.push(window.location.pathname);
+          Setting.redirectToLogin();
+        } else {
+          sessionStorage.setItem("from", window.location.pathname);
+          history.push("/signin");
+        }
       }
     };
 
@@ -316,11 +326,13 @@ function ManagementPage(props) {
     } else if (account === null) {
       return (
         <React.Fragment>
-          <div key="/signup" style={{float: "right", marginRight: "20px"}}>
-            <a href={Setting.getSignupUrl()}>{i18next.t("account:Sign Up")}</a>
-          </div>
-          <div key="/signin" style={{float: "right"}}>
-            <a href={Setting.getSigninUrl()}>{i18next.t("account:Sign In")}</a>
+          {Setting.getSignupUrl() !== "" ? (
+            <div key="/signup" style={{float: "right", marginRight: "20px"}}>
+              <a href={Setting.getSignupUrl()}>{i18next.t("account:Sign Up")}</a>
+            </div>
+          ) : null}
+          <div key="/signin" style={{float: "right", marginRight: "20px"}}>
+            <a href={Setting.getSigninUrl() || "/signin"}>{i18next.t("account:Sign In")}</a>
           </div>
           <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
             <ThemeSelect themeAlgorithm={themeAlgorithm} onChange={setLogoAndThemeAlgorithm} />
@@ -369,6 +381,13 @@ function ManagementPage(props) {
     });
 
     return filteredItems.filter(item => !Array.isArray(item.children) || item.children.length > 0);
+  }
+
+  function filterUserMenuItems(menuItems) {
+    if (!Setting.isBasicUser(account)) {
+      return menuItems;
+    }
+    return menuItems.filter(item => !["/identity", "#", "##", "###"].includes(item.key));
   }
 
   function getMenuItems() {
@@ -575,7 +594,7 @@ function ManagementPage(props) {
           </a>, "/swagger", <ApiOutlined />),
       ]));
 
-      return filterMenuItems(res, navItems);
+      return Setting.isBasicUser(account) ? filterMenuItems(filterUserMenuItems(res), navItems) : filterMenuItems(res, navItems);
     }
 
     const sortedForms = forms.slice().sort((a, b) => a.position.localeCompare(b.position));
@@ -584,7 +603,7 @@ function ManagementPage(props) {
       res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path, <FormOutlined />));
     });
 
-    return res;
+    return Setting.isBasicUser(account) ? filterUserMenuItems(res) : res;
   }
 
   function renderHomeIfSignedIn(component) {
@@ -622,7 +641,8 @@ function ManagementPage(props) {
       <Switch>
         <Route exact path="/access/:owner/:name" render={(props) => renderSigninIfNotSignedIn(<AccessPage account={account} {...props} />)} />
         <Route exact path="/callback" component={AuthCallback} />
-        <Route exact path="/signin" render={(props) => renderHomeIfSignedIn(<SigninPage {...props} />)} />
+        <Route exact path="/account" render={(props) => renderSigninIfNotSignedIn(Setting.isBasicUser(account) ? <AccountPage account={account} {...props} /> : <Redirect to="/" />)} />
+        <Route exact path="/signin" render={(props) => Setting.isAnonymousUser(account) ? <SigninPage logo={siderLogo} {...props} /> : renderHomeIfSignedIn(<SigninPage logo={siderLogo} {...props} />)} />
         <Route exact path="/" render={(props) => renderSigninIfNotSignedIn(<HomePage account={account} {...props} />)} />
         <Route exact path="/home" render={(props) => renderSigninIfNotSignedIn(<HomePage account={account} {...props} />)} />
         <Route exact path="/stores" render={(props) => renderSigninIfNotSignedIn(<StoreListPage account={account} {...props} />)} />
@@ -794,6 +814,9 @@ function ManagementPage(props) {
   const siderWidth = 256;
   const siderCollapsedWidth = 80;
   const showSider = !Setting.isMobile() && !isHiddenHeaderAndFooter();
+  if (window.location.pathname === "/signin") {
+    return renderRouter();
+  }
   const contentMarginLeft = showSider ? (siderCollapsed ? siderCollapsedWidth : siderWidth) : 0;
 
   return (

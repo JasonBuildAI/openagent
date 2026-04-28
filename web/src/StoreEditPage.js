@@ -133,6 +133,13 @@ class StoreEditPage extends React.Component {
   }
 
   getStorageProviders() {
+    if (Setting.isBasicUser(this.props.account)) {
+      this.setState({
+        casdoorStorageProviders: [],
+      });
+      return;
+    }
+
     StorageProviderBackend.getStorageProviders(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
@@ -345,6 +352,7 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <StoreAvatarUploader
               store={this.state.store}
+              disableUpload={Setting.isBasicUser(this.props.account)}
               onUpdate={(newUrl) => {
                 this.updateStoreField("avatar", newUrl);
               }}
@@ -429,7 +437,7 @@ class StoreEditPage extends React.Component {
                 </Row>
               </>
             ) : null}
-            <Row style={{marginTop: "20px"}} >
+            <Row hidden={Setting.isBasicUser(this.props.account)} style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("store:Image provider"), i18next.t("store:Image provider - Tooltip"))} :
               </Col>
@@ -887,7 +895,7 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
+        <Row hidden={Setting.isBasicUser(this.props.account)} style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("store:File tree"), i18next.t("store:File tree - Tooltip"))} :
           </Col>
@@ -908,6 +916,9 @@ class StoreEditPage extends React.Component {
     let store = Setting.deepCopy(this.state.store);
     if (storeParam) {
       store = storeParam;
+    }
+    if (Setting.isBasicUser(this.props.account)) {
+      store.imageProvider = "";
     }
 
     store.fileTree = undefined;

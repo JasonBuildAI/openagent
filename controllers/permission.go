@@ -28,6 +28,11 @@ import (
 // @Success 200 {array} casdoorsdk.Permission The Response object
 // @router /get-permissions [get]
 func (c *ApiController) GetPermissions() {
+	if !isCasdoorAvailable() {
+		c.ResponseOk([]*casdoorsdk.Permission{})
+		return
+	}
+
 	permissions, err := casdoorsdk.GetPermissions()
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -45,6 +50,11 @@ func (c *ApiController) GetPermissions() {
 // @Success 200 {object} casdoorsdk.Permission The Response object
 // @router /get-permission [get]
 func (c *ApiController) GetPermission() {
+	if !isCasdoorAvailable() {
+		c.ResponseOk(nil)
+		return
+	}
+
 	id := c.Input().Get("id")
 	_, name, err := util.GetOwnerAndNameFromIdWithError(id)
 	if err != nil {
@@ -69,6 +79,11 @@ func (c *ApiController) GetPermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-permission [post]
 func (c *ApiController) UpdatePermission() {
+	if !isCasdoorAvailable() {
+		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		return
+	}
+
 	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
@@ -92,6 +107,11 @@ func (c *ApiController) UpdatePermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-permission [post]
 func (c *ApiController) AddPermission() {
+	if !isCasdoorAvailable() {
+		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		return
+	}
+
 	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
@@ -116,6 +136,11 @@ func (c *ApiController) AddPermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-permission [post]
 func (c *ApiController) DeletePermission() {
+	if !isCasdoorAvailable() {
+		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		return
+	}
+
 	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {

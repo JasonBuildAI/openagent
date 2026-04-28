@@ -72,20 +72,28 @@ func ShareStore(srcOwner, srcName, targetUserName, sharedByUserName string) (*St
 		return nil, fmt.Errorf("source store not found")
 	}
 
-	targetUser, err := casdoorsdk.GetUser(targetUserName)
+	accountUser, err := GetUserByRuntimeName(targetUserName)
 	if err != nil {
 		return nil, err
 	}
-	if targetUser == nil {
-		return nil, fmt.Errorf("target user not found")
-	}
-	if targetUser.IsDeleted || targetUser.IsForbidden {
-		return nil, fmt.Errorf("target user is not available")
-	}
+	if accountUser == nil {
+		targetUser, err := casdoorsdk.GetUser(targetUserName)
+		if err != nil {
+			return nil, err
+		}
+		if targetUser == nil {
+			return nil, fmt.Errorf("target user not found")
+		}
+		if targetUser.IsDeleted || targetUser.IsForbidden {
+			return nil, fmt.Errorf("target user is not available")
+		}
 
-	org := conf.GetConfigString("casdoorOrganization")
-	if org != "" && targetUser.Owner != org {
-		return nil, fmt.Errorf("target user is not in this organization")
+		org := conf.GetConfigString("casdoorOrganization")
+		if org != "" && targetUser.Owner != org {
+			return nil, fmt.Errorf("target user is not in this organization")
+		}
+	} else if accountUser.IsDeleted || accountUser.IsForbidden {
+		return nil, fmt.Errorf("target user is not available")
 	}
 
 	baseName := fmt.Sprintf("%s_%s", srcName, targetUserName)

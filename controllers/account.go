@@ -57,21 +57,25 @@ func tryInitAuthConfig() error {
 	}
 
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
+	setCasdoorAvailable(true)
 	return nil
 }
 
 func InitAuthConfig() {
 	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	if casdoorEndpoint == "" {
+		setCasdoorAvailable(false)
 		return
 	}
 
 	if err := tryInitAuthConfig(); err != nil {
+		setCasdoorAvailable(false)
 		beego.Warning("InitAuthConfig: casdoor unreachable, will retry in background:", err)
 		go func() {
 			for {
 				time.Sleep(10 * time.Second)
 				if err := tryInitAuthConfig(); err != nil {
+					setCasdoorAvailable(false)
 					beego.Warning("InitAuthConfig: retry failed:", err)
 				} else {
 					beego.Info("InitAuthConfig: casdoor connected successfully")
@@ -85,14 +89,18 @@ func InitAuthConfig() {
 // Signin
 // @Title Signin
 // @Tag Account API
-// @Description sign in
-// @Param code  query string true "code of account"
-// @Param state query string true "state of account"
+// @Description sign in with Casdoor OAuth code or password
+// @Param code  query string false "code of account"
+// @Param state query string false "state of account"
 // @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
 // @router /signin [post]
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
+	if code == "" && state == "" {
+		c.signinWithPassword()
+		return
+	}
 
 	token, err := casdoorsdk.GetOAuthToken(code, state)
 	if err != nil {
@@ -376,7 +384,20 @@ func (c *ApiController) GetAccount() {
 		fmt.Println(err)
 	}
 
-	if !c.isPublicDomain() && disablePreviewMode {
+	if object.IsSigninEnabled() {
+		if !c.isPublicDomain() && disablePreviewMode {
+			_, ok := c.RequireSignedIn()
+			if !ok {
+				return
+			}
+		} else {
+			_, ok := c.CheckSignedIn()
+			if !ok {
+				c.anonymousSignin()
+				return
+			}
+		}
+	} else if !c.isPublicDomain() && disablePreviewMode {
 		_, ok := c.RequireSignedIn()
 		if !ok {
 			return
@@ -392,7 +413,7 @@ func (c *ApiController) GetAccount() {
 	claims := c.GetSessionClaims()
 
 	// Fetch fresh user data from Casdoor in real-time for non-anonymous users
-	if claims.User.Type != "anonymous-user" {
+	if claims.User.Type != "anonymous-user" && claims.User.Owner != object.UserOwner {
 		user, err := casdoorsdk.GetUser(claims.User.Name)
 		if err != nil {
 			c.ResponseError(err.Error())

@@ -207,6 +207,11 @@ func (c *ApiController) UpdateMessage() {
 	}
 
 	if message.NeedNotify {
+		if !isCasdoorAvailable() {
+			c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+			return
+		}
+
 		err = message.SendEmail(c.GetAcceptLanguage())
 		if err != nil {
 			c.ResponseError(err.Error())
