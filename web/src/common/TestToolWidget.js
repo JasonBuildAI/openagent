@@ -23,6 +23,47 @@ import ChatWidget from "./ChatWidget";
 
 const {Option} = Select;
 
+const GUI_TOOL_CONTENT = {
+  "gui_screenshot": JSON.stringify({
+    tool: "gui_screenshot",
+    arguments: {},
+  }, null, 2),
+  "gui_get_ui_tree": JSON.stringify({
+    tool: "gui_get_ui_tree",
+    arguments: {window_title: "Notepad", depth: 5},
+  }, null, 2),
+  "gui_click": JSON.stringify({
+    tool: "gui_click",
+    arguments: {window_title: "Notepad", control_name: "OK"},
+  }, null, 2),
+  "gui_double_click": JSON.stringify({
+    tool: "gui_double_click",
+    arguments: {window_title: "Notepad", control_name: "my_file.txt"},
+  }, null, 2),
+  "gui_type": JSON.stringify({
+    tool: "gui_type",
+    arguments: {window_title: "Notepad", text: "Hello from OpenAgent!", clear_first: false},
+  }, null, 2),
+  "gui_hotkey": JSON.stringify({
+    tool: "gui_hotkey",
+    arguments: {keys: ["ctrl", "s"], window_title: "Notepad"},
+  }, null, 2),
+  "gui_scroll": JSON.stringify({
+    tool: "gui_scroll",
+    arguments: {direction: "down", amount: 3, window_title: "Notepad"},
+  }, null, 2),
+};
+
+const GUI_TOOL_OPTIONS = [
+  {value: "gui_screenshot", label: "gui_screenshot — Take desktop/window screenshot"},
+  {value: "gui_get_ui_tree", label: "gui_get_ui_tree — Get UI element tree"},
+  {value: "gui_click", label: "gui_click — Click element by name or coords"},
+  {value: "gui_double_click", label: "gui_double_click — Double-click element"},
+  {value: "gui_type", label: "gui_type — Type text into element"},
+  {value: "gui_hotkey", label: "gui_hotkey — Send keyboard shortcut"},
+  {value: "gui_scroll", label: "gui_scroll — Scroll in window"},
+];
+
 const OFFICE_TOOL_CONTENT = {
   "All": JSON.stringify({tool: "word_read", arguments: {path: "/path/to/document.docx"}}, null, 2),
   "Word Read": JSON.stringify({tool: "word_read", arguments: {path: "/path/to/document.docx"}}, null, 2),
@@ -39,6 +80,7 @@ const DEFAULT_TOOL_CONTENT = {
   Shell: JSON.stringify({tool: "shell", arguments: {command: "echo hello"}}, null, 2),
   "Web Fetch": JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
   "Web Browser": JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
+  "GUI": JSON.stringify({tool: "gui_screenshot", arguments: {}}, null, 2),
 };
 
 function isValidToolTestJson(content) {
@@ -74,6 +116,8 @@ class TestToolWidget extends React.Component {
       // replacing it, so provider !== prevProps.provider is always false.
       lastSyncedType: props.provider ? (props.provider.type || null) : null,
       lastSyncedSubType: props.provider ? (props.provider.subType || null) : null,
+      // GUI tool picker
+      selectedGuiTool: "gui_screenshot",
     };
   }
 
@@ -205,6 +249,27 @@ class TestToolWidget extends React.Component {
 
     return (
       <React.Fragment>
+        {provider.type === "GUI" && (
+          <Row style={{marginTop: "20px"}}>
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("provider:GUI tool"), i18next.t("provider:GUI tool - Tooltip"))} :
+            </Col>
+            <Col span={10}>
+              <Select
+                style={{width: "100%"}}
+                value={this.state.selectedGuiTool}
+                onChange={(value) => {
+                  this.setState({selectedGuiTool: value});
+                  onUpdateProvider("testContent", GUI_TOOL_CONTENT[value]);
+                }}
+              >
+                {GUI_TOOL_OPTIONS.map((opt) => (
+                  <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+        )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Tool test JSON - Tooltip"))} :

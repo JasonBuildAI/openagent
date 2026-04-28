@@ -136,6 +136,9 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
       }
     }
+    if (provider.category === "Tool" && provider.type === "GUI") {
+      return Setting.getLabel(i18next.t("provider:UFO server URL"), i18next.t("provider:UFO server URL - Tooltip"));
+    }
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
   }
 
@@ -552,6 +555,8 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Web Fetch") {
                   this.updateProviderField("subType", "Default");
                 } else if (value === "Web Browser") {
+                  this.updateProviderField("subType", "Default");
+                } else if (value === "GUI") {
                   this.updateProviderField("subType", "Default");
                 }
               } else if (this.state.provider.category === "Text-to-Speech") {

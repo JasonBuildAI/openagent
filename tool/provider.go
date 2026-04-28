@@ -55,6 +55,8 @@ func NewProvider(config ProviderConfig, lang string) (Provider, error) {
 		return NewWebFetchProvider(config)
 	case "Web Browser":
 		return NewBrowserProvider(config)
+	case "GUI":
+		return NewGuiProvider(config)
 	default:
 		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool provider type: %s"), config.Type)
 	}
