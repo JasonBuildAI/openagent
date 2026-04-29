@@ -25,9 +25,8 @@
     "Sign in is unavailable": "登录不可用",
     "Signout failed": "登出失败",
     "Successfully signed out, redirected to homepage": "成功登出，跳转至首页",
-    "The two passwords that you entered do not match": "两次输入的密码不一致",
-    "input password": "输入密码",
-    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作",
+    "The two passwords that you entered do not match": "两次输入的密码不一致"
   },
   "application": {
     "Deploy": "部署",
@@ -164,7 +163,6 @@
     "iFrame": "内嵌框架"
   },
   "general": {
-    "AI Setting": "AI设置",
     "Access secret": "访问密钥",
     "Access secret - Tooltip": "用于API访问认证的密钥",
     "Action": "操作",
@@ -180,6 +178,7 @@
     "Asset": "资产",
     "Assets": "资产",
     "Audit": "审计",
+    "Auditing Logs": "审计日志",
     "Avatar": "图标",
     "Avatar - Tooltip": "图标对应的URL",
     "Back Home": "返回首页",
@@ -189,11 +188,11 @@
     "Block 2": "区块2",
     "Cancel": "取消",
     "Cancelled successfully": "成功取消",
+    "Casdoor Resources": "Casdoor Resources",
     "Category": "类别",
     "Chat": "我的问答",
     "Chat - Tooltip": "与AI交互的对话界面（用于项目生成指导）",
     "Chats": "会话",
-    "Chats & Messages": "会话 & 消息",
     "City": "城市",
     "City - Tooltip": "资源所在城市",
     "Clear": "清除",
@@ -278,6 +277,7 @@
     "IP - Tooltip": "节点内网IP地址",
     "Icon": "图标",
     "Icon - Tooltip": "图标URL或图片路径",
+    "Icon URL (optional)": "Icon URL (optional)",
     "Identity": "身份认证",
     "Images": "镜像",
     "Inactive": "已关闭",
@@ -289,6 +289,7 @@
     "Is enabled": "已启用",
     "Is triggered": "是否已触发",
     "Is triggered - Tooltip": "配置的条件或触发器是否已生效",
+    "Knowledge Base": "知识库",
     "Label": "标签",
     "Language": "语言",
     "Language - Tooltip": "语言环境（如zh-CN/en-US）",
@@ -296,10 +297,9 @@
     "Loading": "加载中",
     "Loading...": "加载中...",
     "Local": "本地",
-    "Knowledge Base": "知识库",
-    "Logging": "审计日志",
     "Logo URL": "Logo链接",
     "Logo URL - Tooltip": "组织徽标图片URL",
+    "Logs": "日志",
     "Machines": "主机",
     "Menu": "菜单",
     "Message": "消息",
@@ -333,11 +333,11 @@
     "Object - Tooltip": "结构化请求数据体",
     "Open": "打开",
     "Options": "选项",
-    "Other": "其他",
     "Org ID": "组织ID",
     "Org ID - Tooltip": "组织ID",
     "Organization": "组织",
     "Organization - Tooltip": "所属组织名称",
+    "Other": "其他",
     "Owner": "属主",
     "Owner - Tooltip": "拥有该资源的账户用户名或ID",
     "Password": "密码",
@@ -400,8 +400,7 @@
     "Select all data": "选择所有数据",
     "Sessions": "会话",
     "Setting": "设置",
-    "Site setting": "网站设置",
-    "Site setting - Tooltip": "全局网站配置设置",
+    "Sites": "Sites",
     "Size": "大小",
     "Size - Tooltip": "文件大小（字节）",
     "Sorry, the page you visited does not exist.": "抱歉，您访问的页面不存在。",
@@ -636,6 +635,8 @@
     "Flavor - Tooltip": "语音风格",
     "Frequency penalty": "频率惩罚",
     "Frequency penalty - Tooltip": "频率惩罚（-2~2，正值减少常见词）",
+    "GUI tool": "GUI tool",
+    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "组ID",
     "Group ID - Tooltip": "MiniMax开发者群组ID",
     "Input price / 1k tokens": "输入价格 /千tokens",
@@ -694,6 +695,8 @@
     "Top K - Tooltip": "候选token数量限制（1-6）",
     "Top P": "TopP参数",
     "Top P - Tooltip": "概率采样阈值（0-1）",
+    "UFO server URL": "UFO server URL",
+    "UFO server URL - Tooltip": "UFO server URL - Tooltip",
     "Webhook": "Webhook回调",
     "Webhook - Tooltip": "用于接收异步事件或回调的HTTPS地址",
     "Webhook set successfully": "Webhook设置成功"
@@ -705,6 +708,14 @@
     "Enable decoding": "启用解密",
     "New Record": "新建日志",
     "View Record": "查看日志"
+  },
+  "resource": {
+    "Category": "Category",
+    "Copy Link": "Copy Link",
+    "File name": "File name",
+    "File size": "File size",
+    "Format": "Format",
+    "Upload a file...": "Upload a file..."
   },
   "scan": {
     "Asset - Tooltip": "要扫描的资产",
@@ -750,6 +761,9 @@
     "Target mode - Tooltip": "选择如何指定扫描目标",
     "Vendor": "供应商",
     "Yes": "是"
+  },
+  "site": {
+    "Edit Site": "Edit Site"
   },
   "store": {
     "Add Permission": "添加权限",

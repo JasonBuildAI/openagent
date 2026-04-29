@@ -25,9 +25,8 @@
     "Sign in is unavailable": "Sign in is unavailable",
     "Signout failed": "Signout failed",
     "Successfully signed out, redirected to homepage": "Successfully signed out, redirected to homepage",
-    "The two passwords that you entered do not match": "The two passwords that you entered do not match",
-    "input password": "input password",
-    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions"
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions",
+    "The two passwords that you entered do not match": "The two passwords that you entered do not match"
   },
   "application": {
     "Deploy": "Deploy",
@@ -164,7 +163,6 @@
     "iFrame": "iFrame"
   },
   "general": {
-    "AI Setting": "AI Setting",
     "Access secret": "Access secret",
     "Access secret - Tooltip": "Secret key for API access authentication",
     "Action": "Action",
@@ -180,6 +178,7 @@
     "Asset": "Asset",
     "Assets": "Assets",
     "Audit": "Audit",
+    "Auditing Logs": "Auditing Logs",
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",
     "Back Home": "Back Home",
@@ -189,11 +188,11 @@
     "Block 2": "Block 2",
     "Cancel": "Cancel",
     "Cancelled successfully": "Cancelled successfully",
+    "Casdoor Resources": "Casdoor Resources",
     "Category": "Category",
     "Chat": "Chat",
     "Chat - Tooltip": "AI-assisted project guidance chat",
     "Chats": "Chats",
-    "Chats & Messages": "Chats & Messages",
     "City": "City",
     "City - Tooltip": "City where the resource is located",
     "Clear": "Clear",
@@ -278,6 +277,7 @@
     "IP - Tooltip": "Private IP address for intranet access",
     "Icon": "Icon",
     "Icon - Tooltip": "URL or path to the icon image for visual identification",
+    "Icon URL (optional)": "Icon URL (optional)",
     "Identity": "Identity",
     "Images": "Images",
     "Inactive": "Inactive",
@@ -289,6 +289,7 @@
     "Is enabled": "Is enabled",
     "Is triggered": "Is triggered",
     "Is triggered - Tooltip": "Whether the configured trigger or condition has fired.",
+    "Knowledge Base": "Knowledge Base",
     "Label": "Label",
     "Language": "Language",
     "Language - Tooltip": "Language locale (e.g., zh-CN/en-US)",
@@ -296,10 +297,9 @@
     "Loading": "Loading",
     "Loading...": "Loading...",
     "Local": "Local",
-    "Knowledge Base": "Knowledge Base",
-    "Logging": "Logging",
     "Logo URL": "Logo URL",
     "Logo URL - Tooltip": "URL of the organization logo image",
+    "Logs": "Logs",
     "Machines": "Machines",
     "Menu": "Menu",
     "Message": "Message",
@@ -333,11 +333,11 @@
     "Object - Tooltip": "Structured request payload",
     "Open": "Open",
     "Options": "Options",
-    "Other": "Other",
     "Org ID": "Org ID",
     "Org ID - Tooltip": "Organization identifier",
     "Organization": "Organization",
     "Organization - Tooltip": "Owning organization",
+    "Other": "Other",
     "Owner": "Owner",
     "Owner - Tooltip": "Username or ID of the account that owns this resource.",
     "Password": "Password",
@@ -400,8 +400,7 @@
     "Select all data": "Select all data",
     "Sessions": "Sessions",
     "Setting": "Setting",
-    "Site setting": "Site setting",
-    "Site setting - Tooltip": "Global site configuration settings",
+    "Sites": "Sites",
     "Size": "Size",
     "Size - Tooltip": "File size in bytes",
     "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
@@ -636,6 +635,8 @@
     "Flavor - Tooltip": "TTS voice style",
     "Frequency penalty": "Frequency penalty",
     "Frequency penalty - Tooltip": "Penalize frequent words",
+    "GUI tool": "GUI tool",
+    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "Group ID",
     "Group ID - Tooltip": "MiniMax developer group identifier",
     "Input price / 1k tokens": "Input price / 1k tokens",
@@ -694,6 +695,8 @@
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
     "Top P - Tooltip": "Probability sampling threshold",
+    "UFO server URL": "UFO server URL",
+    "UFO server URL - Tooltip": "UFO server URL - Tooltip",
     "Webhook": "Webhook",
     "Webhook - Tooltip": "HTTPS URL that receives asynchronous callbacks or events for this integration.",
     "Webhook set successfully": "Webhook set successfully"
@@ -705,6 +708,14 @@
     "Enable decoding": "Enable decoding",
     "New Record": "New Record",
     "View Record": "View Record"
+  },
+  "resource": {
+    "Category": "Category",
+    "Copy Link": "Copy Link",
+    "File name": "File name",
+    "File size": "File size",
+    "Format": "Format",
+    "Upload a file...": "Upload a file..."
   },
   "scan": {
     "Asset - Tooltip": "The asset to scan",
@@ -750,6 +761,9 @@
     "Target mode - Tooltip": "Select how to specify the scan target",
     "Vendor": "Vendor",
     "Yes": "Yes"
+  },
+  "site": {
+    "Edit Site": "Edit Site"
   },
   "store": {
     "Add Permission": "Add Permission",

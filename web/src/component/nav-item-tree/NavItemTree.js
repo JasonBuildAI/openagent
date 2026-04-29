@@ -29,7 +29,6 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Stores"), key: "/stores"},
             {title: i18next.t("general:Chats"), key: "/chats"},
             {title: i18next.t("general:Messages"), key: "/messages"},
-            {title: i18next.t("general:Usages"), key: "/usages"},
           ],
         },
         {
@@ -56,6 +55,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Application Store"), key: "/application-store"},
             {title: i18next.t("general:Applications"), key: "/applications"},
             {title: i18next.t("general:Nodes"), key: "/nodes"},
+            {title: i18next.t("general:Connections"), key: "/connections"},
             {title: i18next.t("general:Machines"), key: "/machines"},
             {title: i18next.t("general:Assets"), key: "/assets"},
             {title: i18next.t("general:Images"), key: "/images"},
@@ -82,12 +82,11 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           ],
         },
         {
-          title: i18next.t("general:Logging"),
+          title: i18next.t("general:Auditing Logs"),
           key: "/logs",
           children: [
+            {title: i18next.t("general:Logs"), key: "/records"},
             {title: i18next.t("general:Sessions"), key: "/sessions"},
-            {title: i18next.t("general:Connections"), key: "/connections"},
-            {title: i18next.t("general:Records"), key: "/records"},
           ],
         },
         {
@@ -104,6 +103,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           key: "/admin",
           children: [
             {title: i18next.t("general:Sites"), key: "/sites"},
+            {title: i18next.t("general:Usages"), key: "/usages"},
             {title: i18next.t("general:Activities"), key: "/activities"},
             {title: i18next.t("general:System Info"), key: "/sysinfo"},
             {title: i18next.t("general:Swagger"), key: "/swagger"},

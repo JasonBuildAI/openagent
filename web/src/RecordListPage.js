@@ -680,7 +680,7 @@ class RecordListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={filteredColumns} dataSource={records} rowKey={(record) => `${record.owner}/${record.name}`} rowSelection={this.getRowSelection()} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Records")}
+              {i18next.t("general:Logs")}
               {Setting.isAdminUser(this.props.account) && (
                 <>
                   <span style={{marginLeft: 32}}>

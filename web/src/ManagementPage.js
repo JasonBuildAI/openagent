@@ -147,14 +147,14 @@ const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
   if (!uri) {return null;}
-  if (uri.includes("/chats") || uri.includes("/messages") || uri.includes("/usages") || uri.includes("/stores")) {return "/basic";}
+  if (uri.includes("/chats") || uri.includes("/messages") || uri.includes("/stores")) {return "/basic";}
   if (uri.includes("/providers")) {return "/connectors";}
   if (uri.includes("/files") || uri.includes("/vectors") || uri.includes("/resources")) {return "/knowledge-base";}
-  if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench") || uri.includes("/desktop")) {return "/cloud";}
+  if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench") || uri.includes("/desktop") || uri.includes("/connections")) {return "/cloud";}
   if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
-  if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
+  if (uri.includes("/sessions") || uri.includes("/records")) {return "/logs";}
   if (uri.includes("/users") || uri.includes("/casdoor-resources") || uri.includes("/permissions")) {return "/identity";}
-  if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities") || uri.includes("/sites")) {return "/admin";}
+  if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities") || uri.includes("/sites") || uri.includes("/usages")) {return "/admin";}
   return null;
 }
 
@@ -466,9 +466,9 @@ function ManagementPage(props) {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />));
       res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes", <CloudServerOutlined />));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions", <OrderedListOutlined />));
       res.push(Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections", <ApiOutlined />));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records", <DatabaseOutlined />));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions", <OrderedListOutlined />));
+      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Logs")}</Link>, "/records", <DatabaseOutlined />));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />));
@@ -552,7 +552,6 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <OrderedListOutlined />),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />),
-        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/files">{i18next.t("general:Knowledge Base")}</Link>, "/knowledge-base", <DatabaseOutlined />, [
@@ -570,6 +569,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/application-store">{i18next.t("general:Application Store")}</Link>, "/application-store", <ShopOutlined />),
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications", <DeploymentUnitOutlined />),
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes", <CloudServerOutlined />),
+        Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections", <ApiOutlined />),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines", <HddOutlined />),
         Setting.getItem(<Link to="/assets">{i18next.t("general:Assets")}</Link>, "/assets", <GoldOutlined />),
         Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images", <PictureOutlined />),
@@ -592,10 +592,9 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans", <ScanOutlined />),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging")}</Link>, "/logs", <WalletOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/records">{i18next.t("general:Auditing Logs")}</Link>, "/logs", <WalletOutlined />, [
+        Setting.getItem(<Link to="/records">{i18next.t("general:Logs")}</Link>, "/records", <DatabaseOutlined />),
         Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions", <OrderedListOutlined />),
-        Setting.getItem(<Link to="/connections">{i18next.t("general:Connections")}</Link>, "/connections", <ApiOutlined />),
-        Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records", <DatabaseOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity")}</Link>, "/identity", <LockOutlined />, [
