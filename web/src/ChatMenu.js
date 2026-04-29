@@ -32,6 +32,7 @@ class ChatMenu extends React.Component {
       editChat: false,
       editChatName: "",
       hoveredKey: null,
+      popconfirmOpenKey: null,
     };
   }
 
@@ -58,6 +59,8 @@ class ChatMenu extends React.Component {
           const itemKey = `${index}-${chatIndex}`;
           const isSelected = selectedKeys.includes(itemKey);
           const isHovered = this.state !== undefined && this.state.hoveredKey === itemKey;
+          const popconfirmOpenKey = this.state !== undefined ? this.state.popconfirmOpenKey : null;
+          const showActionButtons = popconfirmOpenKey === itemKey || (isHovered && popconfirmOpenKey === null);
           const handleIconMouseEnter = (e) => {
             e.currentTarget.style.color = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
@@ -119,7 +122,7 @@ class ChatMenu extends React.Component {
                   <div style={{flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                     <Tooltip title={chat.displayName}>{chat.displayName}</Tooltip>
                   </div>
-                  {isHovered && (
+                  {showActionButtons && (
                     <div>
                       <EditOutlined className="menu-item-icon"
                         onMouseEnter={handleIconMouseEnter}
@@ -135,6 +138,9 @@ class ChatMenu extends React.Component {
                         }} />
                       <Popconfirm
                         title={`${i18next.t("general:Sure to delete")}: ${chat.displayName} ?`}
+                        onOpenChange={(open) => {
+                          this.setState({popconfirmOpenKey: open ? itemKey : null});
+                        }}
                         onConfirm={() => {
                           if (this.props.onDeleteChat) {
                             this.props.onDeleteChat(globalChatIndex);
