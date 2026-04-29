@@ -287,7 +287,7 @@ const StoreInfoTitle = (props) => {
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
         {storeInfo && (
-          <div style={{marginRight: "20px"}}>
+          <div style={{marginRight: "20px", display: "flex", alignItems: "center"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
             <Select value={selectedStore?.name || storeInfo.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores} popupMatchSelectWidth={false} optionLabelProp="children">
               {storeOptions.map(store => (
@@ -306,7 +306,7 @@ const StoreInfoTitle = (props) => {
           </div>)}
 
         {modelProviders.length > 0 && typeof onGenerationModeChange === "function" && (
-          <div style={{marginRight: "20px"}}>
+          <div style={{marginRight: "20px", display: "flex", alignItems: "center"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("chat:Mode")}:</span>}
             <Select
               value={generationMode}
@@ -321,7 +321,7 @@ const StoreInfoTitle = (props) => {
         )}
 
         {modelProviders.length > 0 && (
-          <div>
+          <div style={{display: "flex", alignItems: "center"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             {filteredModelProviders.length === 0 ? (
               <span style={{color: "#999"}}>{i18next.t("chat:No models for this mode")}</span>
@@ -351,7 +351,7 @@ const StoreInfoTitle = (props) => {
 
         {
           storeInfo?.showAutoRead && (
-            <div>
+            <div style={{display: "flex", alignItems: "center"}}>
               <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("store:Auto read")}:</span>
               <Switch checked={autoRead} onChange={checked => {
                 onUpdateAutoRead(checked);
@@ -362,7 +362,7 @@ const StoreInfoTitle = (props) => {
 
         {showPaneControls && canManagePanes && (
           <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-            <span style={{fontSize: "12px", color: "#666", marginLeft: "20px", marginRight: "10px"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
+            <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
             <Button size="small" icon={<PlusOutlined />} onClick={addPane} />
             <Button size="small" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
           </div>
