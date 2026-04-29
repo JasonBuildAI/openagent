@@ -1,3 +1,5 @@
+//go:build windows
+
 // Copyright 2025 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -534,9 +536,17 @@ func (b *winOpenApplicationBuiltin) Execute(ctx context.Context, arguments map[s
 	}
 
 	if method == "auto" {
-		if err := launch("exe"); err != nil {
-			if err2 := launch("shell"); err2 != nil {
-				_ = launch("search")
+		errExe := launch("exe")
+		if errExe != nil {
+			errShell := launch("shell")
+			if errShell != nil {
+				errSearch := launch("search")
+				if errSearch != nil {
+					return winToolError(fmt.Sprintf(
+						"failed to launch target via auto (exe: %v; shell: %v; search: %v)",
+						errExe, errShell, errSearch,
+					)), nil
+				}
 			}
 		}
 	} else {
@@ -947,21 +957,23 @@ func (b *winWordWriteAndSaveBuiltin) handleSaveAsDialog(path string, overwrite b
 				if err != nil {
 					continue
 				}
-				yesNameCond, err := engine.createPropertyConditionString(uiautomation.NamePropertyId, "是", uiautomation.PropertyConditionFlagsMatchSubstring)
-				if err != nil {
-					continue
-				}
-				yesEl, err := engine.findFirst(confRoot, uiautomation.TreeScopeDescendants, yesNameCond)
-				if err == nil && yesEl != nil {
-					_ = globalSta.run(func() error {
-						patObj, err := yesEl.GetCurrentPatternAs(uiautomation.InvokePatternId, uiautomation.IID_IUIAutomationInvokePattern)
-						if err == nil && patObj != nil {
-							ip := (*uiautomation.InvokePattern)(unsafe.Pointer(patObj))
-							_ = ip.Invoke()
-						}
+				for _, yesLabel := range []string{"是", "Yes"} {
+					yesNameCond, err := engine.createPropertyConditionString(uiautomation.NamePropertyId, yesLabel, uiautomation.PropertyConditionFlagsMatchSubstring)
+					if err != nil {
+						continue
+					}
+					yesEl, err := engine.findFirst(confRoot, uiautomation.TreeScopeDescendants, yesNameCond)
+					if err == nil && yesEl != nil {
+						_ = globalSta.run(func() error {
+							patObj, err := yesEl.GetCurrentPatternAs(uiautomation.InvokePatternId, uiautomation.IID_IUIAutomationInvokePattern)
+							if err == nil && patObj != nil {
+								ip := (*uiautomation.InvokePattern)(unsafe.Pointer(patObj))
+								_ = ip.Invoke()
+							}
+							return nil
+						})
 						return nil
-					})
-					break
+					}
 				}
 			}
 		}
