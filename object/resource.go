@@ -15,11 +15,9 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
-	"time"
 
-	"github.com/the-open-agent/openagent/auth"
-	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 	"xorm.io/core"
 )
@@ -123,18 +121,23 @@ func AddResource(resource *Resource) (bool, error) {
 	return affected != 0, nil
 }
 
-// DeleteResourceFile deletes the actual file from Casdoor storage using the stored object key.
-// It is a no-op when Casdoor is not available.
-func DeleteResourceFile(resource *Resource) error {
-	if !conf.IsCasdoorAvailable() || resource.StorageName == "" {
+// DeleteResourceFile deletes the actual file from the default storage provider using the stored object key.
+func DeleteResourceFile(resource *Resource, lang string) error {
+	if resource.StorageName == "" {
 		return nil
 	}
-	casdoorResource := &auth.Resource{
-		Owner: resource.Owner,
-		Name:  resource.StorageName,
+	provider, err := GetDefaultStorageProvider()
+	if err != nil {
+		return err
 	}
-	_, err := auth.DeleteResourceWithTag(casdoorResource, "")
-	return err
+	if provider == nil {
+		return nil
+	}
+	storageProvider, err := provider.GetStorageProviderObj("", lang)
+	if err != nil {
+		return err
+	}
+	return storageProvider.DeleteObject(resource.StorageName)
 }
 
 func DeleteResource(resource *Resource) (bool, error) {
@@ -181,21 +184,24 @@ func NewResourceFromUpload(owner, user, category, fileName, fileType, fileFormat
 	}
 }
 
-// UploadFileToStorageSafe uploads fileBytes via Casdoor storage and returns
-// the public URL and the Casdoor object key (storageName) needed for later deletion.
-func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (fileUrl string, storageName string, err error) {
-	times := 0
-	for {
-		fileUrl, storageName, err = auth.UploadResource(user, tag, parent, fullFilePath, fileBytes)
-		if err != nil {
-			times += 1
-			time.Sleep(3 * time.Second)
-			if times >= 10 {
-				return "", "", err
-			}
-		} else {
-			break
-		}
+// UploadFileToStorageSafe uploads fileBytes to the default storage provider and returns a public URL.
+// objectKey is the storage path used for PutObject (e.g. "openagent/resources/avatar/user/file.png");
+// callers should store it as StorageName for later deletion via DeleteResourceFile.
+func UploadFileToStorageSafe(objectKey string, fileBytes []byte, origin string, lang string) (fileUrl string, err error) {
+	provider, err := GetDefaultStorageProvider()
+	if err != nil {
+		return "", err
 	}
-	return fileUrl, storageName, nil
+	if provider == nil {
+		return "", fmt.Errorf("no default storage provider configured")
+	}
+	storageProvider, err := provider.GetStorageProviderObj("", lang)
+	if err != nil {
+		return "", err
+	}
+	rawUrl, err := storageProvider.PutObject("", "", objectKey, bytes.NewBuffer(fileBytes))
+	if err != nil {
+		return "", err
+	}
+	return getUrlFromPath(rawUrl, origin)
 }
