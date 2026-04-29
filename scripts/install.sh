@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# OpenAgent one-step install: download the release binary for your platform.
+# OpenAgent one-step install: download the release archive for your platform.
 # Usage:
 #   curl -fsSL --proto '=https' --tlsv1.2 \
 #     https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.sh | bash
 #
 # Optional environment variables:
 #   OPENAGENT_VERSION   e.g. v1.777.3  (default: latest release)
-#   INSTALL_DIR         installation directory (default: /usr/local/bin)
+#   INSTALL_DIR         installation directory (default: $HOME/.local/share/openagent)
+#   BIN_DIR             directory for the openagent symlink on PATH (default: $HOME/.local/bin)
 
 set -euo pipefail
 
 OPENAGENT_VERSION="${OPENAGENT_VERSION:-latest}"
-INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
+INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/share/openagent}"
+BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
 
 REPO="the-open-agent/openagent"
 
@@ -45,7 +47,7 @@ case "${OS}" in
 esac
 
 case "${ARCH}" in
-	x86_64|amd64) ARCH_NAME="x86_64" ;;
+	x86_64|amd64)  ARCH_NAME="x86_64" ;;
 	aarch64|arm64) ARCH_NAME="arm64" ;;
 	*) die "Unsupported architecture: ${ARCH}. Download manually from https://github.com/${REPO}/releases" ;;
 esac
@@ -63,24 +65,61 @@ curl -fsSL --proto '=https' --tlsv1.2 -o "${TMPDIR}/${FILENAME}" "${URL}"
 info "Extracting..."
 tar -xzf "${TMPDIR}/${FILENAME}" -C "${TMPDIR}"
 
-BINARY="$(find "${TMPDIR}" -maxdepth 2 -type f -name "openagent" | head -1)"
-[[ -n "${BINARY}" ]] || die "openagent binary not found in archive."
+# Remove the tarball so it is never copied into INSTALL_DIR
+rm -f "${TMPDIR}/${FILENAME}"
 
-# ── install ───────────────────────────────────────────────────────────────────
-if [[ ! -w "${INSTALL_DIR}" ]]; then
-	info "Writing to ${INSTALL_DIR} requires sudo..."
-	sudo install -m 755 "${BINARY}" "${INSTALL_DIR}/openagent"
+# Locate the binary anywhere in the extraction tree, then use its parent as
+# the source root (handles both flat and subdirectory archives).
+BINARY="$(find "${TMPDIR}" -type f -name "openagent" | head -1)"
+[[ -n "${BINARY}" ]] || die "openagent binary not found in archive."
+SOURCE_DIR="$(dirname "${BINARY}")"
+
+# ── install all files ────────────────────────────────────────────────────────
+info "Installing all files to ${INSTALL_DIR} ..."
+
+if [[ ! -d "${INSTALL_DIR}" ]]; then
+	mkdir -p "${INSTALL_DIR}" 2>/dev/null || sudo mkdir -p "${INSTALL_DIR}"
+fi
+
+# Use sudo when the target directory is not writable
+if [[ -w "${INSTALL_DIR}" ]]; then
+	cp -r "${SOURCE_DIR}/." "${INSTALL_DIR}/"
+	chmod 755 "${INSTALL_DIR}/openagent"
 else
-	install -m 755 "${BINARY}" "${INSTALL_DIR}/openagent"
+	info "Writing to ${INSTALL_DIR} requires sudo..."
+	sudo cp -r "${SOURCE_DIR}/." "${INSTALL_DIR}/"
+	sudo chmod 755 "${INSTALL_DIR}/openagent"
+fi
+
+# ── add binary to PATH via BIN_DIR symlink ────────────────────────────────────
+mkdir -p "${BIN_DIR}"
+if [[ -w "${BIN_DIR}" ]]; then
+	ln -sf "${INSTALL_DIR}/openagent" "${BIN_DIR}/openagent"
+else
+	info "Creating symlink in ${BIN_DIR} requires sudo..."
+	sudo ln -sf "${INSTALL_DIR}/openagent" "${BIN_DIR}/openagent"
+fi
+
+# Ensure BIN_DIR is on PATH in the current shell profile (best-effort)
+SHELL_RC=""
+case "${SHELL:-}" in
+	*/zsh)  SHELL_RC="$HOME/.zshrc" ;;
+	*/bash) SHELL_RC="$HOME/.bashrc" ;;
+esac
+
+if [[ -n "${SHELL_RC}" ]] && ! grep -q "${BIN_DIR}" "${SHELL_RC}" 2>/dev/null; then
+	printf '\nexport PATH="%s:$PATH"\n' "${BIN_DIR}" >> "${SHELL_RC}"
+	info "Added ${BIN_DIR} to PATH in ${SHELL_RC}."
 fi
 
 info ""
-info "openagent ${OPENAGENT_VERSION} installed to ${INSTALL_DIR}/openagent"
+info "openagent ${OPENAGENT_VERSION} installed to ${INSTALL_DIR}"
 info ""
 info "Next steps:"
-info "  1. Edit conf/app.conf to point to your MySQL/MariaDB database."
-info "  2. Run: openagent serve"
-info "  3. Open:  http://127.0.0.1:14000/"
+info "  1. Edit ${INSTALL_DIR}/conf/app.conf to point to your MySQL/MariaDB database."
+info "  2. cd \"${INSTALL_DIR}\""
+info "  3. Run: ./openagent serve   (or just: openagent serve)"
+info "  4. Open:  http://127.0.0.1:14000/"
 info ""
 info "For more information visit https://github.com/${REPO}"
 info ""

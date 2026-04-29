@@ -1,4 +1,4 @@
-# OpenAgent one-step install (Windows PowerShell): download the release binary for your platform.
+# OpenAgent one-step install (Windows PowerShell): download the release archive for your platform.
 # Usage (run only if you trust this script source):
 #   irm https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.ps1 | iex
 #
@@ -48,14 +48,23 @@ try {
     Write-Info 'Extracting...'
     Expand-Archive -Path $ZipPath -DestinationPath $TmpDir -Force
 
+    # Remove the zip so it is never copied into InstallDir
+    Remove-Item -Force $ZipPath
+
+    # Locate openagent.exe anywhere inside the extraction tree, then use its
+    # parent as the source root (handles both flat and subdirectory archives).
     $Binary = Get-ChildItem -Path $TmpDir -Filter 'openagent.exe' -Recurse | Select-Object -First 1
     if (-not $Binary) { throw 'openagent.exe not found in archive.' }
+    $SourceDir = $Binary.DirectoryName
 
     # ── install ────────────────────────────────────────────────────────────────
     if (-not (Test-Path $InstallDir)) {
         New-Item -ItemType Directory -Path $InstallDir | Out-Null
     }
-    Copy-Item -Path $Binary.FullName -Destination "$InstallDir\openagent.exe" -Force
+
+    # Copy everything (binary + conf/, data/, web/, etc.)
+    Write-Info "Installing all files to $InstallDir ..."
+    Copy-Item -Path "$SourceDir\*" -Destination $InstallDir -Recurse -Force
 }
 finally {
     Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
@@ -70,12 +79,13 @@ if ($UserPath -notlike "*$InstallDir*") {
 }
 
 Write-Info ''
-Write-Info "openagent $Version installed to $InstallDir\openagent.exe"
+Write-Info "openagent $Version installed to $InstallDir"
 Write-Info ''
 Write-Info 'Next steps:'
-Write-Info '  1. Edit conf/app.conf to point to your MySQL/MariaDB database.'
-Write-Info '  2. Run: openagent serve'
-Write-Info '  3. Open:  http://127.0.0.1:14000/'
+Write-Info "  1. Edit $InstallDir\conf\app.conf to point to your MySQL/MariaDB database."
+Write-Info "  2. cd `"$InstallDir`""
+Write-Info '  3. Run: openagent serve'
+Write-Info '  4. Open:  http://127.0.0.1:14000/'
 Write-Info ''
 Write-Info "For more information visit https://github.com/$Repo"
 Write-Info ''
