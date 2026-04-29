@@ -33,3 +33,5 @@ lastupdate.tmp
 commentsRouter*.go
 
 dist/
+
+openagent.db

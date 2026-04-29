@@ -15,18 +15,61 @@
 package object
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
+	"net"
 	"runtime"
+	"strings"
+	"time"
 
 	"github.com/beego/beego"
 	_ "github.com/denisenkom/go-mssqldb" // mssql
 	_ "github.com/go-sql-driver/mysql"   // mysql
 	_ "github.com/lib/pq"                // postgres
 	"github.com/the-open-agent/openagent/conf"
-	_ "modernc.org/sqlite" // sqlite
+	moderncsqlite "modernc.org/sqlite"
 	"xorm.io/xorm"
 )
+
+func init() {
+	// modernc.org/sqlite registers as "sqlite"; xorm looks up the "sqlite3" dialect name.
+	// Re-register the same pure-Go driver under "sqlite3" so xorm can pair its dialect with the driver.
+	sql.Register("sqlite3", &moderncsqlite.Driver{})
+}
+
+const defaultMySQLDataSourceName = "root:123456@tcp(localhost:3306)/"
+
+// maskDSN strips credentials from a DSN, keeping only the host/path portion.
+// "user:pass@tcp(host:port)/db" → "tcp(host:port)/db"
+func maskDSN(dsn string) string {
+	if at := strings.LastIndex(dsn, "@"); at >= 0 {
+		return dsn[at+1:]
+	}
+	return dsn
+}
+
+// resolveDatabase returns the effective driver and DSN to use.
+// When the config still holds the default unmodified MySQL values and nothing
+// is listening on port 3306, it transparently falls back to SQLite so that
+// the binary works out-of-the-box without a MySQL installation.
+func resolveDatabase(driverName, dataSourceName string) (string, string) {
+	dbName := conf.GetConfigString("dbName")
+
+	if driverName != "mysql" || dataSourceName != defaultMySQLDataSourceName {
+		fmt.Printf("OpenAgent: connecting to database [driver=%s, dsn=%s, db=%s]\n", driverName, maskDSN(dataSourceName), dbName)
+		return driverName, dataSourceName
+	}
+
+	conn, err := net.DialTimeout("tcp", "localhost:3306", 2*time.Second)
+	if err != nil {
+		fmt.Println("OpenAgent: connecting to database [driver=sqlite3, dsn=openagent.db]")
+		return "sqlite3", "openagent.db"
+	}
+	conn.Close()
+	fmt.Printf("OpenAgent: connecting to database [driver=%s, dsn=%s, db=%s]\n", driverName, maskDSN(dataSourceName), dbName)
+	return driverName, dataSourceName
+}
 
 var (
 	adapter                 *Adapter = nil
@@ -59,7 +102,9 @@ func InitConfig() {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
+	driverName, dataSourceName := resolveDatabase(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
+
+	adapter = NewAdapter(driverName, dataSourceName)
 
 	providerDbName := conf.GetConfigString("providerDbName")
 
@@ -68,7 +113,7 @@ func InitAdapter() {
 	}
 
 	if providerDbName != "" {
-		providerAdapter = NewAdapterWithDbName(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), providerDbName)
+		providerAdapter = NewAdapterWithDbName(driverName, dataSourceName, providerDbName)
 	}
 }
 
@@ -139,6 +184,9 @@ func (a *Adapter) CreateDatabase() error {
 
 	var stmt string
 	switch a.driverName {
+	case "sqlite3", "sqlite":
+		// SQLite creates the database file automatically on open; no DDL needed.
+		return nil
 	case "postgres":
 		stmt = fmt.Sprintf(`
 			DO $$
@@ -162,7 +210,10 @@ func (a *Adapter) CreateDatabase() error {
 
 func (a *Adapter) open() {
 	dataSourceName := a.dataSourceName + a.DbName
-	if a.driverName != "mysql" {
+	if a.driverName == "mysql" {
+		// MySQL DSN ends with "/" and the database name is appended separately.
+	} else {
+		// For SQLite, Postgres, MSSQL, etc. the full DSN is stored in dataSourceName.
 		dataSourceName = a.dataSourceName
 	}
 
