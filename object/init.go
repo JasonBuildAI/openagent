@@ -26,6 +26,7 @@ import (
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
+	initBuiltInSite()
 	InitUsers()
 }
 
@@ -71,7 +72,6 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		ExampleQuestions:     []ExampleQuestion{},
 		KnowledgeCount:       5,
 		SuggestionCount:      3,
-		ThemeColor:           "#5734d3",
 		ChildStores:          []string{},
 		ChildModelProviders:  []string{},
 		IsDefault:            true,
@@ -205,4 +205,33 @@ func initBuiltInProviders() (string, string, string, string) {
 	sttProviderName := "Browser Built-In"
 
 	return modelProvider.Name, embeddingProvider.Name, ttsProviderName, sttProviderName
+}
+
+func initBuiltInSite() {
+	sites, err := GetGlobalSites()
+	if err != nil {
+		panic(err)
+	}
+
+	if len(sites) > 0 {
+		return
+	}
+
+	site := &Site{
+		Owner:       "admin",
+		Name:        "site-built-in",
+		CreatedTime: util.GetCurrentTime(),
+		DisplayName: "Built-in Site",
+		ThemeColor:  "#262626",
+		HtmlTitle:   "",
+		FaviconUrl:  "",
+		LogoUrl:     "",
+		FooterHtml:  "",
+		NavItems:    []string{},
+	}
+
+	_, err = AddSite(site)
+	if err != nil {
+		panic(err)
+	}
 }

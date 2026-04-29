@@ -85,14 +85,8 @@ type Store struct {
 	WelcomeText         string            `xorm:"varchar(100)" json:"welcomeText"`
 	Prompt              string            `xorm:"mediumtext" json:"prompt"`
 	ExampleQuestions    []ExampleQuestion `xorm:"mediumtext" json:"exampleQuestions"`
-	ThemeColor          string            `xorm:"varchar(100)" json:"themeColor"`
 	Avatar              string            `xorm:"varchar(200)" json:"avatar"`
 	Title               string            `xorm:"varchar(100)" json:"title"`
-	HtmlTitle           string            `xorm:"varchar(100)" json:"htmlTitle"`
-	FaviconUrl          string            `xorm:"varchar(200)" json:"faviconUrl"`
-	LogoUrl             string            `xorm:"varchar(200)" json:"logoUrl"`
-	FooterHtml          string            `xorm:"mediumtext" json:"footerHtml"`
-	NavItems            []string          `xorm:"text" json:"navItems"`
 	VectorStores        []string          `xorm:"mediumtext" json:"vectorStores"`
 	ChildStores         []string          `xorm:"mediumtext" json:"childStores"`
 	ChildModelProviders []string          `xorm:"mediumtext" json:"childModelProviders"`

@@ -41,6 +41,7 @@ import {
   HddOutlined,
   HomeOutlined,
   InboxOutlined,
+  LayoutOutlined,
   LineChartOutlined,
   LockOutlined,
   LoginOutlined,
@@ -140,6 +141,8 @@ import ApplicationEditPage from "./ApplicationEditPage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import ApplicationDetailsPage from "./ApplicationViewPage";
 import ResourceListPage from "./ResourceListPage";
+import SiteListPage from "./SiteListPage";
+import SiteEditPage from "./SiteEditPage";
 const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
@@ -151,7 +154,7 @@ function getMenuParentKey(uri) {
   if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
   if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
   if (uri.includes("/users") || uri.includes("/casdoor-resources") || uri.includes("/permissions")) {return "/identity";}
-  if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities")) {return "/admin";}
+  if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities") || uri.includes("/sites")) {return "/admin";}
   return null;
 }
 
@@ -229,7 +232,7 @@ function ManagementPage(props) {
   }, [menuOpenKeys, siderCollapsed]);
   const {
     account,
-    store,
+    site,
     forms,
     themeAlgorithm,
     logo,
@@ -246,7 +249,7 @@ function ManagementPage(props) {
 
   const isDark = themeAlgorithm.includes("dark");
   const textColor = isDark ? "white" : "black";
-  const siderLogo = logo || Setting.getLogo(themeAlgorithm, store?.logoUrl);
+  const siderLogo = logo || Setting.getLogo(themeAlgorithm, site?.logoUrl);
 
   const toggleSider = () => {
     const next = !siderCollapsed;
@@ -433,7 +436,7 @@ function ManagementPage(props) {
       return [];
     }
 
-    const navItems = store?.navItems;
+    const navItems = site?.navItems;
 
     if (account.type.startsWith("video-")) {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos", <VideoCameraOutlined />));
@@ -613,7 +616,8 @@ function ManagementPage(props) {
           </a>, "/permissions", <SafetyOutlined />),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sites">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
+        Setting.getItem(<Link to="/sites">{i18next.t("general:Sites")}</Link>, "/sites", <LayoutOutlined />),
         Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <FundOutlined />),
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo", <DashboardOutlined />),
         Setting.getItem(
@@ -695,6 +699,8 @@ function ManagementPage(props) {
         <Route exact path="/messages" render={(props) => renderSigninIfNotSignedIn(<MessageListPage account={account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => renderSigninIfNotSignedIn(<MessageEditPage account={account} {...props} />)} />
         <Route exact path="/usages" render={(props) => renderSigninIfNotSignedIn(<UsagePage account={account} themeAlgorithm={themeAlgorithm} {...props} />)} />
+        <Route exact path="/sites" render={(props) => renderSigninIfNotSignedIn(<SiteListPage account={account} {...props} />)} />
+        <Route exact path="/sites/:siteName" render={(props) => renderSigninIfNotSignedIn(<SiteEditPage account={account} {...props} />)} />
         <Route exact path="/activities" render={(props) => renderSigninIfNotSignedIn(<ActivityPage account={account} themeAlgorithm={themeAlgorithm} {...props} />)} />
         <Route exact path="/desktop" render={(props) => <OsDesktop account={account} {...props} />} />
         <Route exact path="/templates" render={(props) => renderSigninIfNotSignedIn(<TemplateListPage account={account} {...props} />)} />
@@ -823,7 +829,7 @@ function ManagementPage(props) {
     return (
       <React.Fragment>
         <Footer id="footer" style={{textAlign: "center", height: "67px"}}>
-          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(themeAlgorithm, store?.footerHtml)}} />
+          <div dangerouslySetInnerHTML={{__html: Setting.getFooterHtml(themeAlgorithm, site?.footerHtml)}} />
         </Footer>
       </React.Fragment>
     );
@@ -869,7 +875,7 @@ function ManagementPage(props) {
           }}>
             <Link to="/">
               <img
-                src={siderCollapsed ? (store?.avatar || siderLogo) : siderLogo}
+                src={siderLogo}
                 alt="logo"
                 style={{
                   height: siderCollapsed ? 28 : 40,

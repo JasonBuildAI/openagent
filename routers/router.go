@@ -46,6 +46,14 @@ func initAPI() {
 	beego.Router("/api/update-account", &controllers.ApiController{}, "POST:UpdateAccount")
 	beego.Router("/api/get-signin-options", &controllers.ApiController{}, "GET:GetSigninOptions")
 
+	beego.Router("/api/get-global-sites", &controllers.ApiController{}, "GET:GetGlobalSites")
+	beego.Router("/api/get-sites", &controllers.ApiController{}, "GET:GetSites")
+	beego.Router("/api/get-site", &controllers.ApiController{}, "GET:GetSite")
+	beego.Router("/api/get-built-in-site", &controllers.ApiController{}, "GET:GetBuiltInSite")
+	beego.Router("/api/update-site", &controllers.ApiController{}, "POST:UpdateSite")
+	beego.Router("/api/add-site", &controllers.ApiController{}, "POST:AddSite")
+	beego.Router("/api/delete-site", &controllers.ApiController{}, "POST:DeleteSite")
+
 	beego.Router("/api/get-global-videos", &controllers.ApiController{}, "GET:GetGlobalVideos")
 	beego.Router("/api/get-videos", &controllers.ApiController{}, "GET:GetVideos")
 	beego.Router("/api/get-video", &controllers.ApiController{}, "GET:GetVideo")
