@@ -21,7 +21,7 @@ export function getGlobalWorkflows() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getWorkflows(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getWorkflows(owner, page = "", pageSize = "", field = "", value 
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getWorkflow(owner, name) {
@@ -41,7 +41,7 @@ export function getWorkflow(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateWorkflow(owner, name, workflow) {
@@ -53,7 +53,7 @@ export function updateWorkflow(owner, name, workflow) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newWorkflow),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addWorkflow(workflow) {
@@ -65,7 +65,7 @@ export function addWorkflow(workflow) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newWorkflow),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteWorkflow(workflow) {
@@ -77,5 +77,5 @@ export function deleteWorkflow(workflow) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newWorkflow),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -21,7 +21,7 @@ export function getGlobalProviders() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getProviders(owner, storeName = "", page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getProviders(owner, storeName = "", page = "", pageSize = "", fi
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getProvider(owner, name) {
@@ -41,7 +41,7 @@ export function getProvider(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateProvider(owner, name, provider) {
@@ -53,7 +53,7 @@ export function updateProvider(owner, name, provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addProvider(provider) {
@@ -65,7 +65,7 @@ export function addProvider(provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteProvider(provider) {
@@ -77,7 +77,7 @@ export function deleteProvider(provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function refreshMcpTools(provider) {
@@ -89,7 +89,7 @@ export function refreshMcpTools(provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function testToolProvider(provider) {
@@ -101,7 +101,7 @@ export function testToolProvider(provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function testMcpProvider(provider) {
@@ -113,7 +113,7 @@ export function testMcpProvider(provider) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newProvider),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function setTelegramWebhook(id) {
@@ -123,5 +123,5 @@ export function setTelegramWebhook(id) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

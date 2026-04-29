@@ -21,7 +21,7 @@ export function getGlobalPermissions() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getPermissions(owner) {
@@ -31,7 +31,7 @@ export function getPermissions(owner) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getPermission(owner, name) {
@@ -41,7 +41,7 @@ export function getPermission(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updatePermission(owner, name, permission) {
@@ -53,7 +53,7 @@ export function updatePermission(owner, name, permission) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newPermission),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addPermission(permission) {
@@ -65,7 +65,7 @@ export function addPermission(permission) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newPermission),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deletePermission(permission) {
@@ -77,5 +77,5 @@ export function deletePermission(permission) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newPermission),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

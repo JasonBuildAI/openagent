@@ -23,7 +23,7 @@ export function updateFile(storeId, name, file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newFile),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addFile(storeId, key, isLeaf, filename, file) {
@@ -36,7 +36,7 @@ export function addFile(storeId, key, isLeaf, filename, file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: formData,
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteFile(storeId, key, isLeaf) {
@@ -46,7 +46,7 @@ export function deleteFile(storeId, key, isLeaf) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function activateFile(key, filename) {
@@ -56,7 +56,7 @@ export function activateFile(key, filename) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function uploadFile(base64, filename, filetype) {
@@ -71,5 +71,5 @@ export function uploadFile(base64, filename, filetype) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: formData,
-  }).then((res) => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -29,14 +29,14 @@ export function generateTextToSpeechAudio(storeId, providerId, messageId, text) 
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(payload),
-  }).then(response => {
+  }).then(async response => {
     const contentType = response.headers.get("Content-Type") || "";
-    if (!response.ok || contentType.includes("application/json")) {
-      return response.json().then(data => {
-        throw new Error(data.msg || "TTS request failed");
-      });
+    const treatAsError = !response.ok || contentType.includes("application/json");
+    if (!treatAsError) {
+      return response.blob();
     }
-    return response.blob();
+    const data = await Setting.handleFetchResponse(response);
+    throw new Error((data && data.msg) || "TTS request failed");
   });
 }
 

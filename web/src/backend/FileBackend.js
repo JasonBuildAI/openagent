@@ -21,7 +21,7 @@ export function getGlobalFiles(page = "", pageSize = "", field = "", value = "",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getFiles(owner, store = "") {
@@ -31,7 +31,7 @@ export function getFiles(owner, store = "") {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getFile(owner, name) {
@@ -41,7 +41,7 @@ export function getFile(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateFile(owner, name, file) {
@@ -53,7 +53,7 @@ export function updateFile(owner, name, file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newFile),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addFile(file) {
@@ -65,7 +65,7 @@ export function addFile(file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newFile),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteFile(file) {
@@ -77,7 +77,7 @@ export function deleteFile(file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newFile),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function refreshFileVectors(file) {
@@ -89,5 +89,5 @@ export function refreshFileVectors(file) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newFile),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

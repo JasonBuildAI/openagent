@@ -21,7 +21,7 @@ export function getGlobalArticles() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getArticles(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getArticles(owner, page = "", pageSize = "", field = "", value =
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getArticle(owner, name) {
@@ -41,7 +41,7 @@ export function getArticle(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateArticle(owner, name, article) {
@@ -53,7 +53,7 @@ export function updateArticle(owner, name, article) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newArticle),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addArticle(article) {
@@ -65,7 +65,7 @@ export function addArticle(article) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newArticle),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteArticle(article) {
@@ -77,5 +77,5 @@ export function deleteArticle(article) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newArticle),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

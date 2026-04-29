@@ -22,8 +22,8 @@ const {confirm} = Modal;
 const {fetch: originalFetch} = window;
 
 const demoModeCallback = (res) => {
-  res.json().then(data => {
-    if (Setting.isResponseDenied(data)) {
+  Setting.handleFetchResponse(res).then(data => {
+    if (data && Setting.isResponseDenied(data)) {
       confirm({
         title: i18next.t("general:This is a read-only demo site!"),
         icon: <ExclamationCircleFilled />,

@@ -25,7 +25,7 @@ export function getUsages(serverUrl, storeName, selectedUser, days) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getRangeUsages(serverUrl, rangeType, count, storeName, selectedUser) {
@@ -39,7 +39,7 @@ export function getRangeUsages(serverUrl, rangeType, count, storeName, selectedU
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getUsers(serverUrl, user, storeName = "") {
@@ -53,7 +53,7 @@ export function getUsers(serverUrl, user, storeName = "") {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getUserTableInfos(serverUrl, storeName, user) {
@@ -66,7 +66,7 @@ export function getUserTableInfos(serverUrl, storeName, user) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getUsageProviders(owner) {
@@ -76,7 +76,7 @@ export function getUsageProviders(owner) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getUsageHeatmap(owner) {
@@ -86,5 +86,5 @@ export function getUsageHeatmap(owner) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

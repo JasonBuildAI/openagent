@@ -21,7 +21,7 @@ export function getGlobalVectors() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getVectors(owner, storeName, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getVectors(owner, storeName, page = "", pageSize = "", field = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getVector(owner, name) {
@@ -41,7 +41,7 @@ export function getVector(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateVector(owner, name, vector) {
@@ -53,7 +53,7 @@ export function updateVector(owner, name, vector) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVector),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addVector(vector) {
@@ -65,7 +65,7 @@ export function addVector(vector) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVector),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteVector(vector) {
@@ -77,7 +77,7 @@ export function deleteVector(vector) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVector),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteAllVectors() {
@@ -88,5 +88,5 @@ export function deleteAllVectors() {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: null,
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

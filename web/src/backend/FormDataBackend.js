@@ -21,5 +21,5 @@ export function getFormData(owner, form, page = "", pageSize = "", field = "", v
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

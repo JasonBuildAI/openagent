@@ -25,5 +25,5 @@ export function getActivities(serverUrl, selectedUser, days, fields) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

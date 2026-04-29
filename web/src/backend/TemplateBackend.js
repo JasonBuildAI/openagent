@@ -21,7 +21,7 @@ export function getTemplates(owner, page = "", pageSize = "", field = "", value 
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getTemplate(owner, name) {
@@ -31,7 +31,7 @@ export function getTemplate(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateTemplate(owner, name, template) {
@@ -43,7 +43,7 @@ export function updateTemplate(owner, name, template) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTemplate),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addTemplate(template) {
@@ -55,7 +55,7 @@ export function addTemplate(template) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTemplate),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteTemplate(template) {
@@ -67,7 +67,7 @@ export function deleteTemplate(template) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTemplate),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getK8sStatus() {
@@ -77,5 +77,5 @@ export function getK8sStatus() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
