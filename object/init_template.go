@@ -47,7 +47,7 @@ func initTemplates() {
 		}
 		if tpl != nil {
 			_, err = AddTemplate(tpl)
-			if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
+			if err != nil && !isUniqueConstraintError(err) {
 				logs.Error("Failed to add template %s: %v", tpl.Name, err)
 			}
 		}

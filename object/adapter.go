@@ -40,6 +40,16 @@ func init() {
 
 const defaultMySQLDataSourceName = "root:123456@tcp(localhost:3306)/"
 
+// isUniqueConstraintError reports whether err is a unique-constraint violation
+// from any supported database (MySQL: "Duplicate entry", SQLite: "UNIQUE constraint failed").
+func isUniqueConstraintError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := err.Error()
+	return strings.Contains(msg, "Duplicate entry") || strings.Contains(msg, "UNIQUE constraint failed")
+}
+
 // maskDSN strips credentials from a DSN, keeping only the host/path portion.
 // "user:pass@tcp(host:port)/db" → "tcp(host:port)/db"
 func maskDSN(dsn string) string {
