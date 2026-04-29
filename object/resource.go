@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/the-open-agent/openagent/auth"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 	"xorm.io/core"
 )
@@ -31,13 +32,15 @@ type Resource struct {
 
 	DisplayName string `xorm:"varchar(200)" json:"displayName"`
 	User        string `xorm:"varchar(100) index" json:"user"`
-	Category    string `xorm:"varchar(100)" json:"category"`   // "avatar", "chat", "document"
-	Format      string `xorm:"varchar(100)" json:"format"`     // "png", "jpg", "pdf", "docx", etc.
-	FileName    string `xorm:"varchar(500)" json:"fileName"`   // original filename
-	FileSize    int64  `xorm:"bigint" json:"fileSize"`         // size in bytes
-	Url         string `xorm:"varchar(500)" json:"url"`        // storage URL
-	ObjectType  string `xorm:"varchar(100)" json:"objectType"` // "store", "task", "message", "chat"
-	ObjectId    string `xorm:"varchar(200)" json:"objectId"`   // owner/name of the associated object
+	Category    string `xorm:"varchar(100)" json:"category"`    // "avatar", "chat", "document"
+	FileType    string `xorm:"varchar(100)" json:"fileType"`    // "image", "video", "application", etc.
+	FileFormat  string `xorm:"varchar(100)" json:"fileFormat"`  // ".png", ".jpg", ".pdf", ".docx", etc.
+	FileName    string `xorm:"varchar(500)" json:"fileName"`    // original filename
+	FileSize    int    `json:"fileSize"`                        // size in bytes
+	Url         string `xorm:"varchar(500)" json:"url"`         // public accessible URL
+	StorageName string `xorm:"varchar(500)" json:"storageName"` // Casdoor object key (used for deletion)
+	ObjectType  string `xorm:"varchar(100)" json:"objectType"`  // "store", "task", "message", "chat"
+	ObjectId    string `xorm:"varchar(200)" json:"objectId"`    // owner/name of the associated object
 }
 
 func (resource *Resource) GetId() string {
@@ -120,6 +123,20 @@ func AddResource(resource *Resource) (bool, error) {
 	return affected != 0, nil
 }
 
+// DeleteResourceFile deletes the actual file from Casdoor storage using the stored object key.
+// It is a no-op when Casdoor is not available.
+func DeleteResourceFile(resource *Resource) error {
+	if !conf.IsCasdoorAvailable() || resource.StorageName == "" {
+		return nil
+	}
+	casdoorResource := &auth.Resource{
+		Owner: resource.Owner,
+		Name:  resource.StorageName,
+	}
+	_, err := auth.DeleteResourceWithTag(casdoorResource, "")
+	return err
+}
+
 func DeleteResource(resource *Resource) (bool, error) {
 	affected, err := adapter.engine.ID(core.PK{resource.Owner, resource.Name}).Delete(&Resource{})
 	if err != nil {
@@ -144,7 +161,7 @@ func GetPaginationResources(owner string, offset, limit int, field, value, sortF
 }
 
 // NewResourceFromUpload builds a Resource record for a just-uploaded file.
-func NewResourceFromUpload(owner, user, category, fileName, format, url string, fileSize int64, objectType, objectId string) *Resource {
+func NewResourceFromUpload(owner, user, category, fileName, fileType, fileFormat, url, storageName string, fileSize int, objectType, objectId string) *Resource {
 	name := fmt.Sprintf("resource_%s_%s", util.GetCurrentTime(), util.GetRandomName())
 	return &Resource{
 		Owner:       owner,
@@ -153,30 +170,32 @@ func NewResourceFromUpload(owner, user, category, fileName, format, url string, 
 		DisplayName: fileName,
 		User:        user,
 		Category:    category,
-		Format:      format,
+		FileType:    fileType,
+		FileFormat:  fileFormat,
 		FileName:    fileName,
 		FileSize:    fileSize,
 		Url:         url,
+		StorageName: storageName,
 		ObjectType:  objectType,
 		ObjectId:    objectId,
 	}
 }
 
-func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (string, error) {
-	var fileUrl string
-	var err error
+// UploadFileToStorageSafe uploads fileBytes via Casdoor storage and returns
+// the public URL and the Casdoor object key (storageName) needed for later deletion.
+func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (fileUrl string, storageName string, err error) {
 	times := 0
 	for {
-		fileUrl, _, err = auth.UploadResource(user, tag, parent, fullFilePath, fileBytes)
+		fileUrl, storageName, err = auth.UploadResource(user, tag, parent, fullFilePath, fileBytes)
 		if err != nil {
 			times += 1
 			time.Sleep(3 * time.Second)
 			if times >= 10 {
-				return "", err
+				return "", "", err
 			}
 		} else {
 			break
 		}
 	}
-	return fileUrl, nil
+	return fileUrl, storageName, nil
 }

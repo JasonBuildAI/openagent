@@ -69,3 +69,21 @@ export function deleteResource(resource) {
     body: JSON.stringify(newResource),
   }).then(res => Setting.handleFetchResponse(res));
 }
+
+// uploadResource sends a file as multipart/form-data and creates a Resource record.
+// category: "avatar" | "chat" | "document"
+export function uploadResource(user, category, objectType, objectId, file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("category", category);
+  formData.append("objectType", objectType || "");
+  formData.append("objectId", objectId || "");
+  return fetch(`${Setting.ServerUrl}/api/upload-resource`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: formData,
+  }).then(res => Setting.handleFetchResponse(res));
+}

@@ -18,6 +18,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"mime"
 	"path/filepath"
 	"strings"
 
@@ -30,7 +31,7 @@ import (
 // GetGlobalResources
 // @Title GetGlobalResources
 // @Tag Resource API
-// @Description get global resources
+// @Description get global resources with pagination
 // @Success 200 {array} object.Resource The Response object
 // @router /get-global-resources [get]
 func (c *ApiController) GetGlobalResources() {
@@ -94,7 +95,7 @@ func (c *ApiController) GetResource() {
 // UpdateResource
 // @Title UpdateResource
 // @Tag Resource API
-// @Description update resource
+// @Description update resource metadata
 // @Param id query string true "The id (owner/name) of the resource"
 // @Param body body object.Resource true "The resource object"
 // @Success 200 {object} controllers.Response The Response object
@@ -121,7 +122,7 @@ func (c *ApiController) UpdateResource() {
 // AddResource
 // @Title AddResource
 // @Tag Resource API
-// @Description add resource
+// @Description add resource record
 // @Param body body object.Resource true "The resource object"
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-resource [post]
@@ -145,13 +146,20 @@ func (c *ApiController) AddResource() {
 // DeleteResource
 // @Title DeleteResource
 // @Tag Resource API
-// @Description delete resource
+// @Description delete resource record and its file from storage
 // @Param body body object.Resource true "The resource object"
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-resource [post]
 func (c *ApiController) DeleteResource() {
 	var resource object.Resource
 	err := json.NewDecoder(c.Ctx.Request.Body).Decode(&resource)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Delete the actual file from Casdoor storage first.
+	err = object.DeleteResourceFile(&resource)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -166,16 +174,91 @@ func (c *ApiController) DeleteResource() {
 	c.ResponseOk(success)
 }
 
+// UploadResourceFile
+// @Title UploadResourceFile
+// @Tag Resource API
+// @Description upload a file (multipart/form-data) and record it as a resource
+// @Param file formData file true "The file to upload"
+// @Param category formData string false "Resource category: avatar (default), chat, document"
+// @Param objectType formData string false "Associated object type: store, task, message, chat"
+// @Param objectId formData string false "Associated object id (owner/name)"
+// @Success 200 {object} controllers.Response The Response object (returns fileUrl)
+// @router /upload-resource [post]
+func (c *ApiController) UploadResourceFile() {
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
+	if !conf.IsCasdoorAvailable() {
+		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		return
+	}
+
+	category := c.GetString("category")
+	objectType := c.GetString("objectType")
+	objectId := c.GetString("objectId")
+	if category == "" {
+		category = "avatar"
+	}
+
+	file, header, err := c.GetFile("file")
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	defer file.Close()
+
+	fileName := header.Filename
+	fileSize := int(header.Size)
+
+	fileBytes := make([]byte, fileSize)
+	_, err = file.Read(fileBytes)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Detect MIME type and file type category
+	ext := strings.ToLower(filepath.Ext(fileName))
+	mimeType := header.Header.Get("Content-Type")
+	if mimeType == "" {
+		mimeType = mime.TypeByExtension(ext)
+	}
+	fileTypeParts := strings.SplitN(mimeType, "/", 2)
+	fileType := "unknown"
+	if len(fileTypeParts) > 0 {
+		fileType = fileTypeParts[0]
+	}
+
+	fullFilePath := fmt.Sprintf("openagent/resources/%s/%s/%s", category, userName, fileName)
+
+	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadResource", fullFilePath, fileBytes)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	resource := object.NewResourceFromUpload("admin", userName, category, fileName, fileType, ext, fileUrl, storageName, fileSize, objectType, objectId)
+	_, err = object.AddResource(resource)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(fileUrl, storageName)
+}
+
 // UploadFile
 // @Title UploadFile
 // @Tag File API
-// @Description upload file to storage and record it as a resource
+// @Description upload a base64-encoded file and record it as a resource
 // @Param file formData string true "The base64 encoded file data"
 // @Param type formData string true "The file type/extension"
 // @Param name formData string true "The file name"
 // @Param category formData string false "Resource category: avatar (default), chat, document"
-// @Param objectType formData string false "Associated object type: store, task, message, chat"
-// @Param objectId formData string false "Associated object id (owner/name)"
+// @Param objectType formData string false "Associated object type"
+// @Param objectId formData string false "Associated object id"
 // @Success 200 {object} controllers.Response The Response object
 // @router /upload-file [post]
 func (c *ApiController) UploadFile() {
@@ -219,14 +302,21 @@ func (c *ApiController) UploadFile() {
 		return
 	}
 
-	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadFile", filePath, fileBytes)
+	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadFile", filePath, fileBytes)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	format := strings.TrimPrefix(strings.ToLower(filepath.Ext(fileName)), ".")
-	resource := object.NewResourceFromUpload("admin", userName, category, fileName, format, fileUrl, int64(len(fileBytes)), objectType, objectId)
+	ext := strings.ToLower(filepath.Ext(fileName))
+	mimeType := mime.TypeByExtension(ext)
+	fileTypeParts := strings.SplitN(mimeType, "/", 2)
+	detectedFileType := "unknown"
+	if len(fileTypeParts) > 0 {
+		detectedFileType = fileTypeParts[0]
+	}
+
+	resource := object.NewResourceFromUpload("admin", userName, category, fileName, detectedFileType, ext, fileUrl, storageName, len(fileBytes), objectType, objectId)
 	_, err = object.AddResource(resource)
 	if err != nil {
 		c.ResponseError(err.Error())
