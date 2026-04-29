@@ -25,9 +25,8 @@
     "Sign in is unavailable": "登录不可用",
     "Signout failed": "登出失败",
     "Successfully signed out, redirected to homepage": "成功登出，跳转至首页",
-    "The two passwords that you entered do not match": "两次输入的密码不一致",
-    "input password": "输入密码",
-    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作",
+    "The two passwords that you entered do not match": "两次输入的密码不一致"
   },
   "application": {
     "Deploy": "部署",
@@ -278,6 +277,7 @@
     "IP - Tooltip": "节点内网IP地址",
     "Icon": "图标",
     "Icon - Tooltip": "图标URL或图片路径",
+    "Icon URL (optional)": "Icon URL (optional)",
     "Identity": "身份认证",
     "Images": "镜像",
     "Inactive": "已关闭",
@@ -636,6 +636,8 @@
     "Flavor - Tooltip": "语音风格",
     "Frequency penalty": "频率惩罚",
     "Frequency penalty - Tooltip": "频率惩罚（-2~2，正值减少常见词）",
+    "GUI tool": "GUI tool",
+    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "组ID",
     "Group ID - Tooltip": "MiniMax开发者群组ID",
     "Input price / 1k tokens": "输入价格 /千tokens",

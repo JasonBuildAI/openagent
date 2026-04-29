@@ -23,45 +23,28 @@ import ChatWidget from "./ChatWidget";
 
 const {Option} = Select;
 
-const GUI_TOOL_CONTENT = {
-  "gui_screenshot": JSON.stringify({
-    tool: "gui_screenshot",
-    arguments: {},
-  }, null, 2),
-  "gui_get_ui_tree": JSON.stringify({
-    tool: "gui_get_ui_tree",
-    arguments: {window_title: "Notepad", depth: 5},
-  }, null, 2),
-  "gui_click": JSON.stringify({
-    tool: "gui_click",
-    arguments: {window_title: "Notepad", control_name: "OK"},
-  }, null, 2),
-  "gui_double_click": JSON.stringify({
-    tool: "gui_double_click",
-    arguments: {window_title: "Notepad", control_name: "my_file.txt"},
-  }, null, 2),
-  "gui_type": JSON.stringify({
-    tool: "gui_type",
-    arguments: {window_title: "Notepad", text: "Hello from OpenAgent!", clear_first: false},
-  }, null, 2),
-  "gui_hotkey": JSON.stringify({
-    tool: "gui_hotkey",
-    arguments: {keys: ["ctrl", "s"], window_title: "Notepad"},
-  }, null, 2),
-  "gui_scroll": JSON.stringify({
-    tool: "gui_scroll",
-    arguments: {direction: "down", amount: 3, window_title: "Notepad"},
-  }, null, 2),
+const UIA_TOOL_CONTENT = {
+  "win_open_application": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
+  "win_focus_window": JSON.stringify({tool: "win_focus_window", arguments: {title_contains: "Calculator"}}, null, 2),
+  "win_find_element": JSON.stringify({tool: "win_find_element", arguments: {window_title_contains: "Calculator", control_type: "button", name_contains: "1"}}, null, 2),
+  "win_interact": JSON.stringify({tool: "win_interact", arguments: {action: "click", element_id: "el_1"}}, null, 2),
+  "win_wait": JSON.stringify({tool: "win_wait", arguments: {window_title_contains: "Calculator", timeout_seconds: 10}}, null, 2),
+  "win_assert": JSON.stringify({tool: "win_assert", arguments: {check: "window_exists", window_title_contains: "Calculator"}}, null, 2),
+  "win_read_system_metric": JSON.stringify({tool: "win_read_system_metric", arguments: {metric: "cpu_percent", duration_seconds: 10, interval_seconds: 1, aggregation: "avg"}}, null, 2),
+  "win_word_write_and_save": JSON.stringify({tool: "win_word_write_and_save", arguments: {content: "CPU avg: 12.34%", file_name: "CPU_Report.docx", overwrite: true}}, null, 2),
+  "win_safety_emergency_stop": JSON.stringify({tool: "win_safety_emergency_stop", arguments: {}}, null, 2),
 };
 
-const GUI_TOOL_OPTIONS = [
-  {value: "gui_screenshot", label: "gui_screenshot — Take desktop/window screenshot"},
-  {value: "gui_get_ui_tree", label: "gui_get_ui_tree — Get UI element tree"},
-  {value: "gui_click", label: "gui_click — Click element by name or coords"},
-  {value: "gui_double_click", label: "gui_double_click — Double-click element"},
-  {value: "gui_type", label: "gui_type — Type text into element"},
-  {value: "gui_hotkey", label: "gui_hotkey — Send keyboard shortcut"},
-  {value: "gui_scroll", label: "gui_scroll — Scroll in window"},
+const UIA_TOOL_OPTIONS = [
+  {value: "win_open_application", label: "win_open_application — Launch app"},
+  {value: "win_focus_window", label: "win_focus_window — Focus top-level window"},
+  {value: "win_find_element", label: "win_find_element — Find UIA element by criteria"},
+  {value: "win_interact", label: "win_interact — click/set_text/get_text/hotkey"},
+  {value: "win_wait", label: "win_wait — Wait by time/window condition"},
+  {value: "win_assert", label: "win_assert — Assert window/file/text condition"},
+  {value: "win_read_system_metric", label: "win_read_system_metric — Read CPU metric"},
+  {value: "win_word_write_and_save", label: "win_word_write_and_save — Legacy Word fallback"},
+  {value: "win_safety_emergency_stop", label: "win_safety_emergency_stop — Emergency stop"},
 ];
 
 const OFFICE_TOOL_CONTENT = {
@@ -80,7 +63,7 @@ const DEFAULT_TOOL_CONTENT = {
   Shell: JSON.stringify({tool: "shell", arguments: {command: "echo hello"}}, null, 2),
   "Web Fetch": JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
   "Web Browser": JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
-  "GUI": JSON.stringify({tool: "gui_screenshot", arguments: {}}, null, 2),
+  "GUI": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
 };
 
 function isValidToolTestJson(content) {
@@ -96,6 +79,9 @@ function buildDefaultToolTestJson(provider) {
   if (provider.type === "Office") {
     const subType = provider.subType || "All";
     return OFFICE_TOOL_CONTENT[subType] || OFFICE_TOOL_CONTENT["All"];
+  }
+  if (provider.type === "GUI") {
+    return UIA_TOOL_CONTENT["win_open_application"];
   }
   if (DEFAULT_TOOL_CONTENT[provider.type]) {
     return DEFAULT_TOOL_CONTENT[provider.type];
@@ -117,7 +103,7 @@ class TestToolWidget extends React.Component {
       lastSyncedType: props.provider ? (props.provider.type || null) : null,
       lastSyncedSubType: props.provider ? (props.provider.subType || null) : null,
       // GUI tool picker
-      selectedGuiTool: "gui_screenshot",
+      selectedGuiTool: "win_open_application",
     };
   }
 
@@ -190,6 +176,9 @@ class TestToolWidget extends React.Component {
     if (provider.resultSummary && provider.resultSummary !== prevSummary) {
       this.setState({testResult: provider.resultSummary});
     }
+    if (provider.type === "GUI" && this.state.selectedGuiTool.startsWith("gui_")) {
+      this.setState({selectedGuiTool: "win_open_application"});
+    }
   }
 
   async sendTestTool(provider, originalProvider) {
@@ -243,6 +232,9 @@ class TestToolWidget extends React.Component {
     const {modelProviders} = this.state;
     const selectedModelProvider = provider.modelProvider || "";
 
+    const guiToolOptions = UIA_TOOL_OPTIONS;
+    const guiToolContent = UIA_TOOL_CONTENT;
+
     if (!provider || provider.category !== "Tool") {
       return null;
     }
@@ -260,10 +252,10 @@ class TestToolWidget extends React.Component {
                 value={this.state.selectedGuiTool}
                 onChange={(value) => {
                   this.setState({selectedGuiTool: value});
-                  onUpdateProvider("testContent", GUI_TOOL_CONTENT[value]);
+                  onUpdateProvider("testContent", guiToolContent[value]);
                 }}
               >
-                {GUI_TOOL_OPTIONS.map((opt) => (
+                {guiToolOptions.map((opt) => (
                   <Option key={opt.value} value={opt.value}>{opt.label}</Option>
                 ))}
               </Select>

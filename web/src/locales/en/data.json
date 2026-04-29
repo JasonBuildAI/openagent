@@ -25,9 +25,8 @@
     "Sign in is unavailable": "Sign in is unavailable",
     "Signout failed": "Signout failed",
     "Successfully signed out, redirected to homepage": "Successfully signed out, redirected to homepage",
-    "The two passwords that you entered do not match": "The two passwords that you entered do not match",
-    "input password": "input password",
-    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions"
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions",
+    "The two passwords that you entered do not match": "The two passwords that you entered do not match"
   },
   "application": {
     "Deploy": "Deploy",
@@ -278,6 +277,7 @@
     "IP - Tooltip": "Private IP address for intranet access",
     "Icon": "Icon",
     "Icon - Tooltip": "URL or path to the icon image for visual identification",
+    "Icon URL (optional)": "Icon URL (optional)",
     "Identity": "Identity",
     "Images": "Images",
     "Inactive": "Inactive",
@@ -636,6 +636,8 @@
     "Flavor - Tooltip": "TTS voice style",
     "Frequency penalty": "Frequency penalty",
     "Frequency penalty - Tooltip": "Penalize frequent words",
+    "GUI tool": "GUI tool",
+    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "Group ID",
     "Group ID - Tooltip": "MiniMax developer group identifier",
     "Input price / 1k tokens": "Input price / 1k tokens",

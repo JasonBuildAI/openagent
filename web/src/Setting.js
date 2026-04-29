@@ -1129,7 +1129,7 @@ export function getOtherProviderInfo() {
       },
       "GUI": {
         logo: `${StaticBaseUrl}/img/social_microsoft.png`,
-        url: "https://github.com/microsoft/UFO",
+        url: "https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32",
       },
     },
     "Public Cloud": {
@@ -2230,7 +2230,7 @@ export function getProviderSubTypeOptions(category, type) {
       ];
     } else if (type === "GUI") {
       return [
-        {id: "Default", name: "Default"},
+        {id: "UIA", name: "UIA"},
       ];
     }
     return [];

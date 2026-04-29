@@ -136,9 +136,6 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
       }
     }
-    if (provider.category === "Tool" && provider.type === "GUI") {
-      return Setting.getLabel(i18next.t("provider:UFO server URL"), i18next.t("provider:UFO server URL - Tooltip"));
-    }
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
   }
 
@@ -557,7 +554,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Web Browser") {
                   this.updateProviderField("subType", "Default");
                 } else if (value === "GUI") {
-                  this.updateProviderField("subType", "Default");
+                  this.updateProviderField("subType", "UIA");
                 }
               } else if (this.state.provider.category === "Text-to-Speech") {
                 if (value === "Alibaba Cloud") {
@@ -1349,18 +1346,21 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category !== "Model" || this.modelCategoryShowsProviderUrlInput(this.state.provider.type)) ? (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {this.getProviderUrlLabel(this.state.provider)} :
-              </Col>
-              <Col span={22} >
-                <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
-                  this.updateProviderField("providerUrl", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          ) : null
+          (
+            (this.state.provider.category !== "Model" || this.modelCategoryShowsProviderUrlInput(this.state.provider.type)) &&
+            !(this.state.provider.category === "Tool" && this.state.provider.type === "GUI" && (this.state.provider.subType || "") === "UIA")
+          ) ? (
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getProviderUrlLabel(this.state.provider)} :
+                </Col>
+                <Col span={22} >
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
+                    this.updateProviderField("providerUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            ) : null
         }
         {
           this.state.provider.category === "Tool" && ["Web Search", "Web Fetch", "Web Browser"].includes(this.state.provider.type) ? (
