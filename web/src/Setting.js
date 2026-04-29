@@ -73,8 +73,12 @@ export function getSignupUrl() {
   return getUrlWithLanguage(CasdoorSdk.getSignupUrl());
 }
 
+export function isCasdoorAvailable() {
+  return !!(Conf.AuthConfig && Conf.AuthConfig.serverUrl);
+}
+
 export function getSigninUrl() {
-  if (!Conf.AuthConfig || !Conf.AuthConfig.serverUrl) {
+  if (!isCasdoorAvailable()) {
     return "";
   }
   return getUrlWithLanguage(CasdoorSdk.getSigninUrl());

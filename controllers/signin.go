@@ -53,9 +53,12 @@ type accountForm struct {
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-signin-options [get]
 func (c *ApiController) GetSigninOptions() {
+	signinEnabled := object.IsSigninEnabled()
+	autoSignin := signinEnabled && object.IsAdminUsingDefaultPassword()
 	c.ResponseOk(map[string]interface{}{
 		"casdoorAvailable": isCasdoorAvailable(),
-		"signinAvailable":  object.IsSigninEnabled(),
+		"signinAvailable":  signinEnabled,
+		"autoSignin":       autoSignin,
 	})
 }
 

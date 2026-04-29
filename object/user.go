@@ -222,6 +222,14 @@ func VerifyUser(username string, password string) (*User, bool, error) {
 	return user, true, nil
 }
 
+func IsAdminUsingDefaultPassword() bool {
+	user, err := GetUser("admin")
+	if err != nil || user == nil {
+		return false
+	}
+	return CheckUserPassword(user, "123")
+}
+
 func InitUsers() {
 	if !IsSigninEnabled() {
 		return

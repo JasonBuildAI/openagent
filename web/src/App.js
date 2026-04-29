@@ -223,8 +223,28 @@ class App extends Component {
         const account = res.data;
         if (account !== null) {
           this.setLanguage(account);
+          this.setState({account: account});
+          return;
         }
-        this.setState({account: account});
+
+        if (Setting.isCasdoorAvailable() || window.location.pathname === "/signin") {
+          this.setState({account: null});
+          return;
+        }
+
+        AccountBackend.getSigninOptions().then((optRes) => {
+          if (optRes.status === "ok" && optRes.data?.autoSignin) {
+            AccountBackend.signinWithPassword("admin", "123").then((signinRes) => {
+              if (signinRes.status === "ok") {
+                window.location.reload();
+              } else {
+                this.setState({account: null});
+              }
+            }).catch(() => this.setState({account: null}));
+          } else {
+            this.setState({account: null});
+          }
+        }).catch(() => this.setState({account: null}));
       });
   }
 
@@ -246,7 +266,7 @@ class App extends Component {
         if (res.status === "ok") {
           this.setState({account: null});
           Setting.showMessage("success", i18next.t("account:Successfully signed out, redirected to homepage"));
-          Setting.goToLink("/");
+          Setting.goToLink(Setting.isCasdoorAvailable() ? "/" : "/signin");
         } else {
           Setting.showMessage("error", `${i18next.t("account:Signout failed")}: ${res.msg}`);
         }
