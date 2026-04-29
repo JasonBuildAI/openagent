@@ -1,59 +1,81 @@
-# OpenAgent one-step install (Windows PowerShell): pull and run the all-in-one Docker image.
+# OpenAgent one-step install (Windows PowerShell): download the release binary for your platform.
 # Usage (run only if you trust this script source):
 #   irm https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.ps1 | iex
 #
-# Optional environment variables: same as scripts/install.sh (OPENAGENT_*, MYSQL_ROOT_PASSWORD, OPENAGENT_FORCE)
+# Optional environment variables:
+#   OPENAGENT_VERSION   e.g. v1.777.3  (default: latest release)
+#   INSTALL_DIR         installation directory (default: $env:LOCALAPPDATA\openagent)
 
 $ErrorActionPreference = 'Stop'
 
-$OpenAgentImage = if ($env:OPENAGENT_IMAGE) { $env:OPENAGENT_IMAGE } else { 'casbin/openagent-all-in-one' }
-$OpenAgentTag = if ($env:OPENAGENT_TAG) { $env:OPENAGENT_TAG } else { 'latest' }
-$OpenAgentPort = if ($env:OPENAGENT_PORT) { [int]$env:OPENAGENT_PORT } else { 14000 }
-$OpenAgentContainerName = if ($env:OPENAGENT_CONTAINER_NAME) { $env:OPENAGENT_CONTAINER_NAME } else { 'openagent' }
-$MysqlRootPassword = if ($env:MYSQL_ROOT_PASSWORD) { $env:MYSQL_ROOT_PASSWORD } else { '123456' }
-$OpenAgentForce = if ($env:OPENAGENT_FORCE -eq '1') { $true } else { $false }
+$Repo    = 'the-open-agent/openagent'
+$Version = if ($env:OPENAGENT_VERSION) { $env:OPENAGENT_VERSION } else { 'latest' }
+$InstallDir = if ($env:INSTALL_DIR) { $env:INSTALL_DIR } else { "$env:LOCALAPPDATA\openagent" }
 
-$ContainerHttpPort = 14000
-$FullImage = "${OpenAgentImage}:${OpenAgentTag}"
+function Write-Info { param([string]$Msg) Write-Host $Msg }
+function Write-Err  { param([string]$Msg) Write-Host "[openagent] $Msg" -ForegroundColor Red }
 
-function Test-DockerAvailable {
-    $docker = Get-Command docker -ErrorAction SilentlyContinue
-    if (-not $docker) {
-        throw 'docker not found. Install and start Docker Desktop for Windows.'
-    }
-    docker info 2>$null | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        throw 'Docker is not running or not accessible. Start Docker Desktop.'
-    }
+# ── resolve version ────────────────────────────────────────────────────────────
+if ($Version -eq 'latest') {
+    Write-Info 'Fetching latest release version...'
+    $release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
+    $Version = $release.tag_name
+    if (-not $Version) { throw 'Failed to fetch latest version from GitHub API.' }
+}
+Write-Info "Installing openagent $Version"
+
+# ── detect arch ───────────────────────────────────────────────────────────────
+$Arch = (Get-CimInstance Win32_Processor).Architecture
+# 0=x86, 5=ARM, 9=x86-64, 12=ARM64
+$ArchName = switch ($Arch) {
+    9  { 'x86_64' }
+    12 { 'arm64' }
+    default { throw "Unsupported architecture ($Arch). Download manually from https://github.com/$Repo/releases" }
 }
 
-Test-DockerAvailable
+$Filename = "openagent_Windows_${ArchName}.zip"
+$Url      = "https://github.com/$Repo/releases/download/$Version/$Filename"
 
-$existing = docker ps -a --format '{{.Names}}' | Where-Object { $_ -eq $OpenAgentContainerName }
-if ($existing) {
-    if ($OpenAgentForce) {
-        Write-Host "[openagent] Removing existing container: $OpenAgentContainerName"
-        docker rm -f $OpenAgentContainerName | Out-Null
+# ── download & extract ─────────────────────────────────────────────────────────
+$TmpDir = Join-Path $env:TEMP "openagent_install_$(Get-Random)"
+New-Item -ItemType Directory -Path $TmpDir | Out-Null
+
+try {
+    $ZipPath = Join-Path $TmpDir $Filename
+    Write-Info "Downloading $Url ..."
+    Invoke-WebRequest -Uri $Url -OutFile $ZipPath -UseBasicParsing
+
+    Write-Info 'Extracting...'
+    Expand-Archive -Path $ZipPath -DestinationPath $TmpDir -Force
+
+    $Binary = Get-ChildItem -Path $TmpDir -Filter 'openagent.exe' -Recurse | Select-Object -First 1
+    if (-not $Binary) { throw 'openagent.exe not found in archive.' }
+
+    # ── install ────────────────────────────────────────────────────────────────
+    if (-not (Test-Path $InstallDir)) {
+        New-Item -ItemType Directory -Path $InstallDir | Out-Null
     }
-    else {
-        throw "Container $OpenAgentContainerName already exists. Remove it, set OPENAGENT_CONTAINER_NAME, or OPENAGENT_FORCE=1."
-    }
+    Copy-Item -Path $Binary.FullName -Destination "$InstallDir\openagent.exe" -Force
+}
+finally {
+    Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
 }
 
-Write-Host "Pulling image $FullImage ..."
-docker pull $FullImage
+# ── add to PATH for this session and persistently for the user ─────────────────
+$UserPath = [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+if ($UserPath -notlike "*$InstallDir*") {
+    [System.Environment]::SetEnvironmentVariable('PATH', "$UserPath;$InstallDir", 'User')
+    $env:PATH = "$env:PATH;$InstallDir"
+    Write-Info "Added $InstallDir to your PATH."
+}
 
-Write-Host "Starting container $OpenAgentContainerName (first start may take tens of seconds for DB init) ..."
-docker run -d `
-    --name $OpenAgentContainerName `
-    --restart unless-stopped `
-    -p "${OpenAgentPort}:${ContainerHttpPort}" `
-    -e "MYSQL_ROOT_PASSWORD=$MysqlRootPassword" `
-    $FullImage
-
-Write-Host ""
-Write-Host "OpenAgent is running."
-Write-Host "  Web UI:  http://127.0.0.1:$OpenAgentPort/"
-Write-Host "  Logs:     docker logs -f $OpenAgentContainerName"
-Write-Host "  Stop:     docker rm -f $OpenAgentContainerName"
-Write-Host ""
+Write-Info ''
+Write-Info "openagent $Version installed to $InstallDir\openagent.exe"
+Write-Info ''
+Write-Info 'Next steps:'
+Write-Info '  1. Edit conf/app.conf to point to your MySQL/MariaDB database.'
+Write-Info '  2. Run: openagent serve'
+Write-Info '  3. Open:  http://127.0.0.1:14000/'
+Write-Info ''
+Write-Info "For more information visit https://github.com/$Repo"
+Write-Info ''
