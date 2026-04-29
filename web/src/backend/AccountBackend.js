@@ -21,7 +21,7 @@ export function getAccount() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getSigninOptions() {
@@ -31,7 +31,7 @@ export function getSigninOptions() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateAccount(account) {
@@ -43,7 +43,7 @@ export function updateAccount(account) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(account),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function signin(code, state) {
@@ -53,7 +53,7 @@ export function signin(code, state) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function signinWithPassword(username, password) {
@@ -65,7 +65,7 @@ export function signinWithPassword(username, password) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({username, password}),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function signout() {
@@ -75,5 +75,5 @@ export function signout() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -123,7 +123,7 @@ class App extends Component {
     const uri = location.pathname;
     this.setState({uri: uri});
     if (uri === "/" || uri === "/home") {
-      this.setState({selectedMenuKey: "/"});
+      this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/providers")) {
@@ -168,10 +168,6 @@ class App extends Component {
       this.setState({selectedMenuKey: "/workflows"});
     } else if (uri.includes("/audit")) {
       this.setState({selectedMenuKey: "/audit"});
-    } else if (uri.includes("/yolov8mi")) {
-      this.setState({selectedMenuKey: "/yolov8mi"});
-    } else if (uri.includes("/sr")) {
-      this.setState({selectedMenuKey: "/sr"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/scales")) {
@@ -180,20 +176,12 @@ class App extends Component {
       this.setState({selectedMenuKey: "/forms"});
     } else if (uri.includes("/articles")) {
       this.setState({selectedMenuKey: "/articles"});
-    } else if (uri.includes("/hospitals")) {
-      this.setState({selectedMenuKey: "/hospitals"});
-    } else if (uri.includes("/doctors")) {
-      this.setState({selectedMenuKey: "/doctors"});
-    } else if (uri.includes("/patients")) {
-      this.setState({selectedMenuKey: "/patients"});
-    } else if (uri.includes("/caases")) {
-      this.setState({selectedMenuKey: "/caases"});
-    } else if (uri.includes("/consultations")) {
-      this.setState({selectedMenuKey: "/consultations"});
     } else if (uri.includes("/public-videos")) {
       this.setState({selectedMenuKey: "/public-videos"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
+    } else if (uri.includes("/resources")) {
+      this.setState({selectedMenuKey: "/resources"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/sysinfo")) {

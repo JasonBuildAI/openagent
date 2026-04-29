@@ -21,7 +21,7 @@ export function getPods(owner, page = "", pageSize = "", field = "", value = "",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getPod(owner, name) {
@@ -31,7 +31,7 @@ export function getPod(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updatePod(owner, name, pod) {
@@ -43,7 +43,7 @@ export function updatePod(owner, name, pod) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addPod(pod) {
@@ -55,7 +55,7 @@ export function addPod(pod) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deletePod(pod) {
@@ -67,5 +67,5 @@ export function deletePod(pod) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

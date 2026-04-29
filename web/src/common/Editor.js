@@ -14,6 +14,7 @@
 
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
+import {EditorView} from "@codemirror/view";
 import {materialDark} from "@uiw/codemirror-theme-material";
 import {langs} from "@uiw/codemirror-extensions-langs";
 
@@ -37,6 +38,7 @@ export const Editor = (props) => {
     readOnly,
     editable,
     lineNumbers,
+    lineWrapping = false,
     style: userStyle,
     maxWidth,
     minWidth,
@@ -107,6 +109,9 @@ export const Editor = (props) => {
   default:
     extensions = [];
     break;
+  }
+  if (lineWrapping) {
+    extensions = [...extensions, EditorView.lineWrapping];
   }
 
   const codeMirror = (

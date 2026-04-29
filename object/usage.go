@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/model"
@@ -192,7 +192,7 @@ func GetUsage(date string) (*Usage, error) {
 
 func GetUsageMetadata(lang string) (*UsageMetadata, error) {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
-	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
+	organization, err := auth.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func GetUsageMetadata(lang string) (*UsageMetadata, error) {
 	}
 
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
-	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	application, err := auth.GetApplication(casdoorApplication)
 	if err != nil {
 		return nil, err
 	}

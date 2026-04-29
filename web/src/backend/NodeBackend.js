@@ -18,14 +18,14 @@ export function getNodes(page = "", pageSize = "", field = "", value = "", sortF
   return fetch(`${Setting.ServerUrl}/api/get-nodes?p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getNode(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-node?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateNode(owner, name, node) {
@@ -35,7 +35,7 @@ export function updateNode(owner, name, node) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newNode),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addNode(node) {
@@ -44,7 +44,7 @@ export function addNode(node) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newNode),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteNode(node) {
@@ -53,5 +53,5 @@ export function deleteNode(node) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newNode),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

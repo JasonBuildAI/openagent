@@ -21,12 +21,26 @@ const WelcomeHeader = ({store}) => {
   const avatar = (store === undefined) ? null : store.avatar || Setting.getDefaultAiAvatar();
 
   return (
-    <Welcome
-      variant="borderless"
-      icon={avatar}
-      title={(store === undefined) ? null : store.welcomeTitle || i18next.t("chat:Hello, I'm OpenAgent AI Assistant")}
-      description={(store === undefined) ? null : store.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
-    />
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "48px 24px 32px",
+      flex: 1,
+    }}>
+      <Welcome
+        variant="borderless"
+        icon={avatar}
+        title={(store === undefined) ? null : store.welcomeTitle || i18next.t("chat:Hello, I'm OpenAgent AI Assistant")}
+        description={(store === undefined) ? null : store.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
+        style={{textAlign: "center"}}
+        styles={{
+          title: {fontSize: "22px", fontWeight: 600, letterSpacing: "-0.3px"},
+          description: {fontSize: "15px", color: "#888", marginTop: "6px"},
+        }}
+      />
+    </div>
   );
 };
 

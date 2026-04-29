@@ -21,7 +21,7 @@ export function getGlobalMessages(page = "", pageSize = "", field = "", value = 
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getMessages(user, selectedUser = "") {
@@ -31,7 +31,7 @@ export function getMessages(user, selectedUser = "") {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getChatMessages(owner, chat) {
@@ -41,7 +41,7 @@ export function getChatMessages(owner, chat) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 const eventSourceMap = new Map();
@@ -107,7 +107,7 @@ export function getAnswer(provider, question, framework, video, toolProvider = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getMessage(owner, name) {
@@ -117,7 +117,7 @@ export function getMessage(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateMessage(owner, name, message, isHitOnly = false) {
@@ -129,7 +129,7 @@ export function updateMessage(owner, name, message, isHitOnly = false) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newMessage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function closeMessageEventSource(owner, name) {
@@ -152,7 +152,7 @@ export function addMessage(message) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newMessage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteMessage(message) {
@@ -164,7 +164,7 @@ export function deleteMessage(message) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newMessage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteWelcomeMessage(message) {
@@ -176,5 +176,5 @@ export function deleteWelcomeMessage(message) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newMessage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

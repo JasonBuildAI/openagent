@@ -21,7 +21,7 @@ export function getGlobalForms() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getForms(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getForms(owner, page = "", pageSize = "", field = "", value = ""
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getForm(owner, name) {
@@ -41,7 +41,7 @@ export function getForm(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateForm(owner, name, form) {
@@ -53,7 +53,7 @@ export function updateForm(owner, name, form) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newForm),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addForm(form) {
@@ -65,7 +65,7 @@ export function addForm(form) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newForm),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteForm(form) {
@@ -77,5 +77,5 @@ export function deleteForm(form) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newForm),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

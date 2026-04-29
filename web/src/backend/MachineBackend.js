@@ -21,7 +21,7 @@ export function getMachines(owner, page = "", pageSize = "", field = "", value =
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getMachine(owner, name) {
@@ -31,7 +31,7 @@ export function getMachine(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateMachine(owner, name, machine) {
@@ -43,7 +43,7 @@ export function updateMachine(owner, name, machine) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addMachine(machine) {
@@ -55,7 +55,7 @@ export function addMachine(machine) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteMachine(machine) {
@@ -67,5 +67,5 @@ export function deleteMachine(machine) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

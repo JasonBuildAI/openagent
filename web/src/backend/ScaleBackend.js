@@ -12,7 +12,7 @@ export function getGlobalScales() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getScales(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -22,7 +22,7 @@ export function getScales(owner, page = "", pageSize = "", field = "", value = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getScale(owner, name) {
@@ -32,7 +32,7 @@ export function getScale(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getPublicScales() {
@@ -42,7 +42,7 @@ export function getPublicScales() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateScale(owner, name, scale) {
@@ -54,7 +54,7 @@ export function updateScale(owner, name, scale) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newScale),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addScale(scale) {
@@ -66,7 +66,7 @@ export function addScale(scale) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newScale),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteScale(scale) {
@@ -78,5 +78,5 @@ export function deleteScale(scale) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newScale),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -592,6 +592,8 @@ class ChatPage extends BaseListPage {
             messages: null,
             messageError: false,
             generationMode: Setting.loadChatGenerationMode(newChat.owner, newChat.name),
+          }, () => {
+            this.chatBox.current?.focusInput();
           });
           this.getMessages(newChat);
 
@@ -791,7 +793,14 @@ class ChatPage extends BaseListPage {
         }
         {
           !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && !this.state.chatMenuCollapsed && (
-            <div style={{width: "250px", height: "100%", marginRight: "2px"}}>
+            <div style={{
+              width: "250px",
+              height: "100%",
+              marginRight: "0",
+              background: "#f7f8fa",
+              borderRight: "1px solid #ebebeb",
+              flexShrink: 0,
+            }}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} currentStoreName={currentStoreName} />
             </div>
           )
@@ -804,14 +813,14 @@ class ChatPage extends BaseListPage {
           </Drawer>
         )}
 
-        <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column"}}>
+        <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column", minWidth: 0}}>
           {this.state.chat && this.state.paneCount === 1 && (
-            <div style={{display: "flex", alignItems: "center", marginLeft: "15px"}}>
+            <div style={{display: "flex", alignItems: "center", borderBottom: "1px solid #f0f0f0", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)"}}>
               {Setting.isMobile() && (
-                <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
+                <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{margin: "0 4px"}} />
               )}
               {!(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
-                <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{marginRight: "8px"}} />
+                <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{margin: "0 4px"}} />
               )}
               <div style={{flex: 1}}>
                 <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} generationMode={this.state.generationMode} onGenerationModeChange={this.handleGenerationModeChange} />

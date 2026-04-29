@@ -21,7 +21,7 @@ export function getGlobalTasks() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getTasks(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getTasks(owner, page = "", pageSize = "", field = "", value = ""
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getTask(owner, name) {
@@ -41,7 +41,7 @@ export function getTask(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateTask(owner, name, task) {
@@ -53,7 +53,7 @@ export function updateTask(owner, name, task) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTask),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addTask(task) {
@@ -65,7 +65,7 @@ export function addTask(task) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTask),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteTask(task) {
@@ -77,7 +77,7 @@ export function deleteTask(task) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newTask),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function uploadTaskDocument(taskId, base64, filename, filetype) {
@@ -92,7 +92,7 @@ export function uploadTaskDocument(taskId, base64, filename, filetype) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: formData,
-  }).then((res) => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function analyzeTask(owner, name) {
@@ -102,5 +102,5 @@ export function analyzeTask(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

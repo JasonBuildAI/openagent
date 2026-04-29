@@ -27,12 +27,11 @@ export function processSpeechToText(storeId, audioBlob) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: formData,
-  }).then(response => {
-    if (!response.ok) {
-      return response.json().then(data => {
+  }).then(res => Setting.handleFetchResponse(res))
+    .then(data => {
+      if (data && data.status === "error") {
         throw new Error(data.msg || "Speech-to-text request failed");
-      });
-    }
-    return response.json();
-  });
+      }
+      return data;
+    });
 }

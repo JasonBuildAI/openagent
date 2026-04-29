@@ -21,7 +21,7 @@ export function getGlobalChats(page = "", pageSize = "", field = "", value = "",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getChats(user, storeName = "", page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "", selectedUser = "", startTime = "", endTime = "") {
@@ -31,7 +31,7 @@ export function getChats(user, storeName = "", page = "", pageSize = "", field =
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getChat(owner, name) {
@@ -41,7 +41,7 @@ export function getChat(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateChat(owner, name, chat) {
@@ -53,7 +53,7 @@ export function updateChat(owner, name, chat) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newChat),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addChat(chat) {
@@ -65,7 +65,7 @@ export function addChat(chat) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newChat),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteChat(chat) {
@@ -77,5 +77,5 @@ export function deleteChat(chat) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newChat),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -16,6 +16,7 @@ package model
 
 import (
 	"io"
+	"math/rand"
 	"strings"
 )
 
@@ -39,10 +40,21 @@ This is a dummy module provider.
 `
 }
 
+var welcomeMessages = []string{
+	"Hello! Welcome to OpenAgent. How can I assist you today?",
+	"Hi there! I'm your AI assistant powered by OpenAgent. What can I help you with?",
+	"Welcome to OpenAgent! I'm ready to help. What's on your mind?",
+	"Hello! I'm the OpenAgent AI assistant. Feel free to ask me anything!",
+	"Greetings! I'm here to assist you. How can I help you today?",
+}
+
 func (p *DummyModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage, agentInfo *AgentInfo, lang string) (*ModelResult, error) {
-	answer := "this is the answer for \"" + message + "\""
 	if strings.HasPrefix(message, "$OpenAgentDryRun$") {
 		return &ModelResult{}, nil
+	}
+	answer := "this is the answer for \"" + message + "\""
+	if strings.TrimSpace(message) == "Hello" {
+		answer = welcomeMessages[rand.Intn(len(welcomeMessages))]
 	}
 	err := flushDataAzure(answer, writer, lang)
 	if err != nil {

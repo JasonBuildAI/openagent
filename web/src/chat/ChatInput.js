@@ -22,7 +22,7 @@ import ChatInputMenu from "./ChatInputMenu";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 
-const ChatInput = ({
+const ChatInput = React.forwardRef(({
   value,
   store,
   chat,
@@ -39,7 +39,11 @@ const ChatInput = ({
   isVoiceInput,
   webSearchEnabled,
   onWebSearchChange,
-}) => {
+}, ref) => {
+  const senderRef = React.useRef(null);
+  React.useImperativeHandle(ref, () => ({
+    focus: () => senderRef.current?.focus(),
+  }));
 
   let storageThemeAlgorithm = [];
   try {
@@ -174,6 +178,7 @@ const ChatInput = ({
           </div>
         )}
         <Sender
+          ref={senderRef}
           prefix={
             <ChatInputMenu
               disabled={disableInput || messageError}
@@ -218,6 +223,6 @@ const ChatInput = ({
       </div>
     </div>
   );
-};
+});
 
 export default ChatInput;

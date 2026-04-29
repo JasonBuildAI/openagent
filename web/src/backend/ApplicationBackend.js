@@ -21,7 +21,7 @@ export function getApplications(owner, page = "", pageSize = "", field = "", val
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getApplication(owner, name) {
@@ -31,7 +31,7 @@ export function getApplication(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateApplication(owner, name, application) {
@@ -43,7 +43,7 @@ export function updateApplication(owner, name, application) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newApplication),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addApplication(application) {
@@ -55,7 +55,7 @@ export function addApplication(application) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newApplication),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteApplication(application) {
@@ -66,7 +66,7 @@ export function deleteApplication(application) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(application),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deployApplication(application) {
@@ -78,7 +78,7 @@ export function deployApplication(application) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newApplication),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function undeployApplication(owner, name) {
@@ -88,5 +88,5 @@ export function undeployApplication(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

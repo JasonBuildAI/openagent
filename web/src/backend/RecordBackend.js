@@ -18,14 +18,14 @@ export function getRecords(owner, page = "", pageSize = "", field = "", value = 
   return fetch(`${Setting.ServerUrl}/api/get-records?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getRecord(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-record?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateRecord(owner, name, record) {
@@ -34,7 +34,7 @@ export function updateRecord(owner, name, record) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addRecord(record) {
@@ -43,7 +43,7 @@ export function addRecord(record) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteRecord(record) {
@@ -52,7 +52,7 @@ export function deleteRecord(record) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function commitRecord(record) {
@@ -61,7 +61,7 @@ export function commitRecord(record) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function commitRecordSecond(record) {
@@ -70,19 +70,19 @@ export function commitRecordSecond(record) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newRecord),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function queryRecord(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/query-record?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function queryRecordSecond(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/query-record-second?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

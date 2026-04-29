@@ -47,11 +47,6 @@ const RESOURCE_LABELS = {
   "articles": "general:Articles",
   "videos": "general:Videos",
   "public-videos": "general:Public Videos",
-  "hospitals": "med:Hospitals",
-  "doctors": "med:Doctors",
-  "patients": "med:Patients",
-  "caases": "med:Caases",
-  "consultations": "med:Consultations",
   "sysinfo": "general:System Info",
 };
 

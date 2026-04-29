@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
@@ -27,7 +26,6 @@ import (
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
-	initTemplates()
 	InitUsers()
 }
 
@@ -160,7 +158,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			IsDefault:   true,
 		}
 		_, err = AddProvider(storageProvider)
-		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
+		if err != nil && !isUniqueConstraintError(err) {
 			panic(err)
 		}
 	}
@@ -177,7 +175,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			IsDefault:   true,
 		}
 		_, err = AddProvider(modelProvider)
-		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
+		if err != nil && !isUniqueConstraintError(err) {
 			panic(err)
 		}
 	}
@@ -194,7 +192,7 @@ func initBuiltInProviders() (string, string, string, string) {
 			IsDefault:   true,
 		}
 		_, err = AddProvider(embeddingProvider)
-		if err != nil && !strings.Contains(err.Error(), "Duplicate entry") {
+		if err != nil && !isUniqueConstraintError(err) {
 			panic(err)
 		}
 	}

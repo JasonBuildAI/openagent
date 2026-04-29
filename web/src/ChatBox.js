@@ -47,6 +47,7 @@ class ChatBox extends React.Component {
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
+    this.inputRef = React.createRef();
     this.ttsHelper = new TtsHelper(this);
     this.sttHelper = new SpeechToTextHelper(this);
   }
@@ -55,11 +56,27 @@ class ChatBox extends React.Component {
     this.setState({webSearchEnabled: enabled});
   };
 
+  focusInput() {
+    this.inputRef.current?.focus();
+  }
+
+  scheduleFocusInput() {
+    if (this.props.disableInput || this.props.autoFocusInput === false) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.focusInput();
+      });
+    });
+  }
+
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
       this.synth.cancel();
     });
     this.addCursorPositionListener();
+    this.scheduleFocusInput();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -75,6 +92,9 @@ class ChatBox extends React.Component {
     if (prevProps.messages?.length !== this.props.messages?.length) {
       this.setState({messages: this.props.messages});
       this.scrollToBottom();
+    }
+    if (prevProps.name !== this.props.name) {
+      this.scheduleFocusInput();
     }
   }
 
@@ -340,7 +360,7 @@ class ChatBox extends React.Component {
 
     return (
       <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px", ...this.props.styles?.layout}}>
-        <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px", ...this.props.styles?.card}}>
+        <Card variant="borderless" style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "0", boxShadow: "none", ...this.props.styles?.card}}>
           {messages.length === 0 && !hasUrlMessage && <WelcomeHeader store={this.props.store} />}
 
           <MessageList
@@ -366,6 +386,7 @@ class ChatBox extends React.Component {
 
           {!this.props.disableInput && (
             <ChatInput
+              ref={this.inputRef}
               value={this.state.value}
               store={this.props.store}
               chat={this.props.chat}

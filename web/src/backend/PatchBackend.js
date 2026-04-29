@@ -21,5 +21,5 @@ export function installPatch(provider, patchId, scan) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

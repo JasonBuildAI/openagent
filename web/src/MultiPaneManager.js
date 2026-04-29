@@ -461,7 +461,7 @@ const MultiPaneManager = ({
 
       {index === 0 && canManagePanes && (
         <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-          <span style={{fontSize: "12px", color: "#666"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
+          <span>{i18next.t("chat:Panes")}: {paneCount}</span>
           <Button size="small" icon={<PlusOutlined />} onClick={() => paneCount < 4 && onPaneCountChange?.(paneCount + 1)} />
           <Button size="small" icon={<MinusOutlined />} onClick={() => paneCount > 1 && onPaneCountChange?.(paneCount - 1)} disabled={paneCount <= 1} />
         </div>
@@ -496,7 +496,7 @@ const MultiPaneManager = ({
               )}
 
               <div style={{flex: 1}}>
-                <ChatBox disableInput={false} loading={messageLoading} messages={pane.messages || []} messageError={messageError} sendMessage={(text, fileName, regenerate = false) => sendMessage(index, text, fileName, false, regenerate)} onMessageEdit={() => getMessages(index, pane.chat)} onCancelMessage={onCancelMessage} account={account} name={pane.chat?.name} displayName={pane.chat?.displayName} store={pane.store || defaultStore} />
+                <ChatBox autoFocusInput={paneCount <= 1} disableInput={false} loading={messageLoading} messages={pane.messages || []} messageError={messageError} sendMessage={(text, fileName, regenerate = false) => sendMessage(index, text, fileName, false, regenerate)} onMessageEdit={() => getMessages(index, pane.chat)} onCancelMessage={onCancelMessage} account={account} name={pane.chat?.name} displayName={pane.chat?.displayName} store={pane.store || defaultStore} />
               </div>
             </div>
           );

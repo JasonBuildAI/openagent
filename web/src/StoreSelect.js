@@ -97,10 +97,24 @@ function StoreSelect(props) {
     return getUserBoundStore(stores) !== null;
   };
 
+  const storeLabel = (store) => {
+    const text = store.displayName || store.name;
+    return (
+      <span style={{display: "flex", alignItems: "center", gap: 8}}>
+        <img
+          src={Setting.getStoreIconUrl(store)}
+          alt=""
+          style={{width: 20, height: 20, borderRadius: 4, objectFit: "cover", flexShrink: 0}}
+        />
+        <span>{text}</span>
+      </span>
+    );
+  };
+
   const getStoreItems = () => {
     const items = [];
 
-    stores.forEach((store) => items.push(Setting.getOption(store.displayName, store.name)));
+    stores.forEach((store) => items.push({value: store.name, label: storeLabel(store)}));
 
     if (withAll) {
       items.unshift({
@@ -123,7 +137,13 @@ function StoreSelect(props) {
       popupMatchSelectWidth={false}
       value={value}
       onChange={handleOnChange}
-      filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+      filterOption={(input, option) => {
+        if (option?.value === "All") {
+          return i18next.t("store:All").toLowerCase().includes(input.toLowerCase());
+        }
+        const s = stores.find(st => st.name === option?.value);
+        return ((s?.displayName || s?.name || "")).toLowerCase().includes(input.toLowerCase());
+      }}
       style={style}
       onSelect={onSelect}
       className={className}

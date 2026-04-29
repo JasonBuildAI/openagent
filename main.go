@@ -32,7 +32,8 @@ import (
 )
 
 func main() {
-	if handled, code := cli.EarlyDispatch(); handled {
+	handled, code, openBrowser := cli.EarlyDispatch()
+	if handled {
 		os.Exit(code)
 	}
 
@@ -106,6 +107,10 @@ func main() {
 	}
 
 	go object.ClearThroughputPerSecond()
+
+	if openBrowser {
+		go util.OpenBrowser(fmt.Sprintf("http://127.0.0.1:%v/", port))
+	}
 
 	beego.Run(fmt.Sprintf(":%v", port))
 }

@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/context"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/util"
@@ -34,13 +34,13 @@ type Response struct {
 	Data2  interface{} `json:"data2"`
 }
 
-func GetSessionUser(ctx *context.Context) *casdoorsdk.User {
+func GetSessionUser(ctx *context.Context) *auth.User {
 	s := ctx.Input.Session("user")
 	if s == nil {
 		return nil
 	}
 
-	claims := s.(casdoorsdk.Claims)
+	claims := s.(auth.Claims)
 	return &claims.User
 }
 
@@ -90,8 +90,8 @@ func setSessionUser(ctx *context.Context, userId string) {
 	if err != nil {
 		panic(err)
 	}
-	claims := casdoorsdk.Claims{
-		User: casdoorsdk.User{
+	claims := auth.Claims{
+		User: auth.User{
 			Owner:   owner,
 			Name:    name,
 			IsAdmin: true,

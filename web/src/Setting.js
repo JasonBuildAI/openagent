@@ -139,6 +139,34 @@ export function parseJson(s) {
   }
 }
 
+/**
+ * Reads a fetch Response body and returns parsed JSON, or a normalized {status: "error", msg}
+ * when HTTP failed or the body is not JSON (e.g. HTML error pages).
+ */
+export async function handleFetchResponse(res) {
+  const text = await res.text();
+  let data = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      if (!res.ok) {
+        const preview = text.replace(/\s+/g, " ").trim().slice(0, 160);
+        return {
+          status: "error",
+          msg: `HTTP ${res.status} ${res.statusText || ""}`.trim() + (preview ? `: ${preview}` : ""),
+        };
+      }
+      throw new Error("Invalid JSON response");
+    }
+  }
+  if (!res.ok) {
+    const msg = (data && (data.msg || data.message)) || `HTTP ${res.status} ${res.statusText || ""}`.trim();
+    return {status: "error", msg};
+  }
+  return data;
+}
+
 export function myParseInt(i) {
   const res = parseInt(i);
   return isNaN(res) ? 0 : res;
@@ -623,11 +651,11 @@ export function deleteElementFromSet(set, newUser) {
 export const redirectCatchJsonError = async(url) => {
   try {
     const response = await fetch(url);
-    const msg = await response.json();
+    const data = await handleFetchResponse(response);
     if (response.ok) {
       this.props.history.push(url);
     } else {
-      showMessage("error", `${i18next.t("general:Failed to redirect")}: ${msg}`);
+      showMessage("error", `${i18next.t("general:Failed to redirect")}: ${(data && data.msg) || ""}`);
     }
   } catch (error) {
     showMessage("error", `${i18next.t("general:Failed to redirect")}: ${error.message}`);
@@ -2683,6 +2711,14 @@ export function getFaviconUrl(themes, storeFaviconUrl) {
   } else {
     return faviconUrl;
   }
+}
+
+/** Store avatar for dropdowns (same source as store list). */
+export function getStoreIconUrl(store) {
+  if (!store) {
+    return getDefaultAiAvatar();
+  }
+  return store.avatar || getDefaultAiAvatar();
 }
 
 export function getLogo(themes, storeLogoUrl) {

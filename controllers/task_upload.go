@@ -99,16 +99,17 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Upload file to storage
-	if !isCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-		return
-	}
-
 	filePath := fmt.Sprintf("openagent/task-documents/%s/%s", userName, fileName)
-	fileUrl, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
+	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	// Record the upload as a resource
+	resource := object.NewResourceFromUpload("admin", userName, "document", fileName, "application", ext, fileUrl, storageName, len(fileBytes), "task", taskId)
+	if _, addErr := object.AddResource(resource); addErr != nil {
+		logs.Warning("Failed to save resource record for task document: %v", addErr)
 	}
 
 	// Parse document text

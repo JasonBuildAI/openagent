@@ -202,7 +202,7 @@ class FileListPage extends BaseListPage {
         title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
-        width: "100px",
+        width: "110px",
         sorter: (a, b) => a.tokenCount - b.tokenCount,
       },
       {

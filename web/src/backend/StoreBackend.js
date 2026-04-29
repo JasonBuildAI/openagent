@@ -21,7 +21,7 @@ export function getGlobalStores(name = "", page = "", pageSize = "", field = "",
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getStores(owner) {
@@ -31,7 +31,7 @@ export function getStores(owner) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getStore(owner, name) {
@@ -41,7 +41,7 @@ export function getStore(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getStoreNames(owner) {
@@ -51,7 +51,7 @@ export function getStoreNames(owner) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateStore(owner, name, store) {
@@ -63,7 +63,7 @@ export function updateStore(owner, name, store) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newStore),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addStore(store) {
@@ -75,7 +75,7 @@ export function addStore(store) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newStore),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteStore(store) {
@@ -87,7 +87,7 @@ export function deleteStore(store) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newStore),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function refreshStoreVectors(store) {
@@ -99,7 +99,7 @@ export function refreshStoreVectors(store) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newStore),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function claimStore(owner, name) {
@@ -109,7 +109,7 @@ export function claimStore(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addSharedStore(owner, name, targetUser) {
@@ -121,5 +121,5 @@ export function addSharedStore(owner, name, targetUser) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({owner, name, targetUser}),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

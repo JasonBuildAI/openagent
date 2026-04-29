@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -77,7 +77,7 @@ func ShareStore(srcOwner, srcName, targetUserName, sharedByUserName string) (*St
 		return nil, err
 	}
 	if accountUser == nil {
-		targetUser, err := casdoorsdk.GetUser(targetUserName)
+		targetUser, err := auth.GetUser(targetUserName)
 		if err != nil {
 			return nil, err
 		}

@@ -18,11 +18,11 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 )
 
-func userMatchesCasdoorOrganization(configOrg string, u *casdoorsdk.User) bool {
+func userMatchesCasdoorOrganization(configOrg string, u *auth.User) bool {
 	if u == nil {
 		return false
 	}
@@ -63,13 +63,13 @@ func (c *ApiController) GetOrganizationUsers() {
 		c.ResponseError(c.T("auth:this operation requires admin privilege"))
 		return
 	}
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseOk([]organizationUser{})
 		return
 	}
 
 	org := conf.GetConfigString("casdoorOrganization")
-	users, err := casdoorsdk.GetUsers()
+	users, err := auth.GetUsers()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

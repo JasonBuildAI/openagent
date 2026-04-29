@@ -162,6 +162,8 @@ export const shadcnThemeComponents = {
     groupTitleFontSize: 12,
     itemHeight: 40,
     fontWeightStrong: 600,
+    itemSelectedBg: "rgba(0, 0, 0, 0.12)",
+    itemSelectedColor: "inherit",
   },
   Table: {
     headerBg: "#fafafa",
