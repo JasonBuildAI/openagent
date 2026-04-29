@@ -60,11 +60,23 @@ class ChatBox extends React.Component {
     this.inputRef.current?.focus();
   }
 
+  scheduleFocusInput() {
+    if (this.props.disableInput || this.props.autoFocusInput === false) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.focusInput();
+      });
+    });
+  }
+
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
       this.synth.cancel();
     });
     this.addCursorPositionListener();
+    this.scheduleFocusInput();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -80,6 +92,9 @@ class ChatBox extends React.Component {
     if (prevProps.messages?.length !== this.props.messages?.length) {
       this.setState({messages: this.props.messages});
       this.scrollToBottom();
+    }
+    if (prevProps.name !== this.props.name) {
+      this.scheduleFocusInput();
     }
   }
 
