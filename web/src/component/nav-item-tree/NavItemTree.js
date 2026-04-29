@@ -73,8 +73,6 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Forms"), key: "/forms"},
             {title: i18next.t("general:Workflows"), key: "/workflows"},
             {title: i18next.t("general:Audit"), key: "/audit"},
-            {title: i18next.t("med:Medical Image Analysis"), key: "/yolov8mi"},
-            {title: i18next.t("med:Super Resolution"), key: "/sr"},
             {title: i18next.t("general:Articles"), key: "/articles"},
             {title: i18next.t("general:Graphs"), key: "/graphs"},
           ],

@@ -174,8 +174,6 @@ class FileTree extends React.Component {
           });
 
           const uploadFileType = e.target.value;
-          // console.log(this.state.file);
-          // console.log(this.state.info);
 
           const newInfo = Setting.deepCopy(this.state.info);
           if (uploadFileType !== "Other") {
@@ -191,7 +189,7 @@ class FileTree extends React.Component {
           <Radio.Button value={"ECG"}>ECG</Radio.Button>
           <Radio.Button value={"Impedance"}>Impedance</Radio.Button>
           {/* <Radio.Button value={"EEG"}>EEG</Radio.Button>*/}
-          <Radio.Button value={"Other"}>{i18next.t("med:Other")}</Radio.Button>
+          <Radio.Button value={"Other"}>{i18next.t("general:Other")}</Radio.Button>
         </Radio.Group>
       </Modal>
     );

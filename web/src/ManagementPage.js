@@ -20,7 +20,6 @@ import {
   ApiOutlined,
   AppstoreOutlined,
   AuditOutlined,
-  BankOutlined,
   BarsOutlined,
   BlockOutlined,
   BranchesOutlined,
@@ -34,9 +33,7 @@ import {
   DeploymentUnitOutlined,
   DesktopOutlined,
   DownOutlined,
-  ExperimentOutlined,
   FileOutlined,
-  FileSearchOutlined,
   FileTextOutlined,
   FormOutlined,
   FundOutlined,
@@ -47,7 +44,6 @@ import {
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
-  MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MessageOutlined,
@@ -55,7 +51,6 @@ import {
   PictureOutlined,
   PlaySquareOutlined,
   ReadOutlined,
-  RiseOutlined,
   SafetyOutlined,
   ScanOutlined,
   SettingOutlined,
@@ -135,8 +130,6 @@ import ActivityPage from "./ActivityPage";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
 import AuditPage from "./frame/AuditPage";
-import PythonYolov8miPage from "./frame/PythonYolov8miPage";
-import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import OsDesktop from "./OsDesktop";
 import TemplateListPage from "./TemplateListPage";
@@ -145,17 +138,6 @@ import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import ApplicationDetailsPage from "./ApplicationViewPage";
-import HospitalListPage from "./HospitalListPage";
-import HospitalEditPage from "./HospitalEditPage";
-import DoctorListPage from "./DoctorListPage";
-import DoctorEditPage from "./DoctorEditPage";
-import PatientListPage from "./PatientListPage";
-import PatientEditPage from "./PatientEditPage";
-import CaaseListPage from "./CaaseListPage";
-import CaaseEditPage from "./CaaseEditPage";
-import ConsultationListPage from "./ConsultationListPage";
-import ConsultationEditPage from "./ConsultationEditPage";
-
 const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
@@ -164,7 +146,7 @@ function getMenuParentKey(uri) {
   if (uri.includes("/chat") || uri.includes("/usages") || uri.includes("/activities") || uri.includes("/desktop")) {return "/home";}
   if (uri.includes("/stores") || uri.includes("/files") || uri.includes("/providers") || uri.includes("/vectors")) {return "/ai-setting";}
   if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench")) {return "/cloud";}
-  if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/hospitals") || uri.includes("/doctors") || uri.includes("/patients") || uri.includes("/caases") || uri.includes("/consultations") || uri.includes("/audit") || uri.includes("/yolov8mi") || uri.includes("/sr") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
+  if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
   if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
   if (uri.includes("/users") || uri.includes("/resources") || uri.includes("/permissions")) {return "/identity";}
   if (uri.includes("/sysinfo") || uri.includes("/swagger")) {return "/admin";}
@@ -548,14 +530,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales", <FundOutlined />),
         Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms", <FormOutlined />),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BranchesOutlined />),
-        Setting.getItem(<Link to="/hospitals">{i18next.t("med:Hospitals")}</Link>, "/hospitals", <BankOutlined />),
-        Setting.getItem(<Link to="/doctors">{i18next.t("med:Doctors")}</Link>, "/doctors", <MedicineBoxOutlined />),
-        Setting.getItem(<Link to="/patients">{i18next.t("med:Patients")}</Link>, "/patients", <UserOutlined />),
-        Setting.getItem(<Link to="/caases">{i18next.t("med:Caases")}</Link>, "/caases", <FileSearchOutlined />),
-        Setting.getItem(<Link to="/consultations">{i18next.t("med:Consultations")}</Link>, "/consultations", <TeamOutlined />),
         Setting.getItem(<Link to="/audit">{i18next.t("general:Audit")}</Link>, "/audit", <AuditOutlined />),
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi", <ExperimentOutlined />),
-        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr", <RiseOutlined />),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles", <ReadOutlined />),
         Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs", <ShareAltOutlined />),
         Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans", <ScanOutlined />),
@@ -696,8 +671,6 @@ function ManagementPage(props) {
         <Route exact path="/workflows" render={(props) => renderSigninIfNotSignedIn(<WorkflowListPage account={account} {...props} />)} />
         <Route exact path="/workflows/:workflowName" render={(props) => renderSigninIfNotSignedIn(<WorkflowEditPage account={account} {...props} />)} />
         <Route exact path="/audit" render={(props) => renderSigninIfNotSignedIn(<AuditPage account={account} {...props} />)} />
-        <Route exact path="/yolov8mi" render={(props) => renderSigninIfNotSignedIn(<PythonYolov8miPage account={account} {...props} />)} />
-        <Route exact path="/sr" render={(props) => renderSigninIfNotSignedIn(<PythonSrPage account={account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => renderSigninIfNotSignedIn(<TaskListPage account={account} {...props} />)} />
         <Route exact path="/tasks/:owner/:taskName" render={(props) => renderSigninIfNotSignedIn(<TaskEditPage account={account} {...props} />)} />
         <Route exact path="/scales" render={(props) => renderSigninIfNotSignedIn(<ScaleListPage account={account} {...props} />)} />
@@ -707,16 +680,6 @@ function ManagementPage(props) {
         <Route exact path="/forms/:formName/data" render={(props) => renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={account} {...props} />)} />
         <Route exact path="/articles" render={(props) => renderSigninIfNotSignedIn(<ArticleListPage account={account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => renderSigninIfNotSignedIn(<ArticleEditPage account={account} {...props} />)} />
-        <Route exact path="/hospitals" render={(props) => renderSigninIfNotSignedIn(<HospitalListPage account={account} {...props} />)} />
-        <Route exact path="/hospitals/:hospitalName" render={(props) => renderSigninIfNotSignedIn(<HospitalEditPage account={account} {...props} />)} />
-        <Route exact path="/doctors" render={(props) => renderSigninIfNotSignedIn(<DoctorListPage account={account} {...props} />)} />
-        <Route exact path="/doctors/:doctorName" render={(props) => renderSigninIfNotSignedIn(<DoctorEditPage account={account} {...props} />)} />
-        <Route exact path="/patients" render={(props) => renderSigninIfNotSignedIn(<PatientListPage account={account} {...props} />)} />
-        <Route exact path="/patients/:patientName" render={(props) => renderSigninIfNotSignedIn(<PatientEditPage account={account} {...props} />)} />
-        <Route exact path="/caases" render={(props) => renderSigninIfNotSignedIn(<CaaseListPage account={account} {...props} />)} />
-        <Route exact path="/caases/:caaseName" render={(props) => renderSigninIfNotSignedIn(<CaaseEditPage account={account} {...props} />)} />
-        <Route exact path="/consultations" render={(props) => renderSigninIfNotSignedIn(<ConsultationListPage account={account} {...props} />)} />
-        <Route exact path="/consultations/:consultationName" render={(props) => renderSigninIfNotSignedIn(<ConsultationEditPage account={account} {...props} />)} />
         <Route exact path="/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
