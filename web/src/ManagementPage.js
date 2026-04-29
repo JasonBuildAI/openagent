@@ -33,8 +33,8 @@ import {
   DeploymentUnitOutlined,
   DesktopOutlined,
   DownOutlined,
-  FileOutlined,
   FileTextOutlined,
+  FolderOpenOutlined,
   FormOutlined,
   FundOutlined,
   GoldOutlined,
@@ -505,7 +505,7 @@ function ManagementPage(props) {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreOutlined />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
-        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FileOutlined />),
+        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FolderOpenOutlined />),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />),
       ]));

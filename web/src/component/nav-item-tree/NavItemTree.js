@@ -44,6 +44,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           key: "/ai-setting",
           children: [
             {title: i18next.t("general:Stores"), key: "/stores"},
+            {title: i18next.t("general:Files"), key: "/files"},
             {title: i18next.t("general:Providers"), key: "/providers"},
             {title: i18next.t("general:Vectors"), key: "/vectors"},
           ],
