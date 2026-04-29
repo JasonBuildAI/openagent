@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/txt"
 )
@@ -99,7 +100,7 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Upload file to storage
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 		return
 	}

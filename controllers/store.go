@@ -20,6 +20,7 @@ import (
 	"sort"
 
 	"github.com/beego/beego/utils/pagination"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -463,7 +464,7 @@ func (c *ApiController) AddSharedStore() {
 		return
 	}
 	if accountUser == nil {
-		if !isCasdoorAvailable() {
+		if !conf.IsCasdoorAvailable() {
 			c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 			return
 		}

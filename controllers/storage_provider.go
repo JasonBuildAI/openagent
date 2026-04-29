@@ -14,7 +14,10 @@
 
 package controllers
 
-import "github.com/the-open-agent/openagent/auth"
+import (
+	"github.com/the-open-agent/openagent/auth"
+	"github.com/the-open-agent/openagent/conf"
+)
 
 func getStorageProviders() ([]*auth.Provider, error) {
 	providers, err := auth.GetProviders()
@@ -40,7 +43,7 @@ func getStorageProviders() ([]*auth.Provider, error) {
 func (c *ApiController) GetStorageProviders() {
 	// owner := c.Input().Get("owner")
 
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseOk([]*auth.Provider{})
 		return
 	}

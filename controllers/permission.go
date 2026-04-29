@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 
 	"github.com/the-open-agent/openagent/auth"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 )
 
@@ -28,7 +29,7 @@ import (
 // @Success 200 {array} auth.Permission The Response object
 // @router /get-permissions [get]
 func (c *ApiController) GetPermissions() {
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseOk([]*auth.Permission{})
 		return
 	}
@@ -50,7 +51,7 @@ func (c *ApiController) GetPermissions() {
 // @Success 200 {object} auth.Permission The Response object
 // @router /get-permission [get]
 func (c *ApiController) GetPermission() {
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseOk(nil)
 		return
 	}
@@ -79,7 +80,7 @@ func (c *ApiController) GetPermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-permission [post]
 func (c *ApiController) UpdatePermission() {
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 		return
 	}
@@ -107,7 +108,7 @@ func (c *ApiController) UpdatePermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-permission [post]
 func (c *ApiController) AddPermission() {
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 		return
 	}
@@ -136,7 +137,7 @@ func (c *ApiController) AddPermission() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-permission [post]
 func (c *ApiController) DeletePermission() {
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 		return
 	}

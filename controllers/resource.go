@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 )
 
@@ -60,7 +61,7 @@ func (c *ApiController) UploadFile() {
 
 	filePath := fmt.Sprintf("openagent/avatars/%s/%s", userName, fileName)
 
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
 		return
 	}

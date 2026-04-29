@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -38,7 +39,7 @@ func (c *ApiController) GetUsages() {
 	}
 
 	var usageMetadata *object.UsageMetadata
-	if isCasdoorAvailable() {
+	if conf.IsCasdoorAvailable() {
 		usageMetadata, err = object.GetUsageMetadata(c.GetAcceptLanguage())
 	} else {
 		usageMetadata = &object.UsageMetadata{}
@@ -71,7 +72,7 @@ func (c *ApiController) GetRangeUsages() {
 	}
 
 	var usageMetadata *object.UsageMetadata
-	if isCasdoorAvailable() {
+	if conf.IsCasdoorAvailable() {
 		usageMetadata, err = object.GetUsageMetadata(c.GetAcceptLanguage())
 	} else {
 		usageMetadata = &object.UsageMetadata{}

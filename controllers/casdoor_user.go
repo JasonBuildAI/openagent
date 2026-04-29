@@ -63,7 +63,7 @@ func (c *ApiController) GetOrganizationUsers() {
 		c.ResponseError(c.T("auth:this operation requires admin privilege"))
 		return
 	}
-	if !isCasdoorAvailable() {
+	if !conf.IsCasdoorAvailable() {
 		c.ResponseOk([]organizationUser{})
 		return
 	}

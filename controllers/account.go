@@ -57,25 +57,25 @@ func tryInitAuthConfig() error {
 	}
 
 	auth.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
-	setCasdoorAvailable(true)
+	conf.SetCasdoorAvailable(true)
 	return nil
 }
 
 func InitAuthConfig() {
 	casdoorEndpoint := conf.GetConfigString("casdoorEndpoint")
 	if casdoorEndpoint == "" {
-		setCasdoorAvailable(false)
+		conf.SetCasdoorAvailable(false)
 		return
 	}
 
 	if err := tryInitAuthConfig(); err != nil {
-		setCasdoorAvailable(false)
+		conf.SetCasdoorAvailable(false)
 		beego.Warning("InitAuthConfig: casdoor unreachable, will retry in background:", err)
 		go func() {
 			for {
 				time.Sleep(10 * time.Second)
 				if err := tryInitAuthConfig(); err != nil {
-					setCasdoorAvailable(false)
+					conf.SetCasdoorAvailable(false)
 					beego.Warning("InitAuthConfig: retry failed:", err)
 				} else {
 					beego.Info("InitAuthConfig: casdoor connected successfully")
