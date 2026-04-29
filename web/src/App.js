@@ -180,6 +180,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/public-videos"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
+    } else if (uri.includes("/resources")) {
+      this.setState({selectedMenuKey: "/resources"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/sysinfo")) {

@@ -112,6 +112,13 @@ func (c *ApiController) UploadTaskDocument() {
 		return
 	}
 
+	// Record the upload as a resource
+	format := strings.TrimPrefix(strings.ToLower(ext), ".")
+	resource := object.NewResourceFromUpload("admin", userName, "document", fileName, format, fileUrl, int64(len(fileBytes)), "task", taskId)
+	if _, addErr := object.AddResource(resource); addErr != nil {
+		logs.Warning("Failed to save resource record for task document: %v", addErr)
+	}
+
 	// Parse document text
 	documentText, err := txt.GetParsedTextFromUrl(fileUrl, ext, c.GetAcceptLanguage())
 	if err != nil {

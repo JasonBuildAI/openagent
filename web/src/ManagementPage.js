@@ -138,6 +138,8 @@ import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import ApplicationDetailsPage from "./ApplicationViewPage";
+import ResourceListPage from "./ResourceListPage";
+import ResourceEditPage from "./ResourceEditPage";
 const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
@@ -148,7 +150,8 @@ function getMenuParentKey(uri) {
   if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench") || uri.includes("/desktop")) {return "/cloud";}
   if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
   if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
-  if (uri.includes("/users") || uri.includes("/resources") || uri.includes("/permissions")) {return "/identity";}
+  if (uri.includes("/users") || uri.includes("/casdoor-resources") || uri.includes("/permissions")) {return "/identity";}
+  if (uri.includes("/resources")) {return "/basic";}
   if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities")) {return "/admin";}
   return null;
 }
@@ -548,6 +551,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <OrderedListOutlined />),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
+        Setting.getItem(<Link to="/resources">{i18next.t("general:Resources")}</Link>, "/resources", <FolderOpenOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/files">{i18next.t("general:Knowledge Base")}</Link>, "/knowledge-base", <DatabaseOutlined />, [
@@ -600,9 +604,9 @@ function ManagementPage(props) {
           </a>, "/users", <UserOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/resources")}>
-            {i18next.t("general:Resources")}
+            {i18next.t("general:Casdoor Resources")}
             {Setting.renderExternalLink()}
-          </a>, "/resources", <TeamOutlined />),
+          </a>, "/casdoor-resources", <TeamOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/permissions")}>
             {i18next.t("general:Permissions")}
@@ -731,6 +735,8 @@ function ManagementPage(props) {
         <Route exact path="/forms/:formName/data" render={(props) => renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={account} {...props} />)} />
         <Route exact path="/articles" render={(props) => renderSigninIfNotSignedIn(<ArticleListPage account={account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => renderSigninIfNotSignedIn(<ArticleEditPage account={account} {...props} />)} />
+        <Route exact path="/resources" render={(props) => renderSigninIfNotSignedIn(<ResourceListPage account={account} {...props} />)} />
+        <Route exact path="/resources/:owner/:resourceName" render={(props) => renderSigninIfNotSignedIn(<ResourceEditPage account={account} {...props} />)} />
         <Route exact path="/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />

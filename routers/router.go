@@ -197,6 +197,12 @@ func initAPI() {
 
 	beego.Router("/api/upload-file", &controllers.ApiController{}, "POST:UploadFile")
 
+	beego.Router("/api/get-global-resources", &controllers.ApiController{}, "GET:GetGlobalResources")
+	beego.Router("/api/get-resource", &controllers.ApiController{}, "GET:GetResource")
+	beego.Router("/api/update-resource", &controllers.ApiController{}, "POST:UpdateResource")
+	beego.Router("/api/add-resource", &controllers.ApiController{}, "POST:AddResource")
+	beego.Router("/api/delete-resource", &controllers.ApiController{}, "POST:DeleteResource")
+
 	beego.Router("/api/get-permissions", &controllers.ApiController{}, "GET:GetPermissions")
 	beego.Router("/api/get-permission", &controllers.ApiController{}, "GET:GetPermission")
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
