@@ -19,8 +19,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/the-open-agent/openagent/auth"
 	"github.com/robfig/cron/v3"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 )

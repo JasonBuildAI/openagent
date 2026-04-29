@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/agent"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/chat"
 	"github.com/the-open-agent/openagent/embedding"
 	"github.com/the-open-agent/openagent/i18n"
