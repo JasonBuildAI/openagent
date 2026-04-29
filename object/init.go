@@ -217,6 +217,18 @@ func initBuiltInSite() {
 		return
 	}
 
+	// Navbar leaves enabled by default: all groups except Cloud (/cloud/*) and Multimedia (/multimedia/*).
+	// Keys must match ManagementPage.getMenuItems admin-branch child keys (filterMenuItems).
+	builtInNavItems := []string{
+		"/chat",
+		"/stores", "/chats", "/messages", "/usages",
+		"/files", "/vectors", "/resources",
+		"/providers",
+		"/sessions", "/connections", "/records",
+		"/users", "/casdoor-resources", "/permissions",
+		"/sites", "/activities", "/sysinfo", "/swagger",
+	}
+
 	site := &Site{
 		Owner:       "admin",
 		Name:        "site-built-in",
@@ -227,7 +239,7 @@ func initBuiltInSite() {
 		FaviconUrl:  "",
 		LogoUrl:     "",
 		FooterHtml:  "",
-		NavItems:    []string{},
+		NavItems:    builtInNavItems,
 	}
 
 	_, err = AddSite(site)
