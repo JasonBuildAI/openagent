@@ -289,10 +289,17 @@ const StoreInfoTitle = (props) => {
         {storeInfo && (
           <div style={{marginRight: "20px"}}>
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores}>
+            <Select value={selectedStore?.name || storeInfo.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores} popupMatchSelectWidth={false} optionLabelProp="children">
               {storeOptions.map(store => (
                 <Select.Option key={store.name} value={store.name}>
-                  {store.displayName || store.name}
+                  <div style={{display: "flex", alignItems: "center"}}>
+                    <img
+                      src={Setting.getStoreIconUrl(store)}
+                      alt=""
+                      style={{width: 20, height: 20, marginRight: 8, borderRadius: 4, objectFit: "cover", flexShrink: 0}}
+                    />
+                    <span>{store.displayName || store.name}</span>
+                  </div>
                 </Select.Option>
               ))}
             </Select>

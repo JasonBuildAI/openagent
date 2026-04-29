@@ -2685,6 +2685,14 @@ export function getFaviconUrl(themes, storeFaviconUrl) {
   }
 }
 
+/** Store avatar for dropdowns (same source as store list). */
+export function getStoreIconUrl(store) {
+  if (!store) {
+    return getDefaultAiAvatar();
+  }
+  return store.avatar || getDefaultAiAvatar();
+}
+
 export function getLogo(themes, storeLogoUrl) {
   const defaultLogoUrl = "https://cdn.casibase.org/img/casibase-logo_1200x256.png";
   let logoUrl = Conf.LogoUrl;

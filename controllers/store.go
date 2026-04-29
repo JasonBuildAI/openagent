@@ -402,10 +402,10 @@ func (c *ApiController) GetStoreNames() {
 	var err error
 
 	if c.IsGlobalAdmin() {
-		storeNames, err = object.GetStoresByFields("", []string{"name", "display_name"}...)
+		storeNames, err = object.GetStoresByFields("", []string{"name", "display_name", "avatar"}...)
 	} else {
 		username := c.GetSessionUsername()
-		storeNames, err = object.GetStoresByFields(username, []string{"name", "display_name"}...)
+		storeNames, err = object.GetStoresByFields(username, []string{"name", "display_name", "avatar"}...)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())
