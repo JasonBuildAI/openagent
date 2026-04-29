@@ -87,29 +87,27 @@ class PasswordSigninPage extends React.Component {
 
     return (
       <div style={{display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#ffffff"}}>
-        <div style={{width: "420px"}}>
-          <div style={{textAlign: "center", marginBottom: "58px"}}>
-            <img src={this.props.logo} alt="Casibase" style={{width: "360px", maxWidth: "100%"}} />
+        <div style={{width: "340px"}}>
+          <div style={{textAlign: "center", marginBottom: "36px"}}>
+            <img src={this.props.logo} alt="Casibase" style={{width: "260px", maxWidth: "100%"}} />
           </div>
           <Form initialValues={{username: "admin"}} onFinish={(values) => this.onFinish(values)} requiredMark={false}>
             <Form.Item name="username" rules={[{required: true, message: i18next.t("account:Please input your username")}]}>
               <Input
-                prefix={<UserOutlined style={{fontSize: "22px", color: "#222222"}} />}
+                prefix={<UserOutlined style={{fontSize: "16px", color: "#222222"}} />}
                 placeholder={i18next.t("general:Username")}
-                size="large"
-                style={{height: "56px", borderRadius: "17px", fontSize: "18px"}}
+                style={{height: "42px", borderRadius: "10px", fontSize: "14px"}}
               />
             </Form.Item>
             <Form.Item name="password" rules={[{required: true, message: i18next.t("account:Please input your password")}]}>
               <Input.Password
-                prefix={<LockOutlined style={{fontSize: "20px", color: "#222222"}} />}
+                prefix={<LockOutlined style={{fontSize: "16px", color: "#222222"}} />}
                 placeholder={i18next.t("general:Password")}
                 autoFocus
-                size="large"
-                style={{height: "56px", borderRadius: "17px", fontSize: "18px"}}
+                style={{height: "42px", borderRadius: "10px", fontSize: "14px"}}
               />
             </Form.Item>
-            <Button type="primary" htmlType="submit" block style={{height: "56px", borderRadius: "16px", marginTop: "16px", background: "#242424", borderColor: "#242424", fontSize: "18px"}}>
+            <Button type="primary" htmlType="submit" block style={{height: "42px", borderRadius: "10px", marginTop: "8px", background: "#242424", borderColor: "#242424", fontSize: "14px"}}>
               {i18next.t("account:Sign In")}
             </Button>
           </Form>
