@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"github.com/beego/beego"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
@@ -38,9 +38,9 @@ func tryInitAuthConfig() error {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
 
-	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
+	auth.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
 
-	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	application, err := auth.GetApplication(casdoorApplication)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func tryInitAuthConfig() error {
 		return fmt.Errorf("the application %q does not exist", casdoorApplication)
 	}
 
-	cert, err := casdoorsdk.GetCert(application.Cert)
+	cert, err := auth.GetCert(application.Cert)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func tryInitAuthConfig() error {
 		return fmt.Errorf("the cert %q does not exist", application.Cert)
 	}
 
-	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
+	auth.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
 	setCasdoorAvailable(true)
 	return nil
 }
@@ -92,7 +92,7 @@ func InitAuthConfig() {
 // @Description sign in with Casdoor OAuth code or password
 // @Param code  query string false "code of account"
 // @Param state query string false "state of account"
-// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @Success 200 {casdoorsdk} auth.Claims The Response object
 // @router /signin [post]
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
@@ -102,13 +102,13 @@ func (c *ApiController) Signin() {
 		return
 	}
 
-	token, err := casdoorsdk.GetOAuthToken(code, state)
+	token, err := auth.GetOAuthToken(code, state)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	claims, err := casdoorsdk.ParseJwtToken(token.AccessToken)
+	claims, err := auth.ParseJwtToken(token.AccessToken)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -225,7 +225,7 @@ func (c *ApiController) addInitialChat(organization string, userName string, sto
 	return chat, nil
 }
 
-func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
+func (c *ApiController) addInitialChatAndMessage(user *auth.User) error {
 	chats, err := object.GetChats("admin", "", user.Name)
 	if err != nil {
 		return err
@@ -294,7 +294,7 @@ func (c *ApiController) anonymousSignin() {
 	username := c.getAnonymousUsername()
 
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
-	user := casdoorsdk.User{
+	user := auth.User{
 		Owner:           casdoorOrganization,
 		Name:            username,
 		CreatedTime:     util.GetCurrentTime(),
@@ -375,7 +375,7 @@ func (c *ApiController) isSafePassword() (bool, error) {
 // @Title GetAccount
 // @Tag Account API
 // @Description get account
-// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @Success 200 {casdoorsdk} auth.Claims The Response object
 // @router /get-account [get]
 func (c *ApiController) GetAccount() {
 	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
@@ -414,7 +414,7 @@ func (c *ApiController) GetAccount() {
 
 	// Fetch fresh user data from Casdoor in real-time for non-anonymous users
 	if claims.User.Type != "anonymous-user" && claims.User.Owner != object.UserOwner {
-		user, err := casdoorsdk.GetUser(claims.User.Name)
+		user, err := auth.GetUser(claims.User.Name)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

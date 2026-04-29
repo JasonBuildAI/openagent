@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/util"
@@ -26,7 +26,7 @@ import (
 
 func (message *Message) SendEmail(lang string) error {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
-	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
+	organization, err := auth.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (message *Message) SendEmail(lang string) error {
 	sender := organization.DisplayName
 
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
-	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	application, err := auth.GetApplication(casdoorApplication)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (message *Message) SendEmail(lang string) error {
 
 	logoUrl := conf.GetConfigString("logoUrl")
 
-	user, err := casdoorsdk.GetUser(message.User)
+	user, err := auth.GetUser(message.User)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (message *Message) SendEmail(lang string) error {
 </html>
 `, title, logoUrl, username, question, message.Text, message.Comment, title)
 
-	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
+	err = auth.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (message *Message) SendEmail(lang string) error {
 }
 
 func (message *Message) SendErrorEmail(errorText string, lang string) error {
-	adminUser, err := casdoorsdk.GetUser("admin")
+	adminUser, err := auth.GetUser("admin")
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func (message *Message) SendErrorEmail(errorText string, lang string) error {
 	}
 
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
-	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
+	organization, err := auth.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func (message *Message) SendErrorEmail(errorText string, lang string) error {
 	}
 	sender := organization.DisplayName
 
-	user, err := casdoorsdk.GetUser(message.User)
+	user, err := auth.GetUser(message.User)
 	if err != nil {
 		return err
 	}
@@ -198,7 +198,7 @@ func (message *Message) SendErrorEmail(errorText string, lang string) error {
 </html>
 `, title, logoUrl, username, question, errorText, sender)
 
-	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
+	err = auth.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {
 		return err
 	}

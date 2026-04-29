@@ -19,7 +19,7 @@ import (
 	"sort"
 	"sync/atomic"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -192,7 +192,7 @@ func (c *ApiController) signinWithPassword() {
 	}
 
 	user := accountUser.ToCasdoorUser()
-	claims := &casdoorsdk.Claims{
+	claims := &auth.Claims{
 		User:         user,
 		SigninMethod: "Sign In",
 	}

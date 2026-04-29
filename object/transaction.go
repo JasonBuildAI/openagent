@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/robfig/cron/v3"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
@@ -29,8 +29,8 @@ var OpenAgentHost = ""
 
 // createTransactionFromMessage creates a transaction object from a message.
 // This is a helper function to reduce code duplication.
-func createTransactionFromMessage(message *Message) *casdoorsdk.Transaction {
-	transaction := &casdoorsdk.Transaction{
+func createTransactionFromMessage(message *Message) *auth.Transaction {
+	transaction := &auth.Transaction{
 		Owner:       conf.GetConfigString("casdoorOrganization"),
 		CreatedTime: message.CreatedTime,
 		Application: conf.GetConfigString("casdoorApplication"),
@@ -70,7 +70,7 @@ func ValidateTransactionForMessage(message *Message) error {
 	transaction := createTransactionFromMessage(message)
 
 	// Validate transaction via Casdoor SDK with dry run mode
-	_, _, err := casdoorsdk.AddTransactionWithDryRun(transaction, true)
+	_, _, err := auth.AddTransactionWithDryRun(transaction, true)
 	if err != nil {
 		return fmt.Errorf("failed to validate transaction: %s", err.Error())
 	}
@@ -94,7 +94,7 @@ func AddTransactionForMessage(message *Message) error {
 	transaction := createTransactionFromMessage(message)
 
 	// Add transaction via Casdoor SDK
-	_, transactionName, err := casdoorsdk.AddTransaction(transaction)
+	_, transactionName, err := auth.AddTransaction(transaction)
 	if err != nil {
 		message.ErrorText = fmt.Sprintf("failed to add transaction: %s", err.Error())
 

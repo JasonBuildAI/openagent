@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/controllers"
 	"github.com/the-open-agent/openagent/object"
 )
@@ -32,12 +32,12 @@ func TestUpdateMessagesForName(t *testing.T) {
 	object.InitConfig()
 	controllers.InitAuthConfig()
 
-	users, err := casdoorsdk.GetUsers()
+	users, err := auth.GetUsers()
 	if err != nil {
 		panic(err)
 	}
 
-	userMap := map[string]*casdoorsdk.User{}
+	userMap := map[string]*auth.User{}
 	for _, user := range users {
 		if user.Tag != userTag {
 			continue
@@ -77,12 +77,12 @@ func TestUpdateChatsForName(t *testing.T) {
 	object.InitConfig()
 	controllers.InitAuthConfig()
 
-	users, err := casdoorsdk.GetUsers()
+	users, err := auth.GetUsers()
 	if err != nil {
 		panic(err)
 	}
 
-	userMap := map[string]*casdoorsdk.User{}
+	userMap := map[string]*auth.User{}
 	for _, user := range users {
 		if user.Tag != userTag {
 			continue

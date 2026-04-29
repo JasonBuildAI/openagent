@@ -14,15 +14,15 @@
 
 package controllers
 
-import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+import "github.com/the-open-agent/openagent/auth"
 
-func getStorageProviders() ([]*casdoorsdk.Provider, error) {
-	providers, err := casdoorsdk.GetProviders()
+func getStorageProviders() ([]*auth.Provider, error) {
+	providers, err := auth.GetProviders()
 	if err != nil {
 		return providers, err
 	}
 
-	res := []*casdoorsdk.Provider{}
+	res := []*auth.Provider{}
 	for _, provider := range providers {
 		if provider.Category == "Storage" {
 			res = append(res, provider)
@@ -41,7 +41,7 @@ func (c *ApiController) GetStorageProviders() {
 	// owner := c.Input().Get("owner")
 
 	if !isCasdoorAvailable() {
-		c.ResponseOk([]*casdoorsdk.Provider{})
+		c.ResponseOk([]*auth.Provider{})
 		return
 	}
 

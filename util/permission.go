@@ -17,7 +17,7 @@ package util
 import (
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 )
 
 const (
@@ -30,7 +30,7 @@ func IsAnonymousUserByUsername(username string) bool {
 }
 
 // IsGlobalAdmin checks if the user is a system-level admin (IsAdmin flag only)
-func IsGlobalAdmin(user *casdoorsdk.User) bool {
+func IsGlobalAdmin(user *auth.User) bool {
 	if user == nil {
 		return false
 	}
@@ -38,7 +38,7 @@ func IsGlobalAdmin(user *casdoorsdk.User) bool {
 }
 
 // IsStoreAdmin checks if the user is a store-level admin (chat-admin type or 教师 tag)
-func IsStoreAdmin(user *casdoorsdk.User) bool {
+func IsStoreAdmin(user *auth.User) bool {
 	if user == nil {
 		return false
 	}
@@ -46,7 +46,7 @@ func IsStoreAdmin(user *casdoorsdk.User) bool {
 }
 
 // IsAdmin checks if the user is either a system admin or a chat-admin
-func IsAdmin(user *casdoorsdk.User) bool {
+func IsAdmin(user *auth.User) bool {
 	if user == nil {
 		return false
 	}
@@ -54,7 +54,7 @@ func IsAdmin(user *casdoorsdk.User) bool {
 }
 
 // IsVideoNormalUser checks if the user has the video-normal-user role
-func IsVideoNormalUser(user *casdoorsdk.User) bool {
+func IsVideoNormalUser(user *auth.User) bool {
 	if user == nil {
 		return false
 	}

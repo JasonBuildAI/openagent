@@ -22,7 +22,7 @@ import (
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/logs"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/object"
 )
 
@@ -31,10 +31,10 @@ type ApiController struct {
 }
 
 func init() {
-	gob.Register(casdoorsdk.Claims{})
+	gob.Register(auth.Claims{})
 }
 
-func GetUserName(user *casdoorsdk.User) string {
+func GetUserName(user *auth.User) string {
 	if user == nil {
 		return ""
 	}
@@ -42,17 +42,17 @@ func GetUserName(user *casdoorsdk.User) string {
 	return user.Name
 }
 
-func (c *ApiController) GetSessionClaims() *casdoorsdk.Claims {
+func (c *ApiController) GetSessionClaims() *auth.Claims {
 	s := c.GetSession("user")
 	if s == nil {
 		return nil
 	}
 
-	claims := s.(casdoorsdk.Claims)
+	claims := s.(auth.Claims)
 	return &claims
 }
 
-func (c *ApiController) SetSessionClaims(claims *casdoorsdk.Claims) {
+func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 	if claims == nil {
 		c.DelSession("user")
 		return
@@ -61,7 +61,7 @@ func (c *ApiController) SetSessionClaims(claims *casdoorsdk.Claims) {
 	c.SetSession("user", *claims)
 }
 
-func (c *ApiController) GetSessionUser() *casdoorsdk.User {
+func (c *ApiController) GetSessionUser() *auth.User {
 	claims := c.GetSessionClaims()
 	if claims == nil {
 		return nil
@@ -70,7 +70,7 @@ func (c *ApiController) GetSessionUser() *casdoorsdk.User {
 	return &claims.User
 }
 
-func (c *ApiController) SetSessionUser(user *casdoorsdk.User) {
+func (c *ApiController) SetSessionUser(user *auth.User) {
 	if user == nil {
 		c.DelSession("user")
 		return
@@ -124,7 +124,7 @@ func (c *ApiController) EnforceStoreIsolation(requestedStoreName string) (string
 }
 
 // FilterStoresByHomepage filters stores based on user's Homepage field.
-func FilterStoresByHomepage(stores []*object.Store, user *casdoorsdk.User) []*object.Store {
+func FilterStoresByHomepage(stores []*object.Store, user *auth.User) []*object.Store {
 	if user == nil || user.Homepage == "" {
 		// No Homepage binding, return all stores
 		return stores

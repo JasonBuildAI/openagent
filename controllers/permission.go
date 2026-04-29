@@ -17,7 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/util"
 )
 
@@ -25,15 +25,15 @@ import (
 // @Title GetPermissions
 // @Tag Permission API
 // @Description get permissions
-// @Success 200 {array} casdoorsdk.Permission The Response object
+// @Success 200 {array} auth.Permission The Response object
 // @router /get-permissions [get]
 func (c *ApiController) GetPermissions() {
 	if !isCasdoorAvailable() {
-		c.ResponseOk([]*casdoorsdk.Permission{})
+		c.ResponseOk([]*auth.Permission{})
 		return
 	}
 
-	permissions, err := casdoorsdk.GetPermissions()
+	permissions, err := auth.GetPermissions()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -47,7 +47,7 @@ func (c *ApiController) GetPermissions() {
 // @Tag Permission API
 // @Description get permission
 // @Param id query string true "The id(owner/name) of permission"
-// @Success 200 {object} casdoorsdk.Permission The Response object
+// @Success 200 {object} auth.Permission The Response object
 // @router /get-permission [get]
 func (c *ApiController) GetPermission() {
 	if !isCasdoorAvailable() {
@@ -62,7 +62,7 @@ func (c *ApiController) GetPermission() {
 		return
 	}
 
-	permission, err := casdoorsdk.GetPermission(name)
+	permission, err := auth.GetPermission(name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -75,7 +75,7 @@ func (c *ApiController) GetPermission() {
 // @Title UpdatePermission
 // @Tag Permission API
 // @Description update permission
-// @Param body body casdoorsdk.Permission true "The details of the permission"
+// @Param body body auth.Permission true "The details of the permission"
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-permission [post]
 func (c *ApiController) UpdatePermission() {
@@ -84,13 +84,13 @@ func (c *ApiController) UpdatePermission() {
 		return
 	}
 
-	var permission casdoorsdk.Permission
+	var permission auth.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		panic(err)
 	}
 
-	success, err := casdoorsdk.UpdatePermission(&permission)
+	success, err := auth.UpdatePermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -103,7 +103,7 @@ func (c *ApiController) UpdatePermission() {
 // @Title AddPermission
 // @Tag Permission API
 // @Description add permission
-// @Param body body casdoorsdk.Permission true "The details of the permission"
+// @Param body body auth.Permission true "The details of the permission"
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-permission [post]
 func (c *ApiController) AddPermission() {
@@ -112,14 +112,14 @@ func (c *ApiController) AddPermission() {
 		return
 	}
 
-	var permission casdoorsdk.Permission
+	var permission auth.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := casdoorsdk.AddPermission(&permission)
+	success, err := auth.AddPermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -132,7 +132,7 @@ func (c *ApiController) AddPermission() {
 // @Title DeletePermission
 // @Tag Permission API
 // @Description delete permission
-// @Param body body casdoorsdk.Permission true "The details of the permission"
+// @Param body body auth.Permission true "The details of the permission"
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-permission [post]
 func (c *ApiController) DeletePermission() {
@@ -141,14 +141,14 @@ func (c *ApiController) DeletePermission() {
 		return
 	}
 
-	var permission casdoorsdk.Permission
+	var permission auth.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := casdoorsdk.DeletePermission(&permission)
+	success, err := auth.DeletePermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
