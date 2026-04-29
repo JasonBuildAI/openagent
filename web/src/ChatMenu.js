@@ -110,7 +110,7 @@ class ChatMenu extends React.Component {
                   />
                 </div>) : (
                 <div className="menu-item-container">
-                  <div style={{width: "70%", overflow: "hidden"}}>
+                  <div style={{flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                     <Tooltip title={chat.displayName}>{chat.displayName}</Tooltip>
                   </div>
                   {isSelected && (
