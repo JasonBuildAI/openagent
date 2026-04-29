@@ -360,10 +360,6 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Price = model.AddPrices(message.Price, 0)
 
 	// Add transaction for message with price
-	if message.Price > 0 && !conf.IsCasdoorAvailable() {
-		c.ResponseErrorStream(message, c.T("auth:This feature is unavailable in this sign-in mode"))
-		return
-	}
 	err = object.AddTransactionForMessage(message)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())

@@ -81,7 +81,7 @@ func (c *ApiController) GetPermission() {
 // @router /update-permission [post]
 func (c *ApiController) UpdatePermission() {
 	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		c.ResponseOk(true)
 		return
 	}
 
@@ -109,7 +109,7 @@ func (c *ApiController) UpdatePermission() {
 // @router /add-permission [post]
 func (c *ApiController) AddPermission() {
 	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		c.ResponseOk(true)
 		return
 	}
 
@@ -138,7 +138,7 @@ func (c *ApiController) AddPermission() {
 // @router /delete-permission [post]
 func (c *ApiController) DeletePermission() {
 	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
+		c.ResponseOk(true)
 		return
 	}
 

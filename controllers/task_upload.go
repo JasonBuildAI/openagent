@@ -21,7 +21,6 @@ import (
 	"strings"
 
 	"github.com/beego/beego/logs"
-	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/txt"
 )
@@ -100,11 +99,6 @@ func (c *ApiController) UploadTaskDocument() {
 	}
 
 	// Upload file to storage
-	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-		return
-	}
-
 	filePath := fmt.Sprintf("openagent/task-documents/%s/%s", userName, fileName)
 	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
 	if err != nil {

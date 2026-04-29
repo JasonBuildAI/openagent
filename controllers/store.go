@@ -463,11 +463,9 @@ func (c *ApiController) AddSharedStore() {
 		c.ResponseError(err.Error())
 		return
 	}
-	if accountUser == nil {
-		if !conf.IsCasdoorAvailable() {
-			c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-			return
-		}
+	if accountUser == nil && !conf.IsCasdoorAvailable() {
+		c.ResponseError(c.T("general:Target user not found"))
+		return
 	}
 
 	newStore, err := object.ShareStore(src.Owner, src.Name, form.TargetUser, c.GetSessionUsername())

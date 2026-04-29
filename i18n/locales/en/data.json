@@ -23,7 +23,6 @@
     "Invalid username or password": "Invalid username or password",
     "Please sign in first": "Please sign in first",
     "Sign in is unavailable": "Sign in is unavailable",
-    "This feature is unavailable in this sign-in mode": "This feature is unavailable in this sign-in mode",
     "Unauthorized operation": "Unauthorized operation",
     "this operation requires admin privilege": "this operation requires admin privilege"
   },
@@ -97,6 +96,7 @@
   },
   "general": {
     "Failed to update": "Failed to update",
+    "Target user not found": "Target user not found",
     "The task does not exist": "The task does not exist"
   },
   "message_answer": {

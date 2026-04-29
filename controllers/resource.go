@@ -23,7 +23,6 @@ import (
 	"strings"
 
 	"github.com/beego/beego/utils/pagination"
-	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -190,11 +189,6 @@ func (c *ApiController) UploadResourceFile() {
 		return
 	}
 
-	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-		return
-	}
-
 	category := c.GetString("category")
 	objectType := c.GetString("objectType")
 	objectId := c.GetString("objectId")
@@ -296,11 +290,6 @@ func (c *ApiController) UploadFile() {
 	}
 
 	filePath := fmt.Sprintf("openagent/resources/%s/%s/%s", category, userName, fileName)
-
-	if !conf.IsCasdoorAvailable() {
-		c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-		return
-	}
 
 	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadFile", filePath, fileBytes)
 	if err != nil {
