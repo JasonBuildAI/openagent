@@ -273,6 +273,15 @@ func initBuiltInTools() {
 			TestContent: `{"tool":"gui_screenshot","arguments":{}}`,
 			State:       "Active",
 		},
+		{
+			Owner:       "admin",
+			Name:        "tool-video-download",
+			DisplayName: "Video Download",
+			Type:        "Video Download",
+			SubType:     "Default",
+			TestContent: `{"tool":"video_info","arguments":{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}`,
+			State:       "Active",
+		},
 	}
 
 	for _, t := range builtInTools {

@@ -53,6 +53,8 @@ func NewProvider(config Config, lang string) (Provider, error) {
 		return NewBrowserProvider(config)
 	case "GUI":
 		return NewGuiProvider(config)
+	case "Video Download":
+		return &VideoDownloadProvider{}, nil
 	default:
 		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool provider type: %s"), config.Type)
 	}

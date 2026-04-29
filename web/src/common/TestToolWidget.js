@@ -74,6 +74,18 @@ const OFFICE_TOOL_CONTENT = {
   "PowerPoint Write": JSON.stringify({tool: "pptx_write", arguments: {path: "/path/to/output.pptx", slides: ["Slide 1 title\nSlide 1 content", "Slide 2 title\nSlide 2 content"]}}, null, 2),
 };
 
+const VIDEO_DOWNLOAD_TOOL_CONTENT = {
+  "video_info": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
+  "video_download": JSON.stringify({tool: "video_download", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "/tmp/videos", format: "bestvideo+bestaudio/best"}}, null, 2),
+  "video_audio_extract": JSON.stringify({tool: "video_audio_extract", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "/tmp/audio", audio_format: "mp3", audio_quality: "0"}}, null, 2),
+};
+
+const VIDEO_DOWNLOAD_TOOL_OPTIONS = [
+  {value: "video_info", label: "video_info — Get video metadata (no download)"},
+  {value: "video_download", label: "video_download — Download video file"},
+  {value: "video_audio_extract", label: "video_audio_extract — Extract audio from video"},
+];
+
 const DEFAULT_TOOL_CONTENT = {
   Time: JSON.stringify({tool: "time", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
   "Web Search": JSON.stringify({tool: "web_search", arguments: {query: "OpenAgent web search", count: 3, language: "en", country: "us"}}, null, 2),
@@ -81,6 +93,7 @@ const DEFAULT_TOOL_CONTENT = {
   "Web Fetch": JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
   "Web Browser": JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
   "GUI": JSON.stringify({tool: "gui_screenshot", arguments: {}}, null, 2),
+  "Video Download": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
 };
 
 function isValidToolTestJson(content) {
@@ -114,6 +127,7 @@ class TestToolWidget extends React.Component {
       lastSyncedType: props.tool ? (props.tool.type || null) : null,
       lastSyncedSubType: props.tool ? (props.tool.subType || null) : null,
       selectedGuiTool: "gui_screenshot",
+      selectedVideoTool: "video_info",
     };
   }
 
@@ -253,6 +267,27 @@ class TestToolWidget extends React.Component {
                 }}
               >
                 {GUI_TOOL_OPTIONS.map((opt) => (
+                  <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+        )}
+        {tool.type === "Video Download" && (
+          <Row style={{marginTop: "20px"}}>
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("provider:Video download tool"), i18next.t("provider:Video download tool - Tooltip"))} :
+            </Col>
+            <Col span={10}>
+              <Select
+                style={{width: "100%"}}
+                value={this.state.selectedVideoTool}
+                onChange={(value) => {
+                  this.setState({selectedVideoTool: value});
+                  onUpdateTool("testContent", VIDEO_DOWNLOAD_TOOL_CONTENT[value]);
+                }}
+              >
+                {VIDEO_DOWNLOAD_TOOL_OPTIONS.map((opt) => (
                   <Option key={opt.value} value={opt.value}>{opt.label}</Option>
                 ))}
               </Select>

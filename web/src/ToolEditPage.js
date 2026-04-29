@@ -158,6 +158,8 @@ class ToolEditPage extends React.Component {
                 this.updateToolField("subType", "Default");
               } else if (value === "GUI") {
                 this.updateToolField("subType", "Default");
+              } else if (value === "Video Download") {
+                this.updateToolField("subType", "Default");
               }
             }}
             showSearch
