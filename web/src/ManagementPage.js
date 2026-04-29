@@ -155,16 +155,18 @@ function getMenuParentKey(uri) {
 
 const siderMenuOpenKeysLsKey = "siderMenuOpenKeys";
 
+const defaultMenuOpenKeys = ["/basic", "/knowledge-base", "/connectors", "/admin"];
+
 function readSavedMenuOpenKeys() {
   try {
     const raw = localStorage.getItem(siderMenuOpenKeysLsKey);
     if (!raw) {
-      return [];
+      return defaultMenuOpenKeys;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((k) => typeof k === "string") : [];
+    return Array.isArray(parsed) ? parsed.filter((k) => typeof k === "string") : defaultMenuOpenKeys;
   } catch {
-    return [];
+    return defaultMenuOpenKeys;
   }
 }
 
