@@ -25,6 +25,10 @@ import (
 )
 
 func (message *Message) SendEmail(lang string) error {
+	if !conf.IsCasdoorAvailable() {
+		return nil
+	}
+
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	organization, err := auth.GetOrganization(casdoorOrganization)
 	if err != nil {
@@ -51,6 +55,10 @@ func (message *Message) SendEmail(lang string) error {
 	if err != nil {
 		return err
 	}
+	if user == nil {
+		return fmt.Errorf(i18n.Translate(lang, "object:Casdoor user: [%s] doesn't exist"), message.User)
+	}
+
 	username := user.Name
 	receiverEmail := user.Email
 
@@ -114,6 +122,10 @@ func (message *Message) SendEmail(lang string) error {
 }
 
 func (message *Message) SendErrorEmail(errorText string, lang string) error {
+	if !conf.IsCasdoorAvailable() {
+		return nil
+	}
+
 	adminUser, err := auth.GetUser("admin")
 	if err != nil {
 		return err
@@ -141,6 +153,10 @@ func (message *Message) SendErrorEmail(errorText string, lang string) error {
 	if err != nil {
 		return err
 	}
+	if user == nil {
+		return fmt.Errorf(i18n.Translate(lang, "object:Casdoor user: [%s] doesn't exist"), message.User)
+	}
+
 	username := user.Name
 
 	title := fmt.Sprintf("AI-Error: %s - %s - %s - %s", sender, username, message.Chat, message.Name)
