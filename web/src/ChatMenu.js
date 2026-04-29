@@ -31,6 +31,7 @@ class ChatMenu extends React.Component {
       selectedKeys: [selectedKey],
       editChat: false,
       editChatName: "",
+      hoveredKey: null,
     };
   }
 
@@ -54,7 +55,9 @@ class ChatMenu extends React.Component {
         label: category,
         children: categories[category].map((chat, chatIndex) => {
           const globalChatIndex = chats.indexOf(chat);
-          const isSelected = selectedKeys.includes(`${index}-${chatIndex}`);
+          const itemKey = `${index}-${chatIndex}`;
+          const isSelected = selectedKeys.includes(itemKey);
+          const isHovered = this.state !== undefined && this.state.hoveredKey === itemKey;
           const handleIconMouseEnter = (e) => {
             e.currentTarget.style.color = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
@@ -109,11 +112,14 @@ class ChatMenu extends React.Component {
                     }}
                   />
                 </div>) : (
-                <div className="menu-item-container">
+                <div className="menu-item-container"
+                  onMouseEnter={() => this.setState({hoveredKey: itemKey})}
+                  onMouseLeave={() => this.setState({hoveredKey: null})}
+                >
                   <div style={{flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                     <Tooltip title={chat.displayName}>{chat.displayName}</Tooltip>
                   </div>
-                  {isSelected && (
+                  {isHovered && (
                     <div>
                       <EditOutlined className="menu-item-icon"
                         onMouseEnter={handleIconMouseEnter}
