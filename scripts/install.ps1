@@ -84,4 +84,4 @@ Write-Info ''
 Write-Info "For more information visit https://github.com/$Repo"
 Write-Info ''
 Write-Info 'Starting openagent...'
-Start-Process -FilePath (Join-Path $InstallDir 'openagent.exe') -ArgumentList 'serve'
+& (Join-Path $InstallDir 'openagent.exe') serve
