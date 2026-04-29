@@ -41,7 +41,7 @@ type WebFetchProvider struct {
 	httpClient *http.Client
 }
 
-func NewWebFetchProvider(config ProviderConfig) (*WebFetchProvider, error) {
+func NewWebFetchProvider(config Config) (*WebFetchProvider, error) {
 	var httpClient *http.Client
 	if config.EnableProxy {
 		httpClient = &http.Client{

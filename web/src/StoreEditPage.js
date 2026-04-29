@@ -18,6 +18,7 @@ import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Modal, Row, Sel
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ToolBackend from "./backend/ToolBackend";
 import * as OrganizationUserBackend from "./backend/OrganizationUserBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -60,6 +61,7 @@ class StoreEditPage extends React.Component {
     this.getStores();
     this.getStorageProviders();
     this.getProviders();
+    this.getTools();
   }
 
   loadOwnerUsers() {
@@ -88,6 +90,17 @@ class StoreEditPage extends React.Component {
           src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})}
           alt={provider.name} />
         {Setting.getProviderDisplayName(provider)} ({provider.name})
+      </Option>
+    );
+  }
+
+  renderToolOption(tool, index) {
+    return (
+      <Option key={index} value={tool.name}>
+        <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
+          src={Setting.getProviderLogoURL({category: "Tool", type: tool.type})}
+          alt={tool.name} />
+        {tool.displayName || tool.name} ({tool.name})
       </Option>
     );
   }
@@ -158,8 +171,18 @@ class StoreEditPage extends React.Component {
             textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
             speechToTextProviders: res.data.filter(provider => provider.category === "Speech-to-Text"),
             agentProviders: res.data.filter(provider => provider.category === "Agent"),
-            toolProvidersProviders: res.data.filter(provider => provider.category === "Tool"),
           });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getTools() {
+    ToolBackend.getTools(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({toolProvidersProviders: res.data});
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -535,7 +558,7 @@ class StoreEditPage extends React.Component {
                   onChange={(value => {this.updateStoreField("toolProviders", value || []);})}
                 >
                   {
-                    this.state.toolProvidersProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                    this.state.toolProvidersProviders.map((tool, index) => this.renderToolOption(tool, index))
                   }
                 </Select>
               </Col>

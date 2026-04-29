@@ -16,8 +16,8 @@ import React from "react";
 import {Button, Col, Row, Select} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
+import * as ToolBackend from "../backend/ToolBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
-import {checkProvider} from "./ProviderWidget";
 import Editor from "./Editor";
 import ChatWidget from "./ChatWidget";
 
@@ -92,13 +92,13 @@ function isValidToolTestJson(content) {
   }
 }
 
-function buildDefaultToolTestJson(provider) {
-  if (provider.type === "Office") {
-    const subType = provider.subType || "All";
+function buildDefaultToolTestJson(tool) {
+  if (tool.type === "Office") {
+    const subType = tool.subType || "All";
     return OFFICE_TOOL_CONTENT[subType] || OFFICE_TOOL_CONTENT["All"];
   }
-  if (DEFAULT_TOOL_CONTENT[provider.type]) {
-    return DEFAULT_TOOL_CONTENT[provider.type];
+  if (DEFAULT_TOOL_CONTENT[tool.type]) {
+    return DEFAULT_TOOL_CONTENT[tool.type];
   }
   return JSON.stringify({tool: "", arguments: {}}, null, 2);
 }
@@ -111,48 +111,40 @@ class TestToolWidget extends React.Component {
       testResult: "",
       modelProviders: [],
       modelProvidersLoading: false,
-      // Track the last subType we synced so we can detect in-place mutations.
-      // ProviderEditPage mutates the provider object reference rather than
-      // replacing it, so provider !== prevProps.provider is always false.
-      lastSyncedType: props.provider ? (props.provider.type || null) : null,
-      lastSyncedSubType: props.provider ? (props.provider.subType || null) : null,
-      // GUI tool picker
+      lastSyncedType: props.tool ? (props.tool.type || null) : null,
+      lastSyncedSubType: props.tool ? (props.tool.subType || null) : null,
       selectedGuiTool: "gui_screenshot",
     };
   }
 
   componentDidMount() {
-    this.syncFromProvider(this.props.provider);
-    if (this.props.provider && this.props.provider.category === "Tool") {
-      this.loadModelProviders();
-    }
+    this.syncFromTool(this.props.tool);
+    this.loadModelProviders();
   }
 
   componentDidUpdate() {
-    const {provider} = this.props;
-    if (!provider || provider.category !== "Tool") {
+    const {tool} = this.props;
+    if (!tool) {
       return;
     }
 
-    // Detect type change and reset example content.
-    const currentType = provider.type || null;
+    const currentType = tool.type || null;
     if (currentType !== this.state.lastSyncedType) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({lastSyncedType: currentType, lastSyncedSubType: provider.subType || null, testResult: ""});
-      if (this.props.onUpdateProvider) {
-        this.props.onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+      this.setState({lastSyncedType: currentType, lastSyncedSubType: tool.subType || null, testResult: ""});
+      if (this.props.onUpdateTool) {
+        this.props.onUpdateTool("testContent", buildDefaultToolTestJson(tool));
       }
       return;
     }
 
-    // Detect Office subType change via our own tracked state.
-    if (provider.type === "Office") {
-      const currentSubType = provider.subType || null;
+    if (tool.type === "Office") {
+      const currentSubType = tool.subType || null;
       if (currentSubType !== this.state.lastSyncedSubType) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({lastSyncedSubType: currentSubType});
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+        if (this.props.onUpdateTool) {
+          this.props.onUpdateTool("testContent", buildDefaultToolTestJson(tool));
         }
         return;
       }
@@ -175,27 +167,26 @@ class TestToolWidget extends React.Component {
       });
   }
 
-  syncFromProvider(provider, prevProvider) {
-    const {onUpdateProvider} = this.props;
-    if (!provider || provider.category !== "Tool") {
+  syncFromTool(tool) {
+    const {onUpdateTool} = this.props;
+    if (!tool) {
       return;
     }
-    const needsDefault = !provider.testContent ||
-      provider.testContent.trim() === "" ||
-      !isValidToolTestJson(provider.testContent);
-    if (needsDefault && onUpdateProvider) {
-      onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+    const needsDefault = !tool.testContent ||
+      tool.testContent.trim() === "" ||
+      !isValidToolTestJson(tool.testContent);
+    if (needsDefault && onUpdateTool) {
+      onUpdateTool("testContent", buildDefaultToolTestJson(tool));
     }
-    const prevSummary = prevProvider ? prevProvider.resultSummary : null;
-    if (provider.resultSummary && provider.resultSummary !== prevSummary) {
-      this.setState({testResult: provider.resultSummary});
+    if (tool.resultSummary) {
+      this.setState({testResult: tool.resultSummary});
     }
   }
 
-  async sendTestTool(provider, originalProvider) {
+  async sendTestTool(tool, originalTool) {
     let parsed;
     try {
-      parsed = JSON.parse(provider.testContent);
+      parsed = JSON.parse(tool.testContent);
     } catch (e) {
       Setting.showMessage("error", `${i18next.t("provider:Invalid tool test JSON")}: ${e.message}`);
       return;
@@ -205,11 +196,10 @@ class TestToolWidget extends React.Component {
       return;
     }
 
-    await checkProvider(provider, originalProvider);
     this.setState({testButtonLoading: true, testResult: ""});
 
     try {
-      const res = await ProviderBackend.testToolProvider(provider);
+      const res = await ToolBackend.testTool(tool);
       if (res.status === "ok") {
         let out;
         if (typeof res.data === "string") {
@@ -223,11 +213,10 @@ class TestToolWidget extends React.Component {
         }
         this.setState({testResult: out});
         Setting.showMessage("success", i18next.t("general:Success"));
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("resultSummary", out);
-          this.props.onUpdateProvider("errorText", "");
+        if (this.props.onUpdateTool) {
+          this.props.onUpdateTool("resultSummary", out);
         }
-        await ProviderBackend.updateProvider(provider.owner, provider.name, {...provider, resultSummary: out, errorText: ""});
+        await ToolBackend.updateTool(tool.owner, tool.name, {...tool, resultSummary: out});
       } else {
         Setting.showMessage("error", res.msg || i18next.t("general:Failed to save"));
       }
@@ -239,17 +228,17 @@ class TestToolWidget extends React.Component {
   }
 
   render() {
-    const {provider, originalProvider, onUpdateProvider, account} = this.props;
+    const {tool, originalTool, onUpdateTool, account} = this.props;
     const {modelProviders} = this.state;
-    const selectedModelProvider = provider.modelProvider || "";
+    const selectedModelProvider = tool.modelProvider || "";
 
-    if (!provider || provider.category !== "Tool") {
+    if (!tool) {
       return null;
     }
 
     return (
       <React.Fragment>
-        {provider.type === "GUI" && (
+        {tool.type === "GUI" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("provider:GUI tool"), i18next.t("provider:GUI tool - Tooltip"))} :
@@ -260,7 +249,7 @@ class TestToolWidget extends React.Component {
                 value={this.state.selectedGuiTool}
                 onChange={(value) => {
                   this.setState({selectedGuiTool: value});
-                  onUpdateProvider("testContent", GUI_TOOL_CONTENT[value]);
+                  onUpdateTool("testContent", GUI_TOOL_CONTENT[value]);
                 }}
               >
                 {GUI_TOOL_OPTIONS.map((opt) => (
@@ -270,26 +259,26 @@ class TestToolWidget extends React.Component {
             </Col>
           </Row>
         )}
-        <Row style={{marginTop: "20px"}} >
+        <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Tool test JSON - Tooltip"))} :
           </Col>
-          <Col span={10} >
+          <Col span={10}>
             <Editor
-              value={provider.testContent}
+              value={tool.testContent}
               lang="json"
               height="150px"
               dark
-              onChange={value => {onUpdateProvider("testContent", value);}}
+              onChange={value => {onUpdateTool("testContent", value);}}
             />
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <Button
               style={{marginLeft: "10px", marginBottom: "5px"}}
               type="primary"
               loading={this.state.testButtonLoading}
-              disabled={!provider.testContent || provider.testContent.trim() === ""}
-              onClick={() => this.sendTestTool(provider, originalProvider)}
+              disabled={!tool.testContent || tool.testContent.trim() === ""}
+              onClick={() => this.sendTestTool(tool, originalTool)}
             >
               {i18next.t("provider:Invoke tool")}
             </Button>
@@ -319,7 +308,7 @@ class TestToolWidget extends React.Component {
                   style={{width: "100%"}}
                   placeholder={i18next.t("provider:Select model provider")}
                   value={selectedModelProvider || undefined}
-                  onChange={(value) => onUpdateProvider("modelProvider", value)}
+                  onChange={(value) => onUpdateTool("modelProvider", value)}
                   showSearch
                   filterOption={(input, option) =>
                     option.children[1].toLowerCase().includes(input.toLowerCase())
@@ -338,12 +327,12 @@ class TestToolWidget extends React.Component {
             </Row>
             {selectedModelProvider ? (
               <ChatWidget
-                key={`${provider.name}-${selectedModelProvider}`}
-                chatName={`chat_tool_${provider.name}`}
-                displayName={`${provider.displayName || provider.name} - Chat Test`}
+                key={`${tool.name}-${selectedModelProvider}`}
+                chatName={`chat_tool_${tool.name}`}
+                displayName={`${tool.displayName || tool.name} - Chat Test`}
                 category="ToolTest"
                 modelProvider={selectedModelProvider}
-                toolProvider={provider.name}
+                toolProvider={tool.name}
                 account={account}
                 height="600px"
                 showHeader={true}

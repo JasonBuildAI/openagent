@@ -28,25 +28,25 @@ func buildMergedBuiltinRegistry(store *Store, lang string) *builtin_tool.ToolReg
 		return reg
 	}
 
-	for _, pname := range store.ToolProviders {
-		id := util.GetIdFromOwnerAndName(store.Owner, pname)
-		p, err := GetProvider(id)
-		if err != nil || p == nil || p.Category != "Tool" {
+	for _, tname := range store.ToolProviders {
+		id := util.GetIdFromOwnerAndName(store.Owner, tname)
+		t, err := GetTool(id)
+		if err != nil || t == nil {
 			continue
 		}
-		tp, err := tool.NewProvider(getToolProviderConfig(p), lang)
+		tp, err := tool.NewProvider(getToolConfig(t), lang)
 		if err != nil {
 			continue
 		}
-		for _, t := range tp.BuiltinTools() {
-			reg.RegisterTool(t)
+		for _, bt := range tp.BuiltinTools() {
+			reg.RegisterTool(bt)
 		}
 	}
 
 	return reg
 }
 
-// MergeAgentToolClients merges MCP agent tools with tools from configured Tool providers, plus web-search flag.
+// MergeAgentToolClients merges MCP agent tools with tools from configured Tools, plus web-search flag.
 func MergeAgentToolClients(agentClients *agent.AgentClients, store *Store, webSearchEnabled bool, lang string) *agent.AgentClients {
 	if webSearchEnabled {
 		if agentClients == nil {

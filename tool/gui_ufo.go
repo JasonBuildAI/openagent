@@ -42,7 +42,7 @@ type GuiProvider struct {
 	baseURL string
 }
 
-func NewGuiProvider(config ProviderConfig) (*GuiProvider, error) {
+func NewGuiProvider(config Config) (*GuiProvider, error) {
 	url := strings.TrimRight(strings.TrimSpace(config.ProviderUrl), "/")
 	if url == "" {
 		url = "http://localhost:8080"

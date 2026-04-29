@@ -26,6 +26,7 @@ import (
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
+	initBuiltInTools()
 	initBuiltInSite()
 	InitUsers()
 }
@@ -207,6 +208,89 @@ func initBuiltInProviders() (string, string, string, string) {
 	return modelProvider.Name, embeddingProvider.Name, ttsProviderName, sttProviderName
 }
 
+func initBuiltInTools() {
+	builtInTools := []*Tool{
+		{
+			Owner:       "admin",
+			Name:        "tool-time",
+			DisplayName: "Time",
+			Type:        "Time",
+			SubType:     "Default",
+			TestContent: `{"tool":"time","arguments":{"operation":"current"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-search",
+			DisplayName: "Web Search",
+			Type:        "Web Search",
+			SubType:     "DuckDuckGo",
+			TestContent: `{"tool":"web_search","arguments":{"query":"hello world"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-shell",
+			DisplayName: "Shell",
+			Type:        "Shell",
+			SubType:     "Default",
+			TestContent: `{"tool":"shell","arguments":{"command":"echo hello"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-office",
+			DisplayName: "Office",
+			Type:        "Office",
+			SubType:     "Default",
+			TestContent: `{"tool":"word_read","arguments":{"path":"test.docx"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-fetch",
+			DisplayName: "Web Fetch",
+			Type:        "Web Fetch",
+			SubType:     "Default",
+			TestContent: `{"tool":"web_fetch","arguments":{"url":"https://example.com"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-browser",
+			DisplayName: "Web Browser",
+			Type:        "Web Browser",
+			SubType:     "Default",
+			TestContent: `{"tool":"web_browser","arguments":{"url":"https://example.com"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-gui",
+			DisplayName: "GUI",
+			Type:        "GUI",
+			SubType:     "Default",
+			TestContent: `{"tool":"gui_screenshot","arguments":{}}`,
+			State:       "Active",
+		},
+	}
+
+	for _, t := range builtInTools {
+		existing, err := getTool(t.Owner, t.Name)
+		if err != nil {
+			panic(err)
+		}
+		if existing != nil {
+			continue
+		}
+		t.CreatedTime = util.GetCurrentTime()
+		_, err = AddTool(t)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func initBuiltInSite() {
 	sites, err := GetGlobalSites()
 	if err != nil {
@@ -223,7 +307,7 @@ func initBuiltInSite() {
 		"/chat",
 		"/stores", "/chats", "/messages",
 		"/files", "/vectors", "/resources",
-		"/providers",
+		"/providers", "/tools",
 		"/records", "/sessions",
 		"/users", "/casdoor-resources", "/permissions",
 		"/sites", "/usages", "/activities", "/sysinfo", "/swagger",

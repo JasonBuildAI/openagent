@@ -27,7 +27,6 @@ import TtsTestWidget from "./common/TestTtsWidget";
 import EmbedTestWidget from "./common/TestEmbedWidget";
 import TestMcpWidget from "./common/TestMcpWidget";
 import TestScanWidget from "./common/TestScanWidget";
-import TestToolWidget from "./common/TestToolWidget";
 import Editor from "./common/Editor";
 
 const {Option} = Select;
@@ -91,9 +90,6 @@ class ProviderEditPage extends React.Component {
   }
 
   getClientIdLabel(provider) {
-    if (this.isGoogleWebSearchProvider(provider)) {
-      return Setting.getLabel(i18next.t("provider:Search engine ID (cx)"), i18next.t("provider:Search engine ID (cx) - Tooltip"));
-    }
     if (["Model", "Embedding"].includes(provider.category)) {
       if (provider.type === "Tencent Cloud") {
         return Setting.getLabel(i18next.t("general:Secret ID"), i18next.t("general:Secret ID - Tooltip"));
@@ -136,9 +132,6 @@ class ProviderEditPage extends React.Component {
         return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
       }
     }
-    if (provider.category === "Tool" && provider.type === "GUI") {
-      return Setting.getLabel(i18next.t("provider:UFO server URL"), i18next.t("provider:UFO server URL - Tooltip"));
-    }
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
   }
 
@@ -160,9 +153,6 @@ class ProviderEditPage extends React.Component {
   }
 
   getClientSecretLabel(provider) {
-    if (this.isWebSearchApiKeyProvider(provider)) {
-      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
-    }
     if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
       if (provider.type === "Baidu Cloud") {
         return Setting.getLabel(i18next.t("general:Access secret"), i18next.t("general:Access secret - Tooltip"));
@@ -186,22 +176,8 @@ class ProviderEditPage extends React.Component {
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
   }
 
-  isGoogleWebSearchProvider(provider) {
-    return provider.category === "Tool" && provider.type === "Web Search" && provider.subType === "Google";
-  }
-
-  isWebSearchApiKeyProvider(provider) {
-    return provider.category === "Tool" && provider.type === "Web Search" && ["Google", "Baidu"].includes(provider.subType);
-  }
-
   shouldShowClientIdInput(provider) {
     if ((provider.category === "Private Cloud" && provider.type === "Kubernetes") || provider.category === "Scan") {
-      return false;
-    }
-    if (this.isGoogleWebSearchProvider(provider)) {
-      return true;
-    }
-    if (provider.category === "Tool") {
       return false;
     }
     return (
@@ -215,15 +191,11 @@ class ProviderEditPage extends React.Component {
   }
 
   shouldShowClientSecretInput(provider) {
-    if (this.isWebSearchApiKeyProvider(provider)) {
-      return true;
-    }
     return !(
       (provider.category === "Storage" && provider.type !== "OpenAI File System") ||
       (provider.category === "Agent" && provider.type === "MCP") ||
       (provider.category === "Blockchain" && provider.type === "ChainMaker") ||
       provider.category === "Scan" ||
-      provider.category === "Tool" ||
       provider.type === "Dummy" ||
       provider.type === "Ollama"
     );
@@ -432,9 +404,6 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Scan") {
                 this.updateProviderField("type", "Nmap");
                 this.updateProviderField("subType", "Default");
-              } else if (value === "Tool") {
-                this.updateProviderField("type", "Time");
-                this.updateProviderField("subType", "Default");
               }
             })}>
               {
@@ -443,7 +412,6 @@ class ProviderEditPage extends React.Component {
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
                   {id: "Agent", name: "Agent"},
-                  {id: "Tool", name: "Tool"},
                   {id: "Public Cloud", name: "Public Cloud"},
                   {id: "Private Cloud", name: "Private Cloud"},
                   {id: "Blockchain", name: "Blockchain"},
@@ -543,22 +511,6 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "A2A") {
                   this.updateProviderField("subType", "Default");
                 }
-              } else if (this.state.provider.category === "Tool") {
-                if (value === "Time") {
-                  this.updateProviderField("subType", "Default");
-                } else if (value === "Web Search") {
-                  this.updateProviderField("subType", "DuckDuckGo");
-                } else if (value === "Shell") {
-                  this.updateProviderField("subType", "Default");
-                } else if (value === "Office") {
-                  this.updateProviderField("subType", "All");
-                } else if (value === "Web Fetch") {
-                  this.updateProviderField("subType", "Default");
-                } else if (value === "Web Browser") {
-                  this.updateProviderField("subType", "Default");
-                } else if (value === "GUI") {
-                  this.updateProviderField("subType", "Default");
-                }
               } else if (this.state.provider.category === "Text-to-Speech") {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "cosyvoice-v1");
@@ -590,7 +542,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          !["Model", "Embedding", "Agent", "Tool", "Text-to-Speech", "Speech-to-Text", "Bot"].includes(this.state.provider.category) ? null : (
+          !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Bot"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {Setting.getLabel(i18next.t("provider:Sub type"), i18next.t("provider:Sub type - Tooltip"))} :
@@ -892,7 +844,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Agent", "Tool", "Text-to-Speech", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text", "Scan"].includes(this.state.provider.category) || (this.state.provider.category === "Blockchain" && this.state.provider.type === "Ethereum") || (this.state.provider.category === "Private Cloud" && this.state.provider.type === "Kubernetes") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {this.getRegionLabel(this.state.provider)} :
@@ -1234,12 +1186,6 @@ class ProviderEditPage extends React.Component {
           account={this.props.account}
           onUpdateProvider={this.updateProviderField.bind(this)}
         />
-        <TestToolWidget
-          provider={this.state.provider}
-          originalProvider={this.state.originalProvider}
-          onUpdateProvider={this.updateProviderField.bind(this)}
-          account={this.props.account}
-        />
         <TestMcpWidget
           provider={this.state.provider}
           originalProvider={this.state.originalProvider}
@@ -1357,20 +1303,6 @@ class ProviderEditPage extends React.Component {
               <Col span={22} >
                 <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
                   this.updateProviderField("providerUrl", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          ) : null
-        }
-        {
-          this.state.provider.category === "Tool" && ["Web Search", "Web Fetch", "Web Browser"].includes(this.state.provider.type) ? (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("provider:Enable proxy"), i18next.t("provider:Enable proxy - Tooltip"))} :
-              </Col>
-              <Col span={1}>
-                <Switch disabled={isRemote} checked={this.state.provider.enableProxy} onChange={checked => {
-                  this.updateProviderField("enableProxy", checked);
                 }} />
               </Col>
             </Row>

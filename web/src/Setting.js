@@ -1128,7 +1128,7 @@ export function getOtherProviderInfo() {
         url: "https://github.com/the-open-agent/openagent",
       },
       "GUI": {
-        logo: `${StaticBaseUrl}/img/social_microsoft.png`,
+        logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/microsoft/UFO",
       },
     },
