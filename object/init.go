@@ -221,12 +221,12 @@ func initBuiltInSite() {
 	// Keys must match ManagementPage.getMenuItems admin-branch child keys (filterMenuItems).
 	builtInNavItems := []string{
 		"/chat",
-		"/stores", "/chats", "/messages", "/usages",
+		"/stores", "/chats", "/messages",
 		"/files", "/vectors", "/resources",
 		"/providers",
-		"/sessions", "/connections", "/records",
+		"/records", "/sessions",
 		"/users", "/casdoor-resources", "/permissions",
-		"/sites", "/activities", "/sysinfo", "/swagger",
+		"/sites", "/usages", "/activities", "/sysinfo", "/swagger",
 	}
 
 	site := &Site{
@@ -236,8 +236,8 @@ func initBuiltInSite() {
 		DisplayName: "Built-in Site",
 		ThemeColor:  "#262626",
 		HtmlTitle:   "",
-		FaviconUrl:  "",
-		LogoUrl:     "",
+		FaviconUrl:  "https://cdn.casibase.com/img/casibase.png",
+		LogoUrl:     "https://cdn.casibase.org/img/casibase-logo_1200x256.png",
 		FooterHtml:  "",
 		NavItems:    builtInNavItems,
 	}

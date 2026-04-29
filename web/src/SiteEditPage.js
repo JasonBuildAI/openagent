@@ -14,12 +14,13 @@
 
 import React from "react";
 import Loading from "./common/Loading";
-import {Button, Card, Col, Input, Popover, Row} from "antd";
+import {Button, Card, Col, Image, Input, Popover, Row, Space, Upload} from "antd";
 import * as SiteBackend from "./backend/SiteBackend";
+import * as ResourceBackend from "./backend/ResourceBackend";
 import * as Setting from "./Setting";
 import {ThemeDefault} from "./Conf";
 import i18next from "i18next";
-import {LinkOutlined} from "@ant-design/icons";
+import {LinkOutlined, UploadOutlined} from "@ant-design/icons";
 import Editor from "./common/Editor";
 import {NavItemTree} from "./component/nav-item-tree/NavItemTree";
 
@@ -30,6 +31,8 @@ class SiteEditPage extends React.Component {
       classes: props,
       siteName: props.match.params.siteName,
       site: null,
+      uploadingFavicon: false,
+      uploadingLogo: false,
     };
   }
 
@@ -54,6 +57,26 @@ class SiteEditPage extends React.Component {
     this.setState({site});
   }
 
+  handleImageUpload(field, file) {
+    const loadingKey = field === "faviconUrl" ? "uploadingFavicon" : "uploadingLogo";
+    this.setState({[loadingKey]: true});
+    ResourceBackend.uploadResource("admin", "avatar", "site", this.state.site.name, file)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.updateSiteField(field, res.data);
+          Setting.showMessage("success", i18next.t("general:Successfully uploaded"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to upload")}: ${res.msg}`);
+        }
+      })
+      .catch(err => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to upload")}: ${err.message}`);
+      })
+      .finally(() => {
+        this.setState({[loadingKey]: false});
+      });
+  }
+
   submitSiteEdit(exitAfterSave) {
     SiteBackend.updateSite(this.state.site.owner, this.state.siteName, this.state.site)
       .then((res) => {
@@ -63,7 +86,7 @@ class SiteEditPage extends React.Component {
             Setting.setThemeColor(this.state.site.themeColor || Setting.getThemeColor());
             this.setState({siteName: this.state.site.name});
             if (exitAfterSave) {
-              this.props.history.push("/sites");
+              this.props.history.push(`/sites/${this.state.site.name}`);
             } else {
               this.props.history.push(`/sites/${this.state.site.name}`);
             }
@@ -134,45 +157,49 @@ class SiteEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input prefix={<LinkOutlined />} value={this.state.site.faviconUrl} onChange={e => {
-              this.updateSiteField("faviconUrl", e.target.value);
-            }} />
+            <Space direction="vertical" style={{width: "100%"}}>
+              <Space.Compact style={{width: "100%"}}>
+                <Input prefix={<LinkOutlined />} value={this.state.site.faviconUrl} onChange={e => {
+                  this.updateSiteField("faviconUrl", e.target.value);
+                }} />
+                <Upload name="file" accept="image/*" showUploadList={false} customRequest={({file}) => this.handleImageUpload("faviconUrl", file)}>
+                  <Button icon={<UploadOutlined />} loading={this.state.uploadingFavicon}>
+                    {i18next.t("general:Upload")}
+                  </Button>
+                </Upload>
+              </Space.Compact>
+              {this.state.site.faviconUrl ? (
+                <Image src={Setting.getFaviconUrl("", this.state.site.faviconUrl)} alt={this.state.site.faviconUrl} height={90}
+                  preview={{mask: i18next.t("general:Preview")}}
+                />
+              ) : null}
+            </Space>
           </Col>
         </Row>
-        {this.state.site.faviconUrl ? (
-          <Row style={{marginTop: "10px"}} >
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-              {i18next.t("general:Preview")}:
-            </Col>
-            <Col span={23} >
-              <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.site.faviconUrl)}>
-                <img src={Setting.getFaviconUrl("", this.state.site.faviconUrl)} alt={this.state.site.faviconUrl} height={90} style={{marginBottom: "20px"}} />
-              </a>
-            </Col>
-          </Row>
-        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input prefix={<LinkOutlined />} value={this.state.site.logoUrl} onChange={e => {
-              this.updateSiteField("logoUrl", e.target.value);
-            }} />
+            <Space direction="vertical" style={{width: "100%"}}>
+              <Space.Compact style={{width: "100%"}}>
+                <Input prefix={<LinkOutlined />} value={this.state.site.logoUrl} onChange={e => {
+                  this.updateSiteField("logoUrl", e.target.value);
+                }} />
+                <Upload name="file" accept="image/*" showUploadList={false} customRequest={({file}) => this.handleImageUpload("logoUrl", file)}>
+                  <Button icon={<UploadOutlined />} loading={this.state.uploadingLogo}>
+                    {i18next.t("general:Upload")}
+                  </Button>
+                </Upload>
+              </Space.Compact>
+              {this.state.site.logoUrl ? (
+                <Image src={Setting.getLogo("", this.state.site.logoUrl)} alt={this.state.site.logoUrl} height={90}
+                  preview={{mask: i18next.t("general:Preview")}}
+                />
+              ) : null}
+            </Space>
           </Col>
         </Row>
-        {this.state.site.logoUrl ? (
-          <Row style={{marginTop: "10px"}} >
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-              {i18next.t("general:Preview")}:
-            </Col>
-            <Col span={23} >
-              <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.site.logoUrl)}>
-                <img src={Setting.getLogo("", this.state.site.logoUrl)} alt={this.state.site.logoUrl} height={90} style={{marginBottom: "20px"}} />
-              </a>
-            </Col>
-          </Row>
-        ) : null}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :

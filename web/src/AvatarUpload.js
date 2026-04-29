@@ -16,7 +16,7 @@ import React, {useState} from "react";
 import {Button, Col, Image, Input, Row, Space, Upload} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import * as TreeFileBackend from "./backend/TreeFileBackend";
+import * as ResourceBackend from "./backend/ResourceBackend";
 
 const StoreAvatarUploader = (props) => {
   const {store, onUpdate, onUploadComplete, imageUrl, disableUpload} = props;
@@ -26,34 +26,16 @@ const StoreAvatarUploader = (props) => {
   }
   const currentImageUrl = imageUrl || store.avatar;
 
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  };
-
-  const handleUpload = async({file}) => {
+  const handleUpload = ({file}) => {
     setLoading(true);
-
-    const fileExt = file.name.split(".").pop();
-    const filename = `${store.owner}_${store.name}_${Date.now()}.${fileExt}`;
-
-    const base64Data = await fileToBase64(file);
-    TreeFileBackend.uploadFile(base64Data, filename, file.type)
+    ResourceBackend.uploadResource(store.owner, "avatar", "store", store.name, file)
       .then((res) => {
         if (res.status === "ok") {
-          // Backend now returns URL directly for avatar uploads
           const newAvatarUrl = res.data;
-
           if (typeof newAvatarUrl !== "string" || newAvatarUrl === "") {
             Setting.showMessage("error", i18next.t("general:Failed to get"));
             return;
           }
-
-          // Add timestamp to avoid cache issues
           const finalUrl = `${newAvatarUrl}?t=${Date.now()}`;
           onUpdate(finalUrl);
           if (onUploadComplete) {

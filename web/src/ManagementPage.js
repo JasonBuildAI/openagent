@@ -616,8 +616,9 @@ function ManagementPage(props) {
           </a>, "/permissions", <SafetyOutlined />),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sites">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
-        Setting.getItem(<Link to="/sites">{i18next.t("general:Sites")}</Link>, "/sites", <LayoutOutlined />),
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sites/site-built-in">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
+        Setting.getItem(<Link to="/sites/site-built-in">{i18next.t("general:Sites")}</Link>, "/sites", <LayoutOutlined />),
+        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
         Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <FundOutlined />),
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo", <DashboardOutlined />),
         Setting.getItem(

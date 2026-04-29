@@ -167,7 +167,7 @@ class SiteListPage extends BaseListPage {
           title={() => (
             <div>
               {i18next.t("general:Sites")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={() => this.addSite()}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" disabled onClick={() => this.addSite()}>{i18next.t("general:Add")}</Button>
             </div>
           )}
           loading={this.getTableLoading()}
