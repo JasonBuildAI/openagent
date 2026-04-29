@@ -279,11 +279,11 @@ const StoreInfoTitle = (props) => {
 
   return (
     <div style={{
-      padding: "10px 15px",
-      borderBottom: "1px solid #e8e8e8",
+      padding: "8px 16px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      minHeight: "48px",
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
         {storeInfo && (

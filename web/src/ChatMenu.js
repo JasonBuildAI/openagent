@@ -271,29 +271,18 @@ class ChatMenu extends React.Component {
     const getNewChatButton = () => {
       return (
         <Button
+          type="primary"
           icon={<PlusOutlined />}
           style={{
-            width: "calc(100% - 8px)",
-            height: "40px",
-            margin: "4px",
-            borderColor: "rgb(229,229,229)",
+            width: "calc(100% - 16px)",
+            height: "38px",
+            margin: "8px",
+            borderRadius: "8px",
+            fontWeight: 500,
+            fontSize: "14px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.12)",
           }}
           disabled={hasEmptyChat}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.6;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.1)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.4;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.6;
-          }}
           onClick={() => {
             if (currentStoreName) {
               const currentStore = this.props.stores.find(store => store.name === currentStoreName);
@@ -323,11 +312,17 @@ class ChatMenu extends React.Component {
     const items = this.chatsToItems(this.props.chats, this.props.currentStoreName);
 
     return (
-      <div>
+      <div style={{height: "100%", display: "flex", flexDirection: "column"}}>
         {this.renderAddChatButton(this.props.stores, this.props.currentStoreName)}
-        <div style={{marginRight: "4px"}}>
+        <div style={{flex: 1, overflow: "hidden", paddingRight: "4px"}}>
           <Menu
-            style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
+            className="chat-sidebar-menu"
+            style={{
+              maxHeight: "calc(100vh - 140px - 40px - 8px)",
+              overflowY: "auto",
+              background: "transparent",
+              border: "none",
+            }}
             mode="inline"
             openKeys={this.state.openKeys}
             selectedKeys={this.state.selectedKeys}

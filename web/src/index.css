@@ -282,3 +282,45 @@ a[href^="mailto:"]:active {
 .ant-message .ant-message-custom-content span {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
 }
+
+/* Chat sidebar menu: transparent background, rounded items */
+.chat-sidebar-menu.ant-menu-inline {
+  background: transparent !important;
+  border-inline-end: none !important;
+}
+
+.chat-sidebar-menu .ant-menu-submenu-title {
+  border-radius: 6px !important;
+  margin: 2px 4px !important;
+  width: calc(100% - 8px) !important;
+  color: #555 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.03em !important;
+  text-transform: uppercase !important;
+}
+
+.chat-sidebar-menu .ant-menu-item {
+  border-radius: 6px !important;
+  margin: 2px 4px !important;
+  width: calc(100% - 8px) !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  transition: background 0.15s ease !important;
+}
+
+.chat-sidebar-menu .ant-menu-item:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.chat-sidebar-menu .ant-menu-item-selected {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: inherit !important;
+  font-weight: 600 !important;
+}
+
+/* Smooth transition on collapse/expand */
+.ant-layout-sider {
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
