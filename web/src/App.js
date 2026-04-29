@@ -123,7 +123,7 @@ class App extends Component {
     const uri = location.pathname;
     this.setState({uri: uri});
     if (uri === "/" || uri === "/home") {
-      this.setState({selectedMenuKey: "/"});
+      this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/providers")) {

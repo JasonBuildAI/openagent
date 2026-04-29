@@ -21,32 +21,30 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
       title: i18next.t("store:All"),
       key: "all",
       children: [
+        {title: i18next.t("general:Chat"), key: "/chat"},
         {
-          title: i18next.t("general:Home"),
-          key: "/home-top",
-          children: [
-            {title: i18next.t("general:Chat"), key: "/chat"},
-            {title: i18next.t("general:Usages"), key: "/usages"},
-            {title: i18next.t("general:Activities"), key: "/activities"},
-            {title: i18next.t("general:OS Desktop"), key: "/desktop"},
-          ],
-        },
-        {
-          title: i18next.t("general:Chats & Messages"),
+          title: i18next.t("general:Basic"),
           key: "/ai-chat",
           children: [
+            {title: i18next.t("general:Stores"), key: "/stores"},
             {title: i18next.t("general:Chats"), key: "/chats"},
             {title: i18next.t("general:Messages"), key: "/messages"},
+            {title: i18next.t("general:Usages"), key: "/usages"},
           ],
         },
         {
-          title: i18next.t("general:AI Setting"),
+          title: i18next.t("general:Knowledge Base"),
           key: "/ai-setting",
           children: [
-            {title: i18next.t("general:Stores"), key: "/stores"},
             {title: i18next.t("general:Files"), key: "/files"},
-            {title: i18next.t("general:Providers"), key: "/providers"},
             {title: i18next.t("general:Vectors"), key: "/vectors"},
+          ],
+        },
+        {
+          title: i18next.t("general:Connectors"),
+          key: "/connectors",
+          children: [
+            {title: i18next.t("general:Providers"), key: "/providers"},
           ],
         },
         {
@@ -62,6 +60,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Containers"), key: "/containers"},
             {title: i18next.t("general:Pods"), key: "/pods"},
             {title: i18next.t("general:Workbench"), key: "/workbench"},
+            {title: i18next.t("general:OS Desktop"), key: "/desktop"},
           ],
         },
         {
@@ -100,6 +99,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           title: i18next.t("general:Admin"),
           key: "/admin",
           children: [
+            {title: i18next.t("general:Activities"), key: "/activities"},
             {title: i18next.t("general:System Info"), key: "/sysinfo"},
             {title: i18next.t("general:Swagger"), key: "/swagger"},
           ],
