@@ -814,7 +814,7 @@ class ChatPage extends BaseListPage {
         )}
 
         <div style={{flex: 1, height: "100%", position: "relative", display: "flex", flexDirection: "column", minWidth: 0}}>
-          {this.state.chat && this.state.paneCount === 1 && (
+          {this.state.paneCount === 1 && (this.state.chat || Setting.isMobile() || Setting.getUrlParam("isRaw") === null) && (
             <div style={{display: "flex", alignItems: "center", borderBottom: "1px solid #f0f0f0", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(8px)"}}>
               {Setting.isMobile() && (
                 <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{margin: "0 4px"}} />
@@ -822,9 +822,13 @@ class ChatPage extends BaseListPage {
               {!(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
                 <Button type="text" icon={this.state.chatMenuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={this.toggleChatMenuCollapse} style={{margin: "0 4px"}} />
               )}
-              <div style={{flex: 1}}>
-                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} generationMode={this.state.generationMode} onGenerationModeChange={this.handleGenerationModeChange} />
-              </div>
+              {this.state.chat ? (
+                <div style={{flex: 1}}>
+                  <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onChatUpdated={this.handleChatUpdate} onStoreChange={this.updateStoreAndUrl} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} account={this.props.account} paneCount={this.state.paneCount} onPaneCountChange={(count) => this.setState({paneCount: count})} showPaneControls={true} generationMode={this.state.generationMode} onGenerationModeChange={this.handleGenerationModeChange} />
+                </div>
+              ) : (
+                <div style={{flex: 1, minHeight: 46}} />
+              )}
             </div>
           )}
 
