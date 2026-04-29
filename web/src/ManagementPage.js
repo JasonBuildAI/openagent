@@ -142,9 +142,9 @@ const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
   if (!uri) {return null;}
-  if (uri.includes("/chats") || uri.includes("/messages") || uri.includes("/usages") || uri.includes("/stores")) {return "/ai-chat";}
+  if (uri.includes("/chats") || uri.includes("/messages") || uri.includes("/usages") || uri.includes("/stores")) {return "/basic";}
   if (uri.includes("/providers")) {return "/connectors";}
-  if (uri.includes("/files") || uri.includes("/vectors")) {return "/ai-setting";}
+  if (uri.includes("/files") || uri.includes("/vectors")) {return "/knowledge-base";}
   if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench") || uri.includes("/desktop")) {return "/cloud";}
   if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
   if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
@@ -541,14 +541,14 @@ function ManagementPage(props) {
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:Basic")}</Link>, "/ai-chat", <BulbOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:Basic")}</Link>, "/basic", <BulbOutlined />, [
         Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <OrderedListOutlined />),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />),
         Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/files">{i18next.t("general:Knowledge Base")}</Link>, "/ai-setting", <DatabaseOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/files">{i18next.t("general:Knowledge Base")}</Link>, "/knowledge-base", <DatabaseOutlined />, [
         Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FolderOpenOutlined />),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />),
       ]));
