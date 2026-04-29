@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
 import {
@@ -153,29 +153,76 @@ function getMenuParentKey(uri) {
   return null;
 }
 
+const siderMenuOpenKeysLsKey = "siderMenuOpenKeys";
+
+function readSavedMenuOpenKeys() {
+  try {
+    const raw = localStorage.getItem(siderMenuOpenKeysLsKey);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((k) => typeof k === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistMenuOpenKeys(keys) {
+  try {
+    localStorage.setItem(siderMenuOpenKeysLsKey, JSON.stringify(keys));
+  } catch {
+    // ignore quota / private mode
+  }
+}
+
 function ManagementPage(props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(() => localStorage.getItem("siderCollapsed") === "true");
+  const siderWasCollapsedRef = useRef(false);
   const [menuOpenKeys, setMenuOpenKeys] = useState(() => {
     if (localStorage.getItem("siderCollapsed") === "true") {
       return [];
     }
+    const saved = readSavedMenuOpenKeys();
     const parentKey = getMenuParentKey(props.uri || location.pathname);
-    return parentKey ? [parentKey] : [];
+    const next = new Set(saved);
+    if (parentKey) {
+      next.add(parentKey);
+    }
+    return [...next];
   });
 
   useEffect(() => {
     if (siderCollapsed) {
+      siderWasCollapsedRef.current = true;
       setMenuOpenKeys([]);
       return;
     }
+    const justExpanded = siderWasCollapsedRef.current;
+    siderWasCollapsedRef.current = false;
     const parentKey = getMenuParentKey(props.uri);
-    if (parentKey) {
-      setMenuOpenKeys(prev =>
-        prev.includes(parentKey) ? prev : [...prev, parentKey]
-      );
-    }
+    setMenuOpenKeys(prev => {
+      if (justExpanded) {
+        const saved = readSavedMenuOpenKeys();
+        const next = new Set(saved);
+        if (parentKey) {
+          next.add(parentKey);
+        }
+        return [...next];
+      }
+      if (parentKey && !prev.includes(parentKey)) {
+        return [...prev, parentKey];
+      }
+      return prev;
+    });
   }, [props.uri, siderCollapsed]);
+
+  useEffect(() => {
+    if (!siderCollapsed) {
+      persistMenuOpenKeys(menuOpenKeys);
+    }
+  }, [menuOpenKeys, siderCollapsed]);
   const {
     account,
     store,
