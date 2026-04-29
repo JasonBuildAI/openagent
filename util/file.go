@@ -144,6 +144,10 @@ func DownloadFile(url string) (*bytes.Buffer, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, url)
+	}
+
 	fileBuffer := bytes.NewBuffer(nil)
 	_, err = io.Copy(fileBuffer, resp.Body)
 	if err != nil {
@@ -154,7 +158,7 @@ func DownloadFile(url string) (*bytes.Buffer, error) {
 }
 
 // downloadMaxmindFiles downloads MaxMind database files from GitHub
-func downloadMaxmindFiles(cityExists, asnExists bool) {
+func downloadMaxmindFiles() {
 	frontendBaseDir := conf.GetConfigString("frontendBaseDir")
 
 	// GitHub repo for the data files
@@ -188,47 +192,35 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 		return nil
 	}
 
-	if !cityExists {
-		cityErr := downloadAndSave("GeoLite2-City")
-		if cityErr != nil {
-			fmt.Println("Failed to download GeoLite2-City database")
-		}
+	downloadOk := true
+
+	if err := downloadAndSave("GeoLite2-City"); err != nil {
+		logs.Warn("Failed to download GeoLite2-City database: %v", err)
+		downloadOk = false
 	}
 
-	if !asnExists {
-		asnErr := downloadAndSave("GeoLite2-ASN")
-		if asnErr != nil {
-			fmt.Println("Failed to download GeoLite2-ASN database")
-		}
+	if err := downloadAndSave("GeoLite2-ASN"); err != nil {
+		logs.Warn("Failed to download GeoLite2-ASN database: %v", err)
+		downloadOk = false
 	}
-	// Update status in util package
+
 	MaxmindDownloadInProgress = false
 
-	if err := InitMaxmindDb(); err != nil {
-		panic("Failed to initialize MaxMind database")
+	if downloadOk {
+		if err := InitMaxmindDb(); err != nil {
+			logs.Warn("Failed to initialize MaxMind database: %v", err)
+		}
 	}
 }
 
-// InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
+// InitMaxmindFiles checks if MaxMind database files are valid and downloads them if needed
 func InitMaxmindFiles() {
-	frontendBaseDir := conf.GetConfigString("frontendBaseDir")
-
-	cityDbPath := filepath.Join(frontendBaseDir, "data", "GeoLite2-City.mmdb")
-	asnDbPath := filepath.Join(frontendBaseDir, "data", "GeoLite2-ASN.mmdb")
-
-	cityDbPathAlt := filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-City.mmdb")
-	asnDbPathAlt := filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-ASN.mmdb")
-
-	// Check if files exist in either location
-	cityExists := FileExist(cityDbPath) || FileExist(cityDbPathAlt)
-	asnExists := FileExist(asnDbPath) || FileExist(asnDbPathAlt)
-
-	// If both files exist, we're done
-	if cityExists && asnExists {
+	// If both databases load successfully, nothing to do
+	if InitMaxmindDb() == nil {
 		return
 	}
 
 	MaxmindDownloadInProgress = true
 
-	go downloadMaxmindFiles(cityExists, asnExists)
+	go downloadMaxmindFiles()
 }

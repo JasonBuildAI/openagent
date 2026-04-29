@@ -18,7 +18,6 @@ import (
 	"net"
 	"path/filepath"
 
-	"github.com/beego/beego/logs"
 	"github.com/oschwald/geoip2-golang"
 	"github.com/the-open-agent/openagent/conf"
 )
@@ -40,20 +39,20 @@ func InitMaxmindDb() error {
 	maxmindCityDB, cityErr = geoip2.Open(filepath.Join(frontendBaseDir, "data", "GeoLite2-City.mmdb"))
 	if cityErr != nil {
 		maxmindCityDB, cityErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-City.mmdb"))
-		if cityErr != nil && !MaxmindDownloadInProgress {
-			logs.Warn("InitMaxmindDb() open \"GeoLite2-City.mmdb\" warning: %v", cityErr)
-		}
 	}
 
 	// Try to open the ASN database file
 	maxmindASNDB, asnErr = geoip2.Open(filepath.Join(frontendBaseDir, "data", "GeoLite2-ASN.mmdb"))
 	if asnErr != nil {
 		maxmindASNDB, asnErr = geoip2.Open(filepath.Join(frontendBaseDir, "..", "data", "GeoLite2-ASN.mmdb"))
-		if asnErr != nil && !MaxmindDownloadInProgress {
-			logs.Warn("InitMaxmindDb() open \"GeoLite2-ASN.mmdb\" warning: %v", asnErr)
-		}
 	}
 
+	if cityErr != nil {
+		return cityErr
+	}
+	if asnErr != nil {
+		return asnErr
+	}
 	return nil
 }
 
