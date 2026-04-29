@@ -47,6 +47,7 @@ class ChatBox extends React.Component {
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
+    this.inputRef = React.createRef();
     this.ttsHelper = new TtsHelper(this);
     this.sttHelper = new SpeechToTextHelper(this);
   }
@@ -54,6 +55,10 @@ class ChatBox extends React.Component {
   setWebSearchEnabled = (enabled) => {
     this.setState({webSearchEnabled: enabled});
   };
+
+  focusInput() {
+    this.inputRef.current?.focus();
+  }
 
   componentDidMount() {
     window.addEventListener("beforeunload", () => {
@@ -366,6 +371,7 @@ class ChatBox extends React.Component {
 
           {!this.props.disableInput && (
             <ChatInput
+              ref={this.inputRef}
               value={this.state.value}
               store={this.props.store}
               chat={this.props.chat}

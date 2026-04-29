@@ -592,6 +592,8 @@ class ChatPage extends BaseListPage {
             messages: null,
             messageError: false,
             generationMode: Setting.loadChatGenerationMode(newChat.owner, newChat.name),
+          }, () => {
+            this.chatBox.current?.focusInput();
           });
           this.getMessages(newChat);
 
