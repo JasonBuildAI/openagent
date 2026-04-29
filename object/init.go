@@ -26,7 +26,6 @@ import (
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
-	initTemplates()
 	InitUsers()
 }
 
