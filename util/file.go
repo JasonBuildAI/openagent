@@ -163,7 +163,7 @@ func downloadMaxmindFiles(cityExists, asnExists bool) {
 	// Helper function to download and save a file
 	downloadAndSave := func(filename string) error {
 		filePath := filepath.Join(frontendBaseDir, "data", filename+".mmdb")
-		fileUrl := filepath.Join(repoURL, "raw", "master", filename+".mmdb")
+		fileUrl := repoURL + "/raw/master/" + filename + ".mmdb"
 
 		EnsureFileFolderExists(filePath)
 
