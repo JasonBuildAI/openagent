@@ -19,6 +19,8 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -59,6 +61,16 @@ func maskDSN(dsn string) string {
 	return dsn
 }
 
+// sqliteDBPath returns the path for the SQLite database file, always placed
+// next to the executable so the location is predictable regardless of CWD.
+func sqliteDBPath() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return "openagent.db"
+	}
+	return filepath.Join(filepath.Dir(exe), "openagent.db")
+}
+
 // resolveDatabase returns the effective driver and DSN to use.
 // When the config still holds the default unmodified MySQL values and nothing
 // is listening on port 3306, it transparently falls back to SQLite so that
@@ -73,8 +85,9 @@ func resolveDatabase(driverName, dataSourceName string) (string, string) {
 
 	conn, err := net.DialTimeout("tcp", "localhost:3306", 2*time.Second)
 	if err != nil {
-		fmt.Println("OpenAgent: connecting to database [driver=sqlite3, dsn=openagent.db]")
-		return "sqlite3", "openagent.db"
+		dsn := sqliteDBPath()
+		fmt.Printf("OpenAgent: connecting to database [driver=sqlite3, dsn=%s]\n", dsn)
+		return "sqlite3", dsn
 	}
 	conn.Close()
 	fmt.Printf("OpenAgent: connecting to database [driver=%s, dsn=%s, db=%s]\n", driverName, maskDSN(dataSourceName), dbName)

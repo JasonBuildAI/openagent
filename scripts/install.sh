@@ -115,11 +115,7 @@ fi
 info ""
 info "openagent ${OPENAGENT_VERSION} installed to ${INSTALL_DIR}"
 info ""
-info "Next steps:"
-info "  1. Edit ${INSTALL_DIR}/conf/app.conf to point to your MySQL/MariaDB database."
-info "  2. cd \"${INSTALL_DIR}\""
-info "  3. Run: ./openagent serve   (or just: openagent serve)"
-info "  4. Open:  http://127.0.0.1:14000/"
-info ""
 info "For more information visit https://github.com/${REPO}"
 info ""
+info "Starting openagent..."
+openagent serve

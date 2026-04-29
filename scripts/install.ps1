@@ -81,11 +81,7 @@ if ($UserPath -notlike "*$InstallDir*") {
 Write-Info ''
 Write-Info "openagent $Version installed to $InstallDir"
 Write-Info ''
-Write-Info 'Next steps:'
-Write-Info "  1. Edit $InstallDir\conf\app.conf to point to your MySQL/MariaDB database."
-Write-Info "  2. cd `"$InstallDir`""
-Write-Info '  3. Run: openagent serve'
-Write-Info '  4. Open:  http://127.0.0.1:14000/'
-Write-Info ''
 Write-Info "For more information visit https://github.com/$Repo"
 Write-Info ''
+Write-Info 'Starting openagent...'
+Start-Process -FilePath (Join-Path $InstallDir 'openagent.exe') -ArgumentList 'serve'

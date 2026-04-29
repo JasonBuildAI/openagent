@@ -107,5 +107,7 @@ func main() {
 
 	go object.ClearThroughputPerSecond()
 
+	go util.OpenBrowser(fmt.Sprintf("http://127.0.0.1:%v/", port))
+
 	beego.Run(fmt.Sprintf(":%v", port))
 }
