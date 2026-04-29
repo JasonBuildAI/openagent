@@ -38,6 +38,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           children: [
             {title: i18next.t("general:Files"), key: "/files"},
             {title: i18next.t("general:Vectors"), key: "/vectors"},
+            {title: i18next.t("general:Resources"), key: "/resources"},
           ],
         },
         {
@@ -91,7 +92,6 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           key: "/identity",
           children: [
             {title: i18next.t("general:Users"), key: "/users"},
-            {title: i18next.t("general:Resources"), key: "/resources"},
             {title: i18next.t("general:Permissions"), key: "/permissions"},
           ],
         },
