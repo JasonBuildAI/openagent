@@ -27,6 +27,28 @@ import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
 import SearchSourcesDrawer from "./SearchSourcesDrawer";
 import KnowledgeSourcesDrawer from "./KnowledgeSourcesDrawer";
+import Editor from "../common/Editor";
+
+function renderJsonContent(raw) {
+  let text = raw;
+  try {
+    text = JSON.stringify(JSON.parse(raw), null, 2);
+  } catch (_) {
+    // not JSON, render as-is
+  }
+  return (
+    <Editor
+      value={text}
+      lang="json"
+      dark
+      readOnly
+      editable={false}
+      fillWidth
+      lineNumbers={false}
+      lineWrapping
+    />
+  );
+}
 
 const {Panel} = Collapse;
 
@@ -241,25 +263,15 @@ const MessageItem = ({
                           {toolCall.name}
                         </div>
                         {toolCall.arguments && (
-                          <div style={{
-                            fontSize: "12px",
-                            fontFamily: "monospace",
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
-                            marginBottom: toolCall.content ? "8px" : "0",
-                          }}>
-                            <strong>Arguments:</strong> {toolCall.arguments}
+                          <div style={{marginBottom: toolCall.content ? "8px" : "0"}}>
+                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>Arguments:</div>
+                            {renderJsonContent(toolCall.arguments)}
                           </div>
                         )}
                         {toolCall.content && (
-                          <div style={{
-                            fontSize: "12px",
-                            padding: "6px",
-                            borderRadius: "3px",
-                            whiteSpace: "pre-wrap",
-                            wordBreak: "break-word",
-                          }}>
-                            <strong>Result:</strong> {toolCall.content}
+                          <div>
+                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>Result:</div>
+                            {renderJsonContent(toolCall.content)}
                           </div>
                         )}
                       </div>
