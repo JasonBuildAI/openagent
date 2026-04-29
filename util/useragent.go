@@ -17,6 +17,7 @@ package util
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/ua-parser/uap-go/uaparser"
 )
@@ -24,20 +25,38 @@ import (
 var Parser *uaparser.Parser
 
 func InitParser() {
+	candidates := []string{
+		"../data/regexes.yaml",
+		"data/regexes.yaml",
+		"../../data/regexes.yaml",
+	}
+	if exe, err := os.Executable(); err == nil {
+		candidates = append(candidates, filepath.Join(filepath.Dir(exe), "data", "regexes.yaml"))
+	}
+	if cache, err := os.UserCacheDir(); err == nil {
+		candidates = append(candidates, filepath.Join(cache, "openagent", "data", "regexes.yaml"))
+	}
+
 	var err error
-	Parser, err = uaparser.New("../data/regexes.yaml")
-	if _, ok := err.(*os.PathError); ok {
-		Parser, err = uaparser.New("data/regexes.yaml")
+	for _, p := range candidates {
+		Parser, err = uaparser.New(p)
+		if err == nil {
+			return
+		}
+		if _, ok := err.(*os.PathError); !ok {
+			break
+		}
 	}
-	if _, ok := err.(*os.PathError); ok {
-		Parser, err = uaparser.New("../../data/regexes.yaml")
-	}
-	if err != nil {
-		panic(err)
-	}
+	Parser = nil
 }
 
 func GetDescFromUserAgent(userAgent string) string {
+	if Parser == nil {
+		if userAgent == "" {
+			return ""
+		}
+		return userAgent
+	}
 	client := Parser.Parse(userAgent)
 	return fmt.Sprintf("%s | %s | %s", client.UserAgent.ToString(), client.Os.ToString(), client.Device.ToString())
 }

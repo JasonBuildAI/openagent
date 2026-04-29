@@ -18,14 +18,14 @@ export function getImages(owner, page = "", pageSize = "", field = "", value = "
   return fetch(`${Setting.ServerUrl}/api/get-images?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getImage(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-image?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateImage(owner, name, image) {
@@ -34,7 +34,7 @@ export function updateImage(owner, name, image) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newImage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addImage(image) {
@@ -43,7 +43,7 @@ export function addImage(image) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newImage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteImage(image) {
@@ -52,5 +52,5 @@ export function deleteImage(image) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newImage),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

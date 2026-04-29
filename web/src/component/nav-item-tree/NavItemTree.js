@@ -21,31 +21,31 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
       title: i18next.t("store:All"),
       key: "all",
       children: [
+        {title: i18next.t("general:Chat"), key: "/chat"},
         {
-          title: i18next.t("general:Home"),
-          key: "/home-top",
-          children: [
-            {title: i18next.t("general:Chat"), key: "/chat"},
-            {title: i18next.t("general:Usages"), key: "/usages"},
-            {title: i18next.t("general:Activities"), key: "/activities"},
-            {title: i18next.t("general:OS Desktop"), key: "/desktop"},
-          ],
-        },
-        {
-          title: i18next.t("general:Chats & Messages"),
+          title: i18next.t("general:Basic"),
           key: "/ai-chat",
           children: [
+            {title: i18next.t("general:Stores"), key: "/stores"},
             {title: i18next.t("general:Chats"), key: "/chats"},
             {title: i18next.t("general:Messages"), key: "/messages"},
+            {title: i18next.t("general:Usages"), key: "/usages"},
           ],
         },
         {
-          title: i18next.t("general:AI Setting"),
+          title: i18next.t("general:Knowledge Base"),
           key: "/ai-setting",
           children: [
-            {title: i18next.t("general:Stores"), key: "/stores"},
-            {title: i18next.t("general:Providers"), key: "/providers"},
+            {title: i18next.t("general:Files"), key: "/files"},
             {title: i18next.t("general:Vectors"), key: "/vectors"},
+            {title: i18next.t("general:Resources"), key: "/resources"},
+          ],
+        },
+        {
+          title: i18next.t("general:Connectors"),
+          key: "/connectors",
+          children: [
+            {title: i18next.t("general:Providers"), key: "/providers"},
           ],
         },
         {
@@ -61,6 +61,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Containers"), key: "/containers"},
             {title: i18next.t("general:Pods"), key: "/pods"},
             {title: i18next.t("general:Workbench"), key: "/workbench"},
+            {title: i18next.t("general:OS Desktop"), key: "/desktop"},
           ],
         },
         {
@@ -73,8 +74,6 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
             {title: i18next.t("general:Forms"), key: "/forms"},
             {title: i18next.t("general:Workflows"), key: "/workflows"},
             {title: i18next.t("general:Audit"), key: "/audit"},
-            {title: i18next.t("med:Medical Image Analysis"), key: "/yolov8mi"},
-            {title: i18next.t("med:Super Resolution"), key: "/sr"},
             {title: i18next.t("general:Articles"), key: "/articles"},
             {title: i18next.t("general:Graphs"), key: "/graphs"},
           ],
@@ -93,7 +92,6 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           key: "/identity",
           children: [
             {title: i18next.t("general:Users"), key: "/users"},
-            {title: i18next.t("general:Resources"), key: "/resources"},
             {title: i18next.t("general:Permissions"), key: "/permissions"},
           ],
         },
@@ -101,6 +99,7 @@ export const NavItemTree = ({disabled, checkedKeys, defaultExpandedKeys, onCheck
           title: i18next.t("general:Admin"),
           key: "/admin",
           children: [
+            {title: i18next.t("general:Activities"), key: "/activities"},
             {title: i18next.t("general:System Info"), key: "/sysinfo"},
             {title: i18next.t("general:Swagger"), key: "/swagger"},
           ],

@@ -21,7 +21,7 @@ export function getAssets(owner, page = "", pageSize = "", field = "", value = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getAsset(owner, name) {
@@ -31,7 +31,7 @@ export function getAsset(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateAsset(owner, name, asset) {
@@ -43,7 +43,7 @@ export function updateAsset(owner, name, asset) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addAsset(asset) {
@@ -55,7 +55,7 @@ export function addAsset(asset) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteAsset(asset) {
@@ -67,7 +67,7 @@ export function deleteAsset(asset) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function scanAssets(owner, provider) {
@@ -77,7 +77,7 @@ export function scanAssets(owner, provider) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function scanAsset(provider, scan, targetMode, target, asset, command, saveToScan) {
@@ -105,5 +105,5 @@ export function scanAsset(provider, scan, targetMode, target, asset, command, sa
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

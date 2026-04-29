@@ -31,6 +31,8 @@ class ChatMenu extends React.Component {
       selectedKeys: [selectedKey],
       editChat: false,
       editChatName: "",
+      hoveredKey: null,
+      popconfirmOpenKey: null,
     };
   }
 
@@ -54,7 +56,11 @@ class ChatMenu extends React.Component {
         label: category,
         children: categories[category].map((chat, chatIndex) => {
           const globalChatIndex = chats.indexOf(chat);
-          const isSelected = selectedKeys.includes(`${index}-${chatIndex}`);
+          const itemKey = `${index}-${chatIndex}`;
+          const isSelected = selectedKeys.includes(itemKey);
+          const isHovered = this.state !== undefined && this.state.hoveredKey === itemKey;
+          const popconfirmOpenKey = this.state !== undefined ? this.state.popconfirmOpenKey : null;
+          const showActionButtons = popconfirmOpenKey === itemKey || (isHovered && popconfirmOpenKey === null);
           const handleIconMouseEnter = (e) => {
             e.currentTarget.style.color = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
@@ -109,11 +115,14 @@ class ChatMenu extends React.Component {
                     }}
                   />
                 </div>) : (
-                <div className="menu-item-container">
-                  <div style={{width: "70%", overflow: "hidden"}}>
+                <div className="menu-item-container"
+                  onMouseEnter={() => this.setState({hoveredKey: itemKey})}
+                  onMouseLeave={() => this.setState({hoveredKey: null})}
+                >
+                  <div style={{flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                     <Tooltip title={chat.displayName}>{chat.displayName}</Tooltip>
                   </div>
-                  {isSelected && (
+                  {showActionButtons && (
                     <div>
                       <EditOutlined className="menu-item-icon"
                         onMouseEnter={handleIconMouseEnter}
@@ -129,6 +138,9 @@ class ChatMenu extends React.Component {
                         }} />
                       <Popconfirm
                         title={`${i18next.t("general:Sure to delete")}: ${chat.displayName} ?`}
+                        onOpenChange={(open) => {
+                          this.setState({popconfirmOpenKey: open ? itemKey : null});
+                        }}
                         onConfirm={() => {
                           if (this.props.onDeleteChat) {
                             this.props.onDeleteChat(globalChatIndex);
@@ -259,29 +271,18 @@ class ChatMenu extends React.Component {
     const getNewChatButton = () => {
       return (
         <Button
+          type="primary"
           icon={<PlusOutlined />}
           style={{
-            width: "calc(100% - 8px)",
-            height: "40px",
-            margin: "4px",
-            borderColor: "rgb(229,229,229)",
+            width: "calc(100% - 16px)",
+            height: "38px",
+            margin: "8px",
+            borderRadius: "8px",
+            fontWeight: 500,
+            fontSize: "14px",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.12)",
           }}
           disabled={hasEmptyChat}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.6;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.1)";
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.4;
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
-            e.currentTarget.style.opacity = 0.6;
-          }}
           onClick={() => {
             if (currentStoreName) {
               const currentStore = this.props.stores.find(store => store.name === currentStoreName);
@@ -311,11 +312,17 @@ class ChatMenu extends React.Component {
     const items = this.chatsToItems(this.props.chats, this.props.currentStoreName);
 
     return (
-      <div>
+      <div style={{height: "100%", display: "flex", flexDirection: "column"}}>
         {this.renderAddChatButton(this.props.stores, this.props.currentStoreName)}
-        <div style={{marginRight: "4px"}}>
+        <div style={{flex: 1, overflow: "hidden", paddingRight: "4px"}}>
           <Menu
-            style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
+            className="chat-sidebar-menu"
+            style={{
+              maxHeight: "calc(100vh - 140px - 40px - 8px)",
+              overflowY: "auto",
+              background: "transparent",
+              border: "none",
+            }}
             mode="inline"
             openKeys={this.state.openKeys}
             selectedKeys={this.state.selectedKeys}

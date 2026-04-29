@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {Avatar, Button, Card, Drawer, Dropdown, Layout, Menu, Result} from "antd";
 import {
@@ -20,7 +20,6 @@ import {
   ApiOutlined,
   AppstoreOutlined,
   AuditOutlined,
-  BankOutlined,
   BarsOutlined,
   BlockOutlined,
   BranchesOutlined,
@@ -34,20 +33,18 @@ import {
   DeploymentUnitOutlined,
   DesktopOutlined,
   DownOutlined,
-  ExperimentOutlined,
-  FileOutlined,
-  FileSearchOutlined,
   FileTextOutlined,
+  FolderOpenOutlined,
   FormOutlined,
   FundOutlined,
   GoldOutlined,
   HddOutlined,
   HomeOutlined,
+  InboxOutlined,
   LineChartOutlined,
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
-  MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MessageOutlined,
@@ -55,7 +52,6 @@ import {
   PictureOutlined,
   PlaySquareOutlined,
   ReadOutlined,
-  RiseOutlined,
   SafetyOutlined,
   ScanOutlined,
   SettingOutlined,
@@ -135,8 +131,6 @@ import ActivityPage from "./ActivityPage";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
 import AuditPage from "./frame/AuditPage";
-import PythonYolov8miPage from "./frame/PythonYolov8miPage";
-import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
 import OsDesktop from "./OsDesktop";
 import TemplateListPage from "./TemplateListPage";
@@ -145,55 +139,94 @@ import ApplicationListPage from "./ApplicationListPage";
 import ApplicationEditPage from "./ApplicationEditPage";
 import ApplicationStorePage from "./ApplicationStorePage";
 import ApplicationDetailsPage from "./ApplicationViewPage";
-import HospitalListPage from "./HospitalListPage";
-import HospitalEditPage from "./HospitalEditPage";
-import DoctorListPage from "./DoctorListPage";
-import DoctorEditPage from "./DoctorEditPage";
-import PatientListPage from "./PatientListPage";
-import PatientEditPage from "./PatientEditPage";
-import CaaseListPage from "./CaaseListPage";
-import CaaseEditPage from "./CaaseEditPage";
-import ConsultationListPage from "./ConsultationListPage";
-import ConsultationEditPage from "./ConsultationEditPage";
-
+import ResourceListPage from "./ResourceListPage";
 const {Header, Footer, Content, Sider} = Layout;
 
 function getMenuParentKey(uri) {
   if (!uri) {return null;}
-  if (uri.includes("/chats") || uri.includes("/messages")) {return "/ai-chat";}
-  if (uri.includes("/chat") || uri.includes("/usages") || uri.includes("/activities") || uri.includes("/desktop")) {return "/home";}
-  if (uri.includes("/stores") || uri.includes("/files") || uri.includes("/providers") || uri.includes("/vectors")) {return "/ai-setting";}
-  if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench")) {return "/cloud";}
-  if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/hospitals") || uri.includes("/doctors") || uri.includes("/patients") || uri.includes("/caases") || uri.includes("/consultations") || uri.includes("/audit") || uri.includes("/yolov8mi") || uri.includes("/sr") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
+  if (uri.includes("/chats") || uri.includes("/messages") || uri.includes("/usages") || uri.includes("/stores")) {return "/basic";}
+  if (uri.includes("/providers")) {return "/connectors";}
+  if (uri.includes("/files") || uri.includes("/vectors") || uri.includes("/resources")) {return "/knowledge-base";}
+  if (uri.includes("/templates") || uri.includes("/application-store") || uri.includes("/applications") || uri.includes("/nodes") || uri.includes("/machines") || uri.includes("/assets") || uri.includes("/images") || uri.includes("/containers") || uri.includes("/pods") || uri.includes("/workbench") || uri.includes("/desktop")) {return "/cloud";}
+  if (uri.includes("/videos") || uri.includes("/public-videos") || uri.includes("/tasks") || uri.includes("/scales") || uri.includes("/forms") || uri.includes("/workflows") || uri.includes("/audit") || uri.includes("/articles") || uri.includes("/graphs") || uri.includes("/scans")) {return "/multimedia";}
   if (uri.includes("/sessions") || uri.includes("/connections") || uri.includes("/records")) {return "/logs";}
-  if (uri.includes("/users") || uri.includes("/resources") || uri.includes("/permissions")) {return "/identity";}
-  if (uri.includes("/sysinfo") || uri.includes("/swagger")) {return "/admin";}
+  if (uri.includes("/users") || uri.includes("/casdoor-resources") || uri.includes("/permissions")) {return "/identity";}
+  if (uri.includes("/sysinfo") || uri.includes("/swagger") || uri.includes("/activities")) {return "/admin";}
   return null;
+}
+
+const siderMenuOpenKeysLsKey = "siderMenuOpenKeys";
+
+const defaultMenuOpenKeys = ["/basic", "/knowledge-base", "/connectors", "/admin"];
+
+function readSavedMenuOpenKeys() {
+  try {
+    const raw = localStorage.getItem(siderMenuOpenKeysLsKey);
+    if (!raw) {
+      return defaultMenuOpenKeys;
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((k) => typeof k === "string") : defaultMenuOpenKeys;
+  } catch {
+    return defaultMenuOpenKeys;
+  }
+}
+
+function persistMenuOpenKeys(keys) {
+  try {
+    localStorage.setItem(siderMenuOpenKeysLsKey, JSON.stringify(keys));
+  } catch {
+    // ignore quota / private mode
+  }
 }
 
 function ManagementPage(props) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [siderCollapsed, setSiderCollapsed] = useState(() => localStorage.getItem("siderCollapsed") === "true");
+  const siderWasCollapsedRef = useRef(false);
   const [menuOpenKeys, setMenuOpenKeys] = useState(() => {
     if (localStorage.getItem("siderCollapsed") === "true") {
       return [];
     }
+    const saved = readSavedMenuOpenKeys();
     const parentKey = getMenuParentKey(props.uri || location.pathname);
-    return parentKey ? [parentKey] : [];
+    const next = new Set(saved);
+    if (parentKey) {
+      next.add(parentKey);
+    }
+    return [...next];
   });
 
   useEffect(() => {
     if (siderCollapsed) {
+      siderWasCollapsedRef.current = true;
       setMenuOpenKeys([]);
       return;
     }
+    const justExpanded = siderWasCollapsedRef.current;
+    siderWasCollapsedRef.current = false;
     const parentKey = getMenuParentKey(props.uri);
-    if (parentKey) {
-      setMenuOpenKeys(prev =>
-        prev.includes(parentKey) ? prev : [...prev, parentKey]
-      );
-    }
+    setMenuOpenKeys(prev => {
+      if (justExpanded) {
+        const saved = readSavedMenuOpenKeys();
+        const next = new Set(saved);
+        if (parentKey) {
+          next.add(parentKey);
+        }
+        return [...next];
+      }
+      if (parentKey && !prev.includes(parentKey)) {
+        return [...prev, parentKey];
+      }
+      return prev;
+    });
   }, [props.uri, siderCollapsed]);
+
+  useEffect(() => {
+    if (!siderCollapsed) {
+      persistMenuOpenKeys(menuOpenKeys);
+    }
+  }, [menuOpenKeys, siderCollapsed]);
   const {
     account,
     store,
@@ -208,7 +241,8 @@ function ManagementPage(props) {
   } = props;
 
   const currentUri = uri || location.pathname;
-  const selectedLeafKey = "/" + (currentUri.split("/").filter(Boolean)[0] || "");
+  const firstSeg = currentUri.split("/").filter(Boolean)[0] || "";
+  const selectedLeafKey = (firstSeg === "" || firstSeg === "home") ? "/chat" : ("/" + firstSeg);
 
   const isDark = themeAlgorithm.includes("dark");
   const textColor = isDark ? "white" : "black";
@@ -509,23 +543,23 @@ function ManagementPage(props) {
     } else {
       res.pop();
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeOutlined />, [
-        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />),
-        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
-        Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <DashboardOutlined />),
-        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop", <DesktopOutlined />),
-      ]));
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Chat")}</Link>, "/chat", <CommentOutlined />));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbOutlined />, [
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:Basic")}</Link>, "/basic", <BulbOutlined />, [
+        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
         Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats", <OrderedListOutlined />),
         Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages", <MessageOutlined />),
+        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages", <LineChartOutlined />),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreOutlined />, [
-        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores", <AppstoreOutlined />),
-        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FileOutlined />),
-        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />),
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/files">{i18next.t("general:Knowledge Base")}</Link>, "/knowledge-base", <DatabaseOutlined />, [
+        Setting.getItem(<Link to="/files">{i18next.t("general:Files")}</Link>, "/files", <FolderOpenOutlined />),
         Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors", <ApartmentOutlined />),
+        Setting.getItem(<Link to="/resources">{i18next.t("general:Resources")}</Link>, "/resources", <InboxOutlined />),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/providers">{i18next.t("general:Connectors")}</Link>, "/connectors", <ApiOutlined />, [
+        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers", <ThunderboltOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud")}</Link>, "/cloud", <CloudOutlined />, [
@@ -539,6 +573,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/containers">{i18next.t("general:Containers")}</Link>, "/containers", <ContainerOutlined />),
         Setting.getItem(<Link to="/pods">{i18next.t("general:Pods")}</Link>, "/pods", <BlockOutlined />),
         Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench", <ToolOutlined />),
+        Setting.getItem(<Link to="/desktop">{i18next.t("general:OS Desktop")}</Link>, "/desktop", <DesktopOutlined />),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraOutlined />, [
@@ -548,14 +583,7 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/scales">{i18next.t("general:Scales")}</Link>, "/scales", <FundOutlined />),
         Setting.getItem(<Link to="/forms">{i18next.t("general:Forms")}</Link>, "/forms", <FormOutlined />),
         Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows", <BranchesOutlined />),
-        Setting.getItem(<Link to="/hospitals">{i18next.t("med:Hospitals")}</Link>, "/hospitals", <BankOutlined />),
-        Setting.getItem(<Link to="/doctors">{i18next.t("med:Doctors")}</Link>, "/doctors", <MedicineBoxOutlined />),
-        Setting.getItem(<Link to="/patients">{i18next.t("med:Patients")}</Link>, "/patients", <UserOutlined />),
-        Setting.getItem(<Link to="/caases">{i18next.t("med:Caases")}</Link>, "/caases", <FileSearchOutlined />),
-        Setting.getItem(<Link to="/consultations">{i18next.t("med:Consultations")}</Link>, "/consultations", <TeamOutlined />),
         Setting.getItem(<Link to="/audit">{i18next.t("general:Audit")}</Link>, "/audit", <AuditOutlined />),
-        Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi", <ExperimentOutlined />),
-        Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr", <RiseOutlined />),
         Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles", <ReadOutlined />),
         Setting.getItem(<Link to="/graphs">{i18next.t("general:Graphs")}</Link>, "/graphs", <ShareAltOutlined />),
         Setting.getItem(<Link to="/scans">{i18next.t("general:Scans")}</Link>, "/scans", <ScanOutlined />),
@@ -575,9 +603,9 @@ function ManagementPage(props) {
           </a>, "/users", <UserOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/resources")}>
-            {i18next.t("general:Resources")}
+            {i18next.t("general:Casdoor Resources")}
             {Setting.renderExternalLink()}
-          </a>, "/resources", <TeamOutlined />),
+          </a>, "/casdoor-resources", <TeamOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(account).replace("/account", "/permissions")}>
             {i18next.t("general:Permissions")}
@@ -586,6 +614,7 @@ function ManagementPage(props) {
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingOutlined />, [
+        Setting.getItem(<Link to="/activities">{i18next.t("general:Activities")}</Link>, "/activities", <FundOutlined />),
         Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo", <DashboardOutlined />),
         Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
@@ -696,8 +725,6 @@ function ManagementPage(props) {
         <Route exact path="/workflows" render={(props) => renderSigninIfNotSignedIn(<WorkflowListPage account={account} {...props} />)} />
         <Route exact path="/workflows/:workflowName" render={(props) => renderSigninIfNotSignedIn(<WorkflowEditPage account={account} {...props} />)} />
         <Route exact path="/audit" render={(props) => renderSigninIfNotSignedIn(<AuditPage account={account} {...props} />)} />
-        <Route exact path="/yolov8mi" render={(props) => renderSigninIfNotSignedIn(<PythonYolov8miPage account={account} {...props} />)} />
-        <Route exact path="/sr" render={(props) => renderSigninIfNotSignedIn(<PythonSrPage account={account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => renderSigninIfNotSignedIn(<TaskListPage account={account} {...props} />)} />
         <Route exact path="/tasks/:owner/:taskName" render={(props) => renderSigninIfNotSignedIn(<TaskEditPage account={account} {...props} />)} />
         <Route exact path="/scales" render={(props) => renderSigninIfNotSignedIn(<ScaleListPage account={account} {...props} />)} />
@@ -707,16 +734,7 @@ function ManagementPage(props) {
         <Route exact path="/forms/:formName/data" render={(props) => renderSigninIfNotSignedIn(<FormDataPage key={props.match.params.formName} account={account} {...props} />)} />
         <Route exact path="/articles" render={(props) => renderSigninIfNotSignedIn(<ArticleListPage account={account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => renderSigninIfNotSignedIn(<ArticleEditPage account={account} {...props} />)} />
-        <Route exact path="/hospitals" render={(props) => renderSigninIfNotSignedIn(<HospitalListPage account={account} {...props} />)} />
-        <Route exact path="/hospitals/:hospitalName" render={(props) => renderSigninIfNotSignedIn(<HospitalEditPage account={account} {...props} />)} />
-        <Route exact path="/doctors" render={(props) => renderSigninIfNotSignedIn(<DoctorListPage account={account} {...props} />)} />
-        <Route exact path="/doctors/:doctorName" render={(props) => renderSigninIfNotSignedIn(<DoctorEditPage account={account} {...props} />)} />
-        <Route exact path="/patients" render={(props) => renderSigninIfNotSignedIn(<PatientListPage account={account} {...props} />)} />
-        <Route exact path="/patients/:patientName" render={(props) => renderSigninIfNotSignedIn(<PatientEditPage account={account} {...props} />)} />
-        <Route exact path="/caases" render={(props) => renderSigninIfNotSignedIn(<CaaseListPage account={account} {...props} />)} />
-        <Route exact path="/caases/:caaseName" render={(props) => renderSigninIfNotSignedIn(<CaaseEditPage account={account} {...props} />)} />
-        <Route exact path="/consultations" render={(props) => renderSigninIfNotSignedIn(<ConsultationListPage account={account} {...props} />)} />
-        <Route exact path="/consultations/:consultationName" render={(props) => renderSigninIfNotSignedIn(<ConsultationEditPage account={account} {...props} />)} />
+        <Route exact path="/resources" render={(props) => renderSigninIfNotSignedIn(<ResourceListPage account={account} {...props} />)} />
         <Route exact path="/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/chat" render={(props) => renderSigninIfNotSignedIn(<ChatPage account={account} {...props} />)} />

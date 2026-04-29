@@ -448,23 +448,10 @@ routeManager.registerApp("forms", {
 routeManager.registerApp("audit", {
   title: "Audit",
   gradient: "linear-gradient(135deg, #ffffff 0%, #aec0ff 100%)",
-  i18nNamespace: "med",
   routes: [
     {
       path: "/audit",
       component: () => import("../frame/AuditPage"),
-    },
-  ],
-});
-
-routeManager.registerApp("medical", {
-  title: "Medical Image Analysis",
-  gradient: "linear-gradient(135deg,rgb(151, 185, 219) 0%, #42579B 100%)",
-  i18nNamespace: "med",
-  routes: [
-    {
-      path: "/yolov8mi",
-      component: () => import("../frame/PythonYolov8miPage"),
     },
   ],
 });
@@ -480,18 +467,6 @@ routeManager.registerApp("articles", {
     {
       path: "/articles/:articleName",
       component: () => import("../ArticleEditPage"),
-    },
-  ],
-});
-
-routeManager.registerApp("super-resolution", {
-  title: "Super Resolution",
-  gradient: "linear-gradient(135deg, #303B68 0%, #65C37C 100%)",
-  i18nNamespace: "med",
-  routes: [
-    {
-      path: "/sr",
-      component: () => import("../frame/PythonSrPage"),
     },
   ],
 });

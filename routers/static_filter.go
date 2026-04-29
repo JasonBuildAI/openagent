@@ -118,11 +118,18 @@ func StaticFilter(ctx *context.Context) {
 	if util.FileExist(path) {
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, path)
 	} else {
-		err := util.AppendWebConfigCookie(ctx)
-		if err != nil {
-			fmt.Println(err)
+		fallback := "web/build/index.html"
+		if util.FileExist(fallback) {
+			err := util.AppendWebConfigCookie(ctx)
+			if err != nil {
+				fmt.Println(err)
+			}
+			makeGzipResponse(ctx.ResponseWriter, ctx.Request, fallback)
+		} else {
+			ctx.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
+			ctx.ResponseWriter.WriteHeader(http.StatusNotFound)
+			_, _ = fmt.Fprint(ctx.ResponseWriter, `<!DOCTYPE html><html><head><title>Frontend Not Built</title></head><body><h2>Frontend not built</h2><p>Please run <code>cd web &amp;&amp; yarn install &amp;&amp; yarn build</code> to build the frontend.</p></body></html>`)
 		}
-		makeGzipResponse(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	}
 }
 

@@ -71,10 +71,6 @@
     "Scan": "Scan",
     "Successfully scanned assets": "Successfully scanned assets"
   },
-  "caase": {
-    "Edit Caase": "Edit Case",
-    "New Caase": "New Case"
-  },
   "cert": {
     "Sign cert": "Sign cert",
     "Sign cert - Tooltip": "Certificate used for signing operations",
@@ -135,10 +131,6 @@
     "History": "History",
     "Online": "Online"
   },
-  "consultation": {
-    "Edit Consultation": "Edit Consultation",
-    "New Consultation": "New Consultation"
-  },
   "container": {
     "Command": "Command",
     "Command - Tooltip": "Container entrypoint command",
@@ -152,10 +144,6 @@
     "Size RW - Tooltip": "Writable layer storage size (MB)",
     "Size root FS": "Size root FS",
     "Size root FS - Tooltip": "Root filesystem size (MB)"
-  },
-  "doctor": {
-    "Edit Doctor": "Edit Doctor",
-    "New Doctor": "New Doctor"
   },
   "file": {
     "Edit File": "Edit File",
@@ -195,6 +183,7 @@
     "Avatar": "Avatar",
     "Avatar - Tooltip": "Icon URL for visual identification",
     "Back Home": "Back Home",
+    "Basic": "Basic",
     "Block": "Block",
     "Block - Tooltip": "Linked data block identifier",
     "Block 2": "Block 2",
@@ -218,6 +207,7 @@
     "Collapse row": "Collapse row",
     "Confirm deletion": "Confirm deletion",
     "Connections": "Connections",
+    "Connectors": "Connectors",
     "Containers": "Containers",
     "Copied to clipboard successfully": "Copied to clipboard successfully",
     "Copy": "Copy",
@@ -306,6 +296,7 @@
     "Loading": "Loading",
     "Loading...": "Loading...",
     "Local": "Local",
+    "Knowledge Base": "Knowledge Base",
     "Logging": "Logging",
     "Logo URL": "Logo URL",
     "Logo URL - Tooltip": "URL of the organization logo image",
@@ -342,6 +333,7 @@
     "Object - Tooltip": "Structured request payload",
     "Open": "Open",
     "Options": "Options",
+    "Other": "Other",
     "Org ID": "Org ID",
     "Org ID - Tooltip": "Organization identifier",
     "Organization": "Organization",
@@ -514,10 +506,6 @@
     "Tree": "Tree",
     "Word Cloud": "Word Cloud"
   },
-  "hospital": {
-    "Edit Hospital": "Edit Hospital",
-    "New Hospital": "New Hospital"
-  },
   "image": {
     "Arch": "Arch",
     "Arch - Tooltip": "CPU architecture compatibility",
@@ -557,61 +545,6 @@
     "Public IP": "Public IP",
     "Public IP - Tooltip": "Internet-facing IP address"
   },
-  "med": {
-    "Access level": "Access level",
-    "Access level - Tooltip": "Permission level for accessing medical records",
-    "Address": "Address",
-    "Address - Tooltip": "Postal or contact address for this person or organization.",
-    "Allergies": "Allergies",
-    "Allergies - Tooltip": "Known allergies and adverse reactions to document for care.",
-    "Blood type": "Blood type",
-    "Blood type - Tooltip": "Patient blood type (e.g., A, B, AB, O, Rh).",
-    "Caases": "Cases",
-    "Consultations": "Consultations",
-    "Department": "Department",
-    "Department - Tooltip": "Medical department or specialty",
-    "Diagnosis": "Diagnosis",
-    "Diagnosis - Tooltip": "Medical diagnosis",
-    "Diagnosis date": "Diagnosis date",
-    "Diagnosis date - Tooltip": "Date of diagnosis",
-    "Doctor": "Doctor",
-    "Doctor - Tooltip": "Attending doctor",
-    "Doctors": "Doctors",
-    "Doctors - Tooltip": "List of doctors associated with this entity",
-    "Email": "Email",
-    "Email - Tooltip": "Contact email address for notifications or identification.",
-    "Expired time": "Expired time",
-    "Expired time - Tooltip": "Consultation expiration time",
-    "Female": "Female",
-    "Follow up": "Follow up",
-    "Follow up - Tooltip": "Follow-up care instructions",
-    "Gender": "Gender",
-    "Gender - Tooltip": "Recorded gender or sex for demographic and clinical context.",
-    "HIS interface info": "HIS interface info",
-    "HIS interface info - Tooltip": "Hospital Information System interface details",
-    "Hospital": "Hospital",
-    "Hospital - Tooltip": "Hospital or care facility associated with this record.",
-    "Hospitals": "Hospitals",
-    "Integrated care organization Id": "Integrated care organization Id",
-    "Integrated care organization Id - Tooltip": "Integrated care organization identifier",
-    "Male": "Male",
-    "Medical Image Analysis": "Medical Image Analysis",
-    "Other": "Other",
-    "Owners": "Owners",
-    "Owners - Tooltip": "Doctors who have permission to manage this patient",
-    "Patient": "Patient",
-    "Patient - Tooltip": "Patient identity this clinical record refers to.",
-    "Patients": "Patients",
-    "Prescription": "Prescription",
-    "Prescription - Tooltip": "Prescribed medication or treatment",
-    "Primary care physician": "Primary care physician",
-    "Primary care physician - Tooltip": "Primary care physician name",
-    "Specialist alliance Id": "Specialist alliance Id",
-    "Specialist alliance Id - Tooltip": "Specialist alliance identifier",
-    "Super Resolution": "Super Resolution",
-    "Symptoms": "Symptoms",
-    "Symptoms - Tooltip": "Patient symptoms"
-  },
   "message": {
     "Author": "Author",
     "Author - Tooltip": "The actual user or system identity that sent this message.",
@@ -645,11 +578,6 @@
     "Remote Apps - Tooltip": "Published RemoteApp applications",
     "Services": "Services",
     "Services - Tooltip": "Service monitoring configurations"
-  },
-  "patient": {
-    "Edit Patient": "Edit Patient",
-    "New Patient": "New Patient",
-    "View Patient": "View Patient"
   },
   "pod": {
     "Edit Pod": "Edit Pod",

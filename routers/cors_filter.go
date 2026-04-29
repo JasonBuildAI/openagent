@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego/context"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 )
@@ -88,7 +88,7 @@ func isOriginAllowed(origin string) (bool, error) {
 		return false, fmt.Errorf("casdoorEndpoint or casdoorApplication is empty")
 	}
 
-	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	application, err := auth.GetApplication(casdoorApplication)
 	if err != nil {
 		return false, err
 	}

@@ -17,22 +17,12 @@ package controllers
 import (
 	"encoding/json"
 	"sort"
-	"sync/atomic"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
-
-var casdoorAvailable atomic.Bool
-
-func setCasdoorAvailable(available bool) {
-	casdoorAvailable.Store(available)
-}
-
-func isCasdoorAvailable() bool {
-	return casdoorAvailable.Load()
-}
 
 type signinForm struct {
 	Username string `json:"username"`
@@ -56,7 +46,7 @@ func (c *ApiController) GetSigninOptions() {
 	signinEnabled := object.IsSigninEnabled()
 	autoSignin := signinEnabled && object.IsAdminUsingDefaultPassword()
 	c.ResponseOk(map[string]interface{}{
-		"casdoorAvailable": isCasdoorAvailable(),
+		"casdoorAvailable": conf.IsCasdoorAvailable(),
 		"signinAvailable":  signinEnabled,
 		"autoSignin":       autoSignin,
 	})
@@ -192,7 +182,7 @@ func (c *ApiController) signinWithPassword() {
 	}
 
 	user := accountUser.ToCasdoorUser()
-	claims := &casdoorsdk.Claims{
+	claims := &auth.Claims{
 		User:         user,
 		SigninMethod: "Sign In",
 	}

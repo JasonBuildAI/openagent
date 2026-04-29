@@ -18,7 +18,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/i18n"
 )
@@ -38,7 +38,7 @@ func NewCasdoorProvider(providerName string, lang string) (*CasdoorProvider, err
 func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
 	casdoorApplication := conf.GetConfigString("casdoorApplication")
-	resources, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", p.providerName, "Direct", prefix)
+	resources, err := auth.GetResources(casdoorOrganization, casdoorApplication, "provider", p.providerName, "Direct", prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 }
 
 func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
-	fileUrl, _, err := casdoorsdk.UploadResource(user, "OpenAgent", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
+	fileUrl, _, err := auth.UploadResource(user, "OpenAgent", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
 	if err != nil {
 		return "", err
 	}
@@ -64,11 +64,11 @@ func (p *CasdoorProvider) PutObject(user string, parent string, key string, file
 }
 
 func (p *CasdoorProvider) DeleteObject(key string) error {
-	resource := casdoorsdk.Resource{
+	resource := auth.Resource{
 		Name: key,
 	}
 
-	_, err := casdoorsdk.DeleteResourceWithTag(&resource, "Direct")
+	_, err := auth.DeleteResourceWithTag(&resource, "Direct")
 	if err != nil {
 		return err
 	}

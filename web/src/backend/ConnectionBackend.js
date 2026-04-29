@@ -19,14 +19,14 @@ export function getConnections(owner, page = "", pageSize = "", field = "", valu
   return fetch(`${Setting.ServerUrl}/api/get-connections?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}&status=${status}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getConnection(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-connection?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateConnection(owner, name, connection) {
@@ -35,14 +35,14 @@ export function updateConnection(owner, name, connection) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newConnection),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addNodeTunnel(nodeId, mode = "guacd") {
   return fetch(`${Setting.ServerUrl}/api/add-node-tunnel?nodeId=${nodeId}&mode=${mode}`, {
     method: "POST",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteConnection(connection) {
@@ -51,19 +51,19 @@ export function deleteConnection(connection) {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(newConnection),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function connect(connectionId) {
   return fetch(`${Setting.ServerUrl}/api/start-connection?id=${connectionId}`, {
     method: "POST",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function disconnect(connectionId) {
   return fetch(`${Setting.ServerUrl}/api/stop-connection?id=${connectionId}`, {
     method: "POST",
     credentials: "include",
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	"github.com/beego/beego/utils/pagination"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -207,15 +208,12 @@ func (c *ApiController) UpdateMessage() {
 	}
 
 	if message.NeedNotify {
-		if !isCasdoorAvailable() {
-			c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-			return
-		}
-
-		err = message.SendEmail(c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
+		if conf.IsCasdoorAvailable() {
+			err = message.SendEmail(c.GetAcceptLanguage())
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
 		}
 
 		message.NeedNotify = false

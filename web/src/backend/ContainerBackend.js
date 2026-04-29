@@ -21,7 +21,7 @@ export function getContainers(owner, page = "", pageSize = "", field = "", value
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getContainer(owner, name) {
@@ -31,7 +31,7 @@ export function getContainer(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateContainer(owner, name, container) {
@@ -43,7 +43,7 @@ export function updateContainer(owner, name, container) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addContainer(container) {
@@ -55,7 +55,7 @@ export function addContainer(container) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteContainer(container) {
@@ -67,5 +67,5 @@ export function deleteContainer(container) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/the-open-agent/openagent/agent"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/chat"
 	"github.com/the-open-agent/openagent/embedding"
 	"github.com/the-open-agent/openagent/i18n"
@@ -98,7 +98,7 @@ type Provider struct {
 	BrowserUrl  string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
-func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.User) *Provider {
+func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *auth.User) *Provider {
 	if !isMaskEnabled {
 		return provider
 	}
@@ -129,7 +129,7 @@ func GetMaskedProvider(provider *Provider, isMaskEnabled bool, user *casdoorsdk.
 	return provider
 }
 
-func GetMaskedProviders(providers []*Provider, isMaskEnabled bool, user *casdoorsdk.User) []*Provider {
+func GetMaskedProviders(providers []*Provider, isMaskEnabled bool, user *auth.User) []*Provider {
 	if !isMaskEnabled {
 		return providers
 	}

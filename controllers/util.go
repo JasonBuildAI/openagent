@@ -24,7 +24,7 @@ import (
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/context"
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/i18n"
 	"github.com/the-open-agent/openagent/util"
@@ -100,7 +100,7 @@ func (c *ApiController) RequireSignedIn() (string, bool) {
 	return userId, true
 }
 
-func (c *ApiController) RequireSignedInUser() (*casdoorsdk.User, bool) {
+func (c *ApiController) RequireSignedInUser() (*auth.User, bool) {
 	user := c.GetSessionUser()
 	if user == nil {
 		c.ResponseError(c.T("auth:Please sign in first"))

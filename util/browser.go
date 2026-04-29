@@ -1,4 +1,4 @@
-// Copyright 2025 The OpenAgent Authors. All Rights Reserved.
+// Copyright 2026 The OpenAgent Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from "react";
+package util
 
-class PythonYolov8miPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
+import (
+	"os/exec"
+	"runtime"
+	"time"
+)
 
-  render() {
-    return (
-      <iframe id="PythonYolov8miPage" title={"iframe"} src={"https://yolov8mi.casibase.com"} width="100%" height={window.innerHeight - 195} frameBorder="no" />
-    );
-  }
+func OpenBrowser(url string) {
+	time.Sleep(1500 * time.Millisecond)
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	case "darwin":
+		cmd = exec.Command("open", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+	_ = cmd.Start()
 }
-
-export default PythonYolov8miPage;

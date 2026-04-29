@@ -20,6 +20,7 @@ import (
 	"sort"
 
 	"github.com/beego/beego/utils/pagination"
+	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/object"
 	"github.com/the-open-agent/openagent/util"
 )
@@ -401,10 +402,10 @@ func (c *ApiController) GetStoreNames() {
 	var err error
 
 	if c.IsGlobalAdmin() {
-		storeNames, err = object.GetStoresByFields("", []string{"name", "display_name"}...)
+		storeNames, err = object.GetStoresByFields("", []string{"name", "display_name", "avatar"}...)
 	} else {
 		username := c.GetSessionUsername()
-		storeNames, err = object.GetStoresByFields(username, []string{"name", "display_name"}...)
+		storeNames, err = object.GetStoresByFields(username, []string{"name", "display_name", "avatar"}...)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -462,11 +463,9 @@ func (c *ApiController) AddSharedStore() {
 		c.ResponseError(err.Error())
 		return
 	}
-	if accountUser == nil {
-		if !isCasdoorAvailable() {
-			c.ResponseError(c.T("auth:This feature is unavailable in this sign-in mode"))
-			return
-		}
+	if accountUser == nil && !conf.IsCasdoorAvailable() {
+		c.ResponseError(c.T("general:Target user not found"))
+		return
 	}
 
 	newStore, err := object.ShareStore(src.Owner, src.Name, form.TargetUser, c.GetSessionUsername())

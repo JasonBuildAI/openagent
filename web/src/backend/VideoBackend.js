@@ -21,7 +21,7 @@ export function getGlobalVideos() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getVideos(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getVideos(owner, page = "", pageSize = "", field = "", value = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getVideo(owner, name) {
@@ -41,7 +41,7 @@ export function getVideo(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateVideo(owner, name, video) {
@@ -53,7 +53,7 @@ export function updateVideo(owner, name, video) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVideo),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addVideo(video) {
@@ -65,7 +65,7 @@ export function addVideo(video) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVideo),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteVideo(video) {
@@ -77,5 +77,5 @@ export function deleteVideo(video) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newVideo),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

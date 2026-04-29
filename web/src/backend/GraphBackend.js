@@ -21,7 +21,7 @@ export function getGlobalGraphs() {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getGraphs(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
@@ -31,7 +31,7 @@ export function getGraphs(owner, page = "", pageSize = "", field = "", value = "
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function getGraph(owner, name) {
@@ -41,7 +41,7 @@ export function getGraph(owner, name) {
     headers: {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function updateGraph(owner, name, graph) {
@@ -53,7 +53,7 @@ export function updateGraph(owner, name, graph) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newGraph),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function addGraph(graph) {
@@ -65,7 +65,7 @@ export function addGraph(graph) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newGraph),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }
 
 export function deleteGraph(graph) {
@@ -77,5 +77,5 @@ export function deleteGraph(graph) {
       "Accept-Language": Setting.getAcceptLanguage(),
     },
     body: JSON.stringify(newGraph),
-  }).then(res => res.json());
+  }).then(res => Setting.handleFetchResponse(res));
 }

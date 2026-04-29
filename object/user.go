@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/conf"
 	"github.com/the-open-agent/openagent/util"
 	"golang.org/x/crypto/bcrypt"
@@ -88,13 +88,13 @@ func (user *User) GetId() string {
 	return util.GetIdFromOwnerAndName(user.Owner, user.Name)
 }
 
-func (user *User) ToCasdoorUser() casdoorsdk.User {
+func (user *User) ToCasdoorUser() auth.User {
 	displayName := user.DisplayName
 	if displayName == "" {
 		displayName = user.Name
 	}
 
-	return casdoorsdk.User{
+	return auth.User{
 		Owner:       UserOwner,
 		Name:        user.RuntimeName,
 		CreatedTime: user.CreatedTime,
