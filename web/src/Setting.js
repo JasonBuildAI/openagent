@@ -1128,8 +1128,8 @@ export function getOtherProviderInfo() {
         url: "https://github.com/the-open-agent/openagent",
       },
       "GUI": {
-        logo: `${StaticBaseUrl}/img/social_mcp.png`,
-        url: "https://github.com/microsoft/UFO",
+        logo: `${StaticBaseUrl}/img/social_microsoft.png`,
+        url: "https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32",
       },
       "Video Download": {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
@@ -2235,7 +2235,7 @@ export function getProviderSubTypeOptions(category, type) {
       ];
     } else if (type === "GUI") {
       return [
-        {id: "Default", name: "Default"},
+        {id: "Windows UIA", name: "Windows UIA"},
       ];
     } else if (type === "Video Download") {
       return [

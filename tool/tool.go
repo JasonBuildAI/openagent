@@ -52,7 +52,7 @@ func NewProvider(config Config, lang string) (Provider, error) {
 	case "Web Browser":
 		return NewBrowserProvider(config)
 	case "GUI":
-		return NewGuiProvider(config)
+		return NewWindowsUiaTool(config)
 	case "Video Download":
 		return &VideoDownloadProvider{}, nil
 	default:

@@ -75,6 +75,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		SuggestionCount:      3,
 		ChildStores:          []string{},
 		ChildModelProviders:  []string{},
+		ToolProviders:        []string{},
 		IsDefault:            true,
 		State:                "Active",
 		EnableExtraOptions:   conf.GetConfigBool("showGithubCorner"),
@@ -269,8 +270,8 @@ func initBuiltInTools() {
 			Name:        "tool-gui",
 			DisplayName: "GUI",
 			Type:        "GUI",
-			SubType:     "Default",
-			TestContent: `{"tool":"gui_screenshot","arguments":{}}`,
+			SubType:     "Windows UIA",
+			TestContent: `{"tool":"win_open_application","arguments":{"target":"calc","method":"auto","wait_seconds":2}}`,
 			State:       "Active",
 		},
 		{

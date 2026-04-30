@@ -81,9 +81,6 @@ class ToolEditPage extends React.Component {
   }
 
   getProviderUrlLabel(tool) {
-    if (tool.type === "GUI") {
-      return Setting.getLabel(i18next.t("provider:UFO server URL"), i18next.t("provider:UFO server URL - Tooltip"));
-    }
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
   }
 
@@ -157,7 +154,7 @@ class ToolEditPage extends React.Component {
               } else if (value === "Web Browser") {
                 this.updateToolField("subType", "Default");
               } else if (value === "GUI") {
-                this.updateToolField("subType", "Default");
+                this.updateToolField("subType", "Windows UIA");
               } else if (value === "Video Download") {
                 this.updateToolField("subType", "Default");
               }
@@ -224,7 +221,7 @@ class ToolEditPage extends React.Component {
             </Col>
           </Row>
         ) : null}
-        {["Web Search", "Web Fetch", "Web Browser", "GUI"].includes(this.state.tool.type) ? (
+        {["Web Search", "Web Fetch", "Web Browser"].includes(this.state.tool.type) ? (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {this.getProviderUrlLabel(this.state.tool)} :
