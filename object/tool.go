@@ -42,9 +42,10 @@ type Tool struct {
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
 	EnableProxy  bool   `json:"enableProxy"`
 
-	TestContent   string `xorm:"varchar(500)" json:"testContent"`
-	ModelProvider string `xorm:"varchar(100)" json:"modelProvider"`
-	ResultSummary string `xorm:"varchar(500)" json:"resultSummary"`
+	TestContent    string   `xorm:"varchar(500)" json:"testContent"`
+	ModelProvider  string   `xorm:"varchar(100)" json:"modelProvider"`
+	ResultSummary  string   `xorm:"varchar(500)" json:"resultSummary"`
+	PromptExamples []string `xorm:"mediumtext" json:"promptExamples"`
 
 	State string `xorm:"varchar(100)" json:"state"`
 }

@@ -218,6 +218,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"time","arguments":{"operation":"current"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"What is the current date and time?",
+				"What time is it right now in Tokyo?",
+				"How many days are left until the end of the year?",
+				"Convert Unix timestamp 1700000000 to a human-readable date.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -226,6 +232,12 @@ func initBuiltInTools() {
 			SubType:     "DuckDuckGo",
 			TestContent: `{"tool":"web_search","arguments":{"query":"hello world"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Search for the latest news about artificial intelligence.",
+				"Find the best restaurants in New York City.",
+				"What are the top programming languages in 2025?",
+				"Search for tutorials on how to use OpenAgent.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -234,6 +246,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"shell","arguments":{"command":"echo hello"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"List all files in the current directory.",
+				"Check the available disk space on the system.",
+				"Find all Python files in the project recursively.",
+				"Show the running processes sorted by CPU usage.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -242,6 +260,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"word_read","arguments":{"path":"test.docx"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Read the content of a Word document at /path/to/report.docx.",
+				"Create an Excel spreadsheet with sales data for Q1 2025.",
+				"What slides are in my PowerPoint presentation?",
+				"Write a meeting summary to a new Word file.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -250,6 +274,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"web_fetch","arguments":{"url":"https://example.com"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Fetch and summarize the content of https://casibase.org.",
+				"Get the main text from https://en.wikipedia.org/wiki/Go_(programming_language).",
+				"Retrieve the JSON response from a REST API endpoint.",
+				"Download and read the release notes from a GitHub page.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -258,6 +288,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"web_browser","arguments":{"url":"https://example.com"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Open GitHub and find the trending repositories today.",
+				"Navigate to a website and take a screenshot.",
+				"Fill in the search box on a website and submit the form.",
+				"Log into a website and retrieve my account information.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -266,6 +302,12 @@ func initBuiltInTools() {
 			SubType:     "Windows UIA",
 			TestContent: `{"tool":"win_open_application","arguments":{"target":"calc","method":"auto","wait_seconds":2}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Open the Calculator application and compute 123 * 456.",
+				"Take a screenshot of the current desktop.",
+				"Read the current CPU and memory usage from the system.",
+				"Open Notepad and type a short message, then save the file.",
+			},
 		},
 		{
 			Owner:       "admin",
@@ -274,6 +316,12 @@ func initBuiltInTools() {
 			SubType:     "Default",
 			TestContent: `{"tool":"video_info","arguments":{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}`,
 			State:       "Active",
+			PromptExamples: []string{
+				"Get the title and duration of this YouTube video: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+				"Download a YouTube video to /tmp/videos in the best available quality.",
+				"Extract the audio from a video and save it as an MP3 file.",
+				"Download a video and tell me its resolution and file size.",
+			},
 		},
 	}
 
@@ -283,6 +331,13 @@ func initBuiltInTools() {
 			panic(err)
 		}
 		if existing != nil {
+			if len(existing.PromptExamples) == 0 && len(t.PromptExamples) > 0 {
+				existing.PromptExamples = t.PromptExamples
+				_, err = UpdateTool(existing.GetId(), existing)
+				if err != nil {
+					panic(err)
+				}
+			}
 			continue
 		}
 		t.CreatedTime = util.GetCurrentTime()

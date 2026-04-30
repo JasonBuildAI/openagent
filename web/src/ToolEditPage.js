@@ -215,6 +215,17 @@ class ToolEditPage extends React.Component {
             </Col>
           </Row>
         ) : null}
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("tool:Prompt examples"), i18next.t("tool:Prompt examples - Tooltip"))} :
+          </Col>
+          <Col span={22}>
+            <Select virtual={false} mode="tags" style={{width: "100%"}}
+              value={this.state.tool.promptExamples}
+              onChange={(value) => this.updateToolField("promptExamples", value)}
+            />
+          </Col>
+        </Row>
         <TestToolWidget
           tool={this.state.tool}
           originalTool={this.state.originalTool}

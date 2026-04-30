@@ -765,6 +765,7 @@ class ChatWidget extends React.Component {
       height = "600px",
       account,
       prompts = [],
+      exampleQuestions,
       showHeader = true,
     } = this.props;
 
@@ -789,6 +790,7 @@ class ChatWidget extends React.Component {
             displayName={this.state.currentChat?.displayName}
             store={this.props.store || {
               prompts: prompts,
+              exampleQuestions: exampleQuestions || prompts,
             }}
             styles={{
               layout: {
