@@ -84,6 +84,7 @@
     "AI": "AI",
     "Add attachment": "添加附件",
     "An error occurred during responding": "回答时出现错误",
+    "Arguments": "参数",
     "CPrice": "C价格",
     "Default Category": "默认分类",
     "Drop files here to upload": "将文件拖至此处上传",
@@ -637,8 +638,6 @@
     "Flavor - Tooltip": "语音风格",
     "Frequency penalty": "频率惩罚",
     "Frequency penalty - Tooltip": "频率惩罚（-2~2，正值减少常见词）",
-    "GUI tool": "GUI tool",
-    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "组ID",
     "Group ID - Tooltip": "MiniMax开发者群组ID",
     "Input price / 1k tokens": "输入价格 /千tokens",
@@ -689,15 +688,16 @@
     "Thinking tokens - Tooltip": "推理过程使用的令牌数",
     "Token": "令牌",
     "Token - Tooltip": "认证或访问令牌",
+    "Tool function": "Tool function",
+    "Tool function - Tooltip": "Tool function - Tooltip",
     "Tool result": "工具返回结果",
+    "Tool test": "Tool test",
     "Tool test JSON - Tooltip": "单次工具调用的JSON：{\"tool\":\"工具名\", \"arguments\":{...}}，其中tool字段必填",
     "Tool test JSON must include tool": "工具测试JSON必须包含非空的「tool」字段",
     "Top K": "TopK参数",
     "Top K - Tooltip": "候选token数量限制（1-6）",
     "Top P": "TopP参数",
     "Top P - Tooltip": "概率采样阈值（0-1）",
-    "Video download tool": "Video download tool",
-    "Video download tool - Tooltip": "Video download tool - Tooltip",
     "Webhook": "Webhook回调",
     "Webhook - Tooltip": "用于接收异步事件或回调的HTTPS地址",
     "Webhook set successfully": "Webhook设置成功"
@@ -969,7 +969,9 @@
     "Dark": "深色"
   },
   "tool": {
-    "Edit Tool": "Edit Tool"
+    "Edit Tool": "Edit Tool",
+    "Prompt examples": "Prompt examples",
+    "Prompt examples - Tooltip": "Prompt examples - Tooltip"
   },
   "usage": {
     "Apr": "4月",

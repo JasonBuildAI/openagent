@@ -260,17 +260,19 @@ const MessageItem = ({
                           color: "#096dd9",
                           marginBottom: "4px",
                         }}>
-                          {toolCall.name}
+                          <a href={`/tools/${toolCall.name}`} target="_blank" rel="noreferrer" style={{color: "#096dd9"}}>
+                            {toolCall.name}
+                          </a>
                         </div>
                         {toolCall.arguments && (
                           <div style={{marginBottom: toolCall.content ? "8px" : "0"}}>
-                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>Arguments:</div>
+                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("chat:Arguments")}:</div>
                             {renderJsonContent(toolCall.arguments)}
                           </div>
                         )}
                         {toolCall.content && (
                           <div>
-                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>Result:</div>
+                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("general:Result")}:</div>
                             {renderJsonContent(toolCall.content)}
                           </div>
                         )}

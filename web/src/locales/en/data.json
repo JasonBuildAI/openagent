@@ -84,6 +84,7 @@
     "AI": "AI",
     "Add attachment": "Add attachment",
     "An error occurred during responding": "An error occurred during responding",
+    "Arguments": "Arguments",
     "CPrice": "CPrice",
     "Default Category": "Default Category",
     "Drop files here to upload": "Drop files here to upload",
@@ -637,8 +638,6 @@
     "Flavor - Tooltip": "TTS voice style",
     "Frequency penalty": "Frequency penalty",
     "Frequency penalty - Tooltip": "Penalize frequent words",
-    "GUI tool": "GUI tool",
-    "GUI tool - Tooltip": "GUI tool - Tooltip",
     "Group ID": "Group ID",
     "Group ID - Tooltip": "MiniMax developer group identifier",
     "Input price / 1k tokens": "Input price / 1k tokens",
@@ -689,15 +688,16 @@
     "Thinking tokens - Tooltip": "Token count used for reasoning process",
     "Token": "Token",
     "Token - Tooltip": "Authentication or access token",
+    "Tool function": "Tool function",
+    "Tool function - Tooltip": "Tool function - Tooltip",
     "Tool result": "Tool result",
+    "Tool test": "Tool test",
     "Tool test JSON - Tooltip": "JSON for one tool invocation: {\"tool\":\"toolName\", \"arguments\":{...}}. The tool field is required.",
     "Tool test JSON must include tool": "Tool test JSON must include tool",
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
     "Top P - Tooltip": "Probability sampling threshold",
-    "Video download tool": "Video download tool",
-    "Video download tool - Tooltip": "Video download tool - Tooltip",
     "Webhook": "Webhook",
     "Webhook - Tooltip": "HTTPS URL that receives asynchronous callbacks or events for this integration.",
     "Webhook set successfully": "Webhook set successfully"
@@ -969,7 +969,9 @@
     "Dark": "Dark"
   },
   "tool": {
-    "Edit Tool": "Edit Tool"
+    "Edit Tool": "Edit Tool",
+    "Prompt examples": "Prompt examples",
+    "Prompt examples - Tooltip": "Prompt examples - Tooltip"
   },
   "usage": {
     "Apr": "Apr",
