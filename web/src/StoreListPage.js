@@ -454,9 +454,9 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("store:Tool providers"),
-        dataIndex: "toolProviders",
-        key: "toolProviders",
+        title: i18next.t("store:Tools"),
+        dataIndex: "tools",
+        key: "tools",
         width: "280px",
         render: (arr) => {
           if (!arr || !arr.length) {
@@ -559,7 +559,7 @@ class StoreListPage extends BaseListPage {
     if (this.state.hideChat) {
       filteredColumns = filteredColumns.filter(column =>
         column.key !== "chatCount" && column.key !== "messageCount" && column.key !== "vectorCount" && column.key !== "imageProvider" && column.key !== "modelProvider" && column.key !== "embeddingProvider" &&
-        column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "toolProviders" && column.key !== "memoryLimit"
+        column.key !== "textToSpeechProvider" && column.key !== "speechToTextProvider" && column.key !== "agentProvider" && column.key !== "tools" && column.key !== "memoryLimit"
       );
     }
     if (Setting.isBasicUser(this.props.account)) {

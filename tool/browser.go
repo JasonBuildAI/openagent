@@ -34,16 +34,16 @@ const (
 	browserMaxContentLen  = 50000
 )
 
-// BrowserProvider is the Tool provider Type "Web Browser".
-type BrowserProvider struct {
+// BrowserTool is the Tool Type "Web Browser".
+type BrowserTool struct {
 	enableProxy bool
 }
 
-func NewBrowserProvider(config Config) (*BrowserProvider, error) {
-	return &BrowserProvider{enableProxy: config.EnableProxy}, nil
+func NewBrowserTool(config Config) (*BrowserTool, error) {
+	return &BrowserTool{enableProxy: config.EnableProxy}, nil
 }
 
-func (p *BrowserProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *BrowserTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{
 		&browserNavigateBuiltin{enableProxy: p.enableProxy},
 		&browserScreenshotBuiltin{enableProxy: p.enableProxy},

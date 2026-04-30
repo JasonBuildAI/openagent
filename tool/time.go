@@ -23,10 +23,10 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// TimeProvider is the Tool provider Type "Time" (single TimeTool).
-type TimeProvider struct{}
+// TimeTool is the Tool Type "Time".
+type TimeTool struct{}
 
-func (p *TimeProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *TimeTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{&timeBuiltin{}}
 }
 

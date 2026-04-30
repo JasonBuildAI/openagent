@@ -180,9 +180,8 @@ class ChatWidget extends React.Component {
             chat.modelProvider = desiredModel;
             needsUpdate = true;
           }
-          // Ensure the toolProvider is in sync with props
-          if (this.props.toolProvider && chat.toolProvider !== this.props.toolProvider) {
-            chat.toolProvider = this.props.toolProvider;
+          if (this.props.tool && chat.tool !== this.props.tool) {
+            chat.tool = this.props.tool;
             needsUpdate = true;
           }
           if (needsUpdate) {
@@ -224,7 +223,7 @@ class ChatWidget extends React.Component {
       messageCount: 0,
       needTitle: true,
       modelProvider: currentModelProvider,
-      toolProvider: this.props.toolProvider || "",
+      tool: this.props.tool || "",
     };
 
     ChatBackend.addChat(newChat)

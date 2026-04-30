@@ -75,7 +75,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		SuggestionCount:      3,
 		ChildStores:          []string{},
 		ChildModelProviders:  []string{},
-		ToolProviders:        []string{},
+		Tools:                []string{},
 		IsDefault:            true,
 		State:                "Active",
 		EnableExtraOptions:   conf.GetConfigBool("showGithubCorner"),

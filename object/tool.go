@@ -227,7 +227,7 @@ func testToolWithLoader(t *Tool, lang string, loadTool func(owner string, name s
 		payload.Arguments = map[string]interface{}{}
 	}
 
-	tp, err := tool.NewProvider(getToolConfig(t), lang)
+	tp, err := tool.New(getToolConfig(t), lang)
 	if err != nil {
 		return "", err
 	}

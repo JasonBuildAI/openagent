@@ -36,12 +36,12 @@ const (
 	webFetchUserAgent        = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
 )
 
-// WebFetchProvider is the Tool provider Type "Web Fetch".
-type WebFetchProvider struct {
+// WebFetchTool is the Tool Type "Web Fetch".
+type WebFetchTool struct {
 	httpClient *http.Client
 }
 
-func NewWebFetchProvider(config Config) (*WebFetchProvider, error) {
+func NewWebFetchTool(config Config) (*WebFetchTool, error) {
 	var httpClient *http.Client
 	if config.EnableProxy {
 		httpClient = &http.Client{
@@ -51,10 +51,10 @@ func NewWebFetchProvider(config Config) (*WebFetchProvider, error) {
 	} else {
 		httpClient = &http.Client{Timeout: webFetchDefaultTimeout}
 	}
-	return &WebFetchProvider{httpClient: httpClient}, nil
+	return &WebFetchTool{httpClient: httpClient}, nil
 }
 
-func (p *WebFetchProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *WebFetchTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{&webFetchBuiltin{httpClient: p.httpClient}}
 }
 

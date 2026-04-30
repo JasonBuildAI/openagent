@@ -92,7 +92,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 	if store == nil {
-		if chat.ToolProvider != "" || chat.ModelProvider != "" {
+		if chat.Tool != "" || chat.ModelProvider != "" {
 			store = &object.Store{
 				Owner:          "admin",
 				ModelProvider:  chat.ModelProvider,
@@ -104,11 +104,11 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	if chat.ToolProvider != "" {
-		store.ToolProviders = []string{chat.ToolProvider}
+	if chat.Tool != "" {
+		store.Tools = []string{chat.Tool}
 	}
 
-	if len(store.ToolProviders) > 0 {
+	if len(store.Tools) > 0 {
 		store.Prompt += "\nYou are a helpful AI assistant with access to tools. When the user asks you to perform a task, you MUST use the available tools to complete it directly. Do not refuse or explain why you cannot — just use the tools and fulfill the request."
 	}
 
@@ -198,7 +198,7 @@ func (c *ApiController) GetMessageAnswer() {
 	var vectorScores []object.VectorScore
 	embeddingResult := &embedding.EmbeddingResult{}
 
-	if chat.ToolProvider == "" {
+	if chat.Tool == "" {
 		knowledgeCount := store.KnowledgeCount
 		if knowledgeCount <= 0 {
 			knowledgeCount = 10
@@ -422,7 +422,7 @@ func (c *ApiController) GetAnswer() {
 	question := c.Input().Get("question")
 	framework := c.Input().Get("framework")
 	video := c.Input().Get("video")
-	toolProvider := c.Input().Get("toolProvider")
+	tool := c.Input().Get("tool")
 
 	if question == "" {
 		c.ResponseError(fmt.Sprintf("The question should not be empty"))
@@ -444,8 +444,8 @@ func (c *ApiController) GetAnswer() {
 	var answer string
 	var modelResult *model.ModelResult
 	var err error
-	if toolProvider != "" {
-		answer, modelResult, err = object.GetAnswerWithTool(provider, toolProvider, question, c.GetAcceptLanguage())
+	if tool != "" {
+		answer, modelResult, err = object.GetAnswerWithTool(provider, tool, question, c.GetAcceptLanguage())
 	} else {
 		answer, modelResult, err = object.GetAnswer(provider, question, c.GetAcceptLanguage())
 	}
@@ -493,8 +493,8 @@ func (c *ApiController) GetAnswer() {
 		}
 	}
 
-	if toolProvider != "" {
-		answer, modelResult, err = object.GetAnswerWithTool(provider, toolProvider, question, c.GetAcceptLanguage())
+	if tool != "" {
+		answer, modelResult, err = object.GetAnswerWithTool(provider, tool, question, c.GetAcceptLanguage())
 	} else {
 		answer, modelResult, err = object.GetAnswer(provider, question, c.GetAcceptLanguage())
 	}

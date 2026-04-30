@@ -26,10 +26,10 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// VideoDownloadProvider is the Tool provider Type "Video Download".
-type VideoDownloadProvider struct{}
+// VideoDownloadTool is the Tool Type "Video Download".
+type VideoDownloadTool struct{}
 
-func (p *VideoDownloadProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *VideoDownloadTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{
 		&videoDownloadBuiltin{},
 		&videoInfoBuiltin{},

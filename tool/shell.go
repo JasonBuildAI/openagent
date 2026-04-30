@@ -27,10 +27,10 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// ShellProvider is the Tool provider Type "Shell" (single ShellTool).
-type ShellProvider struct{}
+// ShellTool is the Tool Type "Shell".
+type ShellTool struct{}
 
-func (p *ShellProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *ShellTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{&shellBuiltin{}}
 }
 

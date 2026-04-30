@@ -31,7 +31,7 @@ type Chat struct {
 	DisplayName   string   `xorm:"varchar(100)" json:"displayName"`
 	Store         string   `xorm:"varchar(100)" json:"store"`
 	ModelProvider string   `xorm:"varchar(100)" json:"modelProvider"`
-	ToolProvider  string   `xorm:"varchar(100)" json:"toolProvider"`
+	Tool          string   `xorm:"varchar(100)" json:"tool"`
 	Category      string   `xorm:"varchar(100)" json:"category"`
 	Type          string   `xorm:"varchar(100)" json:"type"`
 	User          string   `xorm:"varchar(100) index" json:"user"`

@@ -24,32 +24,21 @@ import (
 	"github.com/the-open-agent/openagent/util"
 )
 
-func getToolProviderConfig(p *Provider) tool.Config {
-	return tool.Config{
-		Type:         p.Type,
-		SubType:      p.SubType,
-		ProviderUrl:  p.ProviderUrl,
-		ClientId:     p.ClientId,
-		ClientSecret: p.ClientSecret,
-		EnableProxy:  p.EnableProxy,
-	}
-}
-
-func buildAgentClientsForToolProvider(toolProviderName string, lang string) (*agent.AgentClients, error) {
-	if toolProviderName == "" {
+func buildAgentClientsForTool(toolName string, lang string) (*agent.AgentClients, error) {
+	if toolName == "" {
 		return nil, nil
 	}
 
-	id := util.GetIdFromOwnerAndName("admin", toolProviderName)
-	p, err := GetProvider(id)
+	id := util.GetIdFromOwnerAndName("admin", toolName)
+	t, err := GetTool(id)
 	if err != nil {
 		return nil, err
 	}
-	if p == nil || p.Category != "Tool" {
+	if t == nil {
 		return nil, nil
 	}
 
-	tp, err := tool.NewProvider(getToolProviderConfig(p), lang)
+	tp, err := tool.New(getToolConfig(t), lang)
 	if err != nil {
 		return nil, err
 	}
@@ -70,13 +59,13 @@ func buildAgentClientsForToolProvider(toolProviderName string, lang string) (*ag
 	}, nil
 }
 
-func GetAnswerWithTool(modelProviderName, toolProviderName, question, lang string) (string, *model.ModelResult, error) {
+func GetAnswerWithTool(modelProviderName, toolName, question, lang string) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", modelProviderName, lang)
 	if err != nil {
 		return "", nil, err
 	}
 
-	agentClients, err := buildAgentClientsForToolProvider(toolProviderName, lang)
+	agentClients, err := buildAgentClientsForTool(toolName, lang)
 	if err != nil {
 		return "", nil, err
 	}

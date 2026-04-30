@@ -92,9 +92,9 @@ export function refreshMcpTools(provider) {
   }).then(res => Setting.handleFetchResponse(res));
 }
 
-export function testToolProvider(provider) {
+export function testTool(provider) {
   const newProvider = Setting.deepCopy(provider);
-  return fetch(`${Setting.ServerUrl}/api/test-tool-provider`, {
+  return fetch(`${Setting.ServerUrl}/api/test-tool`, {
     method: "POST",
     credentials: "include",
     headers: {

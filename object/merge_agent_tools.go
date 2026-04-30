@@ -28,13 +28,13 @@ func buildMergedBuiltinRegistry(store *Store, lang string) *builtin_tool.ToolReg
 		return reg
 	}
 
-	for _, tname := range store.ToolProviders {
+	for _, tname := range store.Tools {
 		id := util.GetIdFromOwnerAndName(store.Owner, tname)
 		t, err := GetTool(id)
 		if err != nil || t == nil {
 			continue
 		}
-		tp, err := tool.NewProvider(getToolConfig(t), lang)
+		tp, err := tool.New(getToolConfig(t), lang)
 		if err != nil {
 			continue
 		}

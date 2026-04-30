@@ -353,7 +353,7 @@ class TestToolWidget extends React.Component {
                 displayName={`${tool.displayName || tool.name} - Chat Test`}
                 category="ToolTest"
                 modelProvider={selectedModelProvider}
-                toolProvider={tool.name}
+                tool={tool.name}
                 account={account}
                 height="600px"
                 showHeader={true}

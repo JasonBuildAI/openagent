@@ -44,7 +44,7 @@ func resolveOutputPath(path string) string {
 	return filepath.Join(homeDir, "Documents", path)
 }
 
-// officeSubType enumerates the allowed SubType values for OfficeProvider.
+// officeSubType enumerates the allowed SubType values for OfficeTool.
 type officeSubType string
 
 const (
@@ -77,15 +77,15 @@ var officeToolBySubType = map[officeSubType]builtin_tool.BuiltinTool{
 	officeSubTypePowerPointWrite: &pptxWriteBuiltin{},
 }
 
-// OfficeProvider is the Tool provider Type "Office".
+// OfficeTool is the Tool Type "Office".
 // It exposes read/write tools for Word (.docx), Excel (.xlsx), and PowerPoint (.pptx).
 // SubType controls which tool(s) are exposed: "All" exposes all six; any specific
 // SubType (e.g. "Word Read") exposes only that single tool.
-type OfficeProvider struct {
+type OfficeTool struct {
 	subType officeSubType
 }
 
-func (p *OfficeProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *OfficeTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	if p.subType == officeSubTypeAll || p.subType == "" {
 		return allOfficeTools
 	}

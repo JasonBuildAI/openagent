@@ -21,8 +21,8 @@ import (
 	"github.com/the-open-agent/openagent/i18n"
 )
 
-// Provider supplies LLM-callable tools.
-type Provider interface {
+// Tool supplies LLM-callable tools.
+type Tool interface {
 	BuiltinTools() []builtin_tool.BuiltinTool
 }
 
@@ -36,26 +36,26 @@ type Config struct {
 	EnableProxy  bool
 }
 
-// NewProvider instantiates a Tool provider implementation from type.
-func NewProvider(config Config, lang string) (Provider, error) {
+// New instantiates a tool implementation from its type.
+func New(config Config, lang string) (Tool, error) {
 	switch config.Type {
 	case "Time":
-		return &TimeProvider{}, nil
+		return &TimeTool{}, nil
 	case "Web Search":
-		return NewWebSearchProvider(config)
+		return NewWebSearchTool(config)
 	case "Shell":
-		return &ShellProvider{}, nil
+		return &ShellTool{}, nil
 	case "Office":
-		return &OfficeProvider{subType: officeSubType(config.SubType)}, nil
+		return &OfficeTool{subType: officeSubType(config.SubType)}, nil
 	case "Web Fetch":
-		return NewWebFetchProvider(config)
+		return NewWebFetchTool(config)
 	case "Web Browser":
-		return NewBrowserProvider(config)
+		return NewBrowserTool(config)
 	case "GUI":
 		return NewWindowsUiaTool(config)
 	case "Video Download":
-		return &VideoDownloadProvider{}, nil
+		return &VideoDownloadTool{}, nil
 	default:
-		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool provider type: %s"), config.Type)
+		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool type: %s"), config.Type)
 	}
 }

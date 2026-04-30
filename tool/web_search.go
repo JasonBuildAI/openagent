@@ -32,8 +32,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-// WebSearchProvider is the Tool provider Type "WebSearch" (single web_search tool).
-type WebSearchProvider struct {
+// WebSearchTool is the Tool Type "WebSearch" (single web_search tool).
+type WebSearchTool struct {
 	engine         webSearchEngine
 	apiKey         string
 	searchEngineID string
@@ -41,7 +41,7 @@ type WebSearchProvider struct {
 	httpClient     *http.Client
 }
 
-func NewWebSearchProvider(config Config) (*WebSearchProvider, error) {
+func NewWebSearchTool(config Config) (*WebSearchTool, error) {
 	engine, err := parseWebSearchEngine(config.SubType)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func NewWebSearchProvider(config Config) (*WebSearchProvider, error) {
 		httpClient = webSearchHTTPClient
 	}
 
-	return &WebSearchProvider{
+	return &WebSearchTool{
 		engine:         engine,
 		apiKey:         strings.TrimSpace(config.ClientSecret),
 		searchEngineID: strings.TrimSpace(config.ClientId),
@@ -66,7 +66,7 @@ func NewWebSearchProvider(config Config) (*WebSearchProvider, error) {
 	}, nil
 }
 
-func (p *WebSearchProvider) BuiltinTools() []builtin_tool.BuiltinTool {
+func (p *WebSearchTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{&webSearchBuiltin{
 		engine:         p.engine,
 		apiKey:         p.apiKey,

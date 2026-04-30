@@ -46,7 +46,7 @@ class StoreEditPage extends React.Component {
       textToSpeechProviders: [],
       speechToTextProviders: [],
       agentProviders: [],
-      toolProvidersProviders: [],
+      tools: [],
       builtinTools: [],
       enableTtsStreaming: false,
       store: null,
@@ -182,7 +182,7 @@ class StoreEditPage extends React.Component {
     ToolBackend.getTools(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
-          this.setState({toolProvidersProviders: res.data});
+          this.setState({tools: res.data});
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -545,7 +545,7 @@ class StoreEditPage extends React.Component {
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Tool providers"), i18next.t("store:Tool providers - Tooltip"))} :
+                {Setting.getLabel(i18next.t("store:Tools"), i18next.t("store:Tools - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Select
@@ -553,12 +553,12 @@ class StoreEditPage extends React.Component {
                   mode="multiple"
                   allowClear
                   style={{width: "100%"}}
-                  placeholder={i18next.t("store:Select tool providers")}
-                  value={this.state.store.toolProviders || []}
-                  onChange={(value => {this.updateStoreField("toolProviders", value || []);})}
+                  placeholder={i18next.t("store:Select tools")}
+                  value={this.state.store.tools || []}
+                  onChange={(value => {this.updateStoreField("tools", value || []);})}
                 >
                   {
-                    this.state.toolProvidersProviders.map((tool, index) => this.renderToolOption(tool, index))
+                    this.state.tools.map((tool, index) => this.renderToolOption(tool, index))
                   }
                 </Select>
               </Col>
