@@ -18,8 +18,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
@@ -27,24 +33,143 @@ import (
 )
 
 // VideoDownloadTool is the Tool Type "video_download".
-type VideoDownloadTool struct{}
+type VideoDownloadTool struct {
+	ytDlpPath string
+}
+
+func NewVideoDownloadTool(_ Config) (*VideoDownloadTool, error) {
+	ytDlpPath, err := resolveYtDlpPath()
+	if err != nil {
+		return nil, err
+	}
+	return &VideoDownloadTool{ytDlpPath: ytDlpPath}, nil
+}
 
 func (p *VideoDownloadTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	return []builtin_tool.BuiltinTool{
-		&videoDownloadBuiltin{},
-		&videoInfoBuiltin{},
-		&videoAudioExtractBuiltin{},
+		&videoDownloadBuiltin{ytDlpPath: p.ytDlpPath},
+		&videoInfoBuiltin{ytDlpPath: p.ytDlpPath},
+		&videoAudioExtractBuiltin{ytDlpPath: p.ytDlpPath},
 	}
 }
 
 // runYtDlp executes yt-dlp with the given arguments and returns stdout/stderr.
-func runYtDlp(ctx context.Context, args []string) (string, string, error) {
-	cmd := exec.CommandContext(ctx, "yt-dlp", args...)
+func runYtDlp(ctx context.Context, ytDlpPath string, args []string) (string, string, error) {
+	cmd := exec.CommandContext(ctx, ytDlpPath, args...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err := cmd.Run()
 	return stdout.String(), stderr.String(), err
+}
+
+var ytDlpDownloadMu sync.Mutex
+
+func resolveYtDlpPath() (string, error) {
+	if path, err := exec.LookPath("yt-dlp"); err == nil {
+		return path, nil
+	}
+	return ensureManagedYtDlp()
+}
+
+func ensureManagedYtDlp() (string, error) {
+	ytDlpDownloadMu.Lock()
+	defer ytDlpDownloadMu.Unlock()
+
+	if path, err := exec.LookPath("yt-dlp"); err == nil {
+		return path, nil
+	}
+
+	assetName, err := ytDlpReleaseAssetName()
+	if err != nil {
+		return "", err
+	}
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to locate user cache directory for yt-dlp install: %w", err)
+	}
+	if cacheDir == "" {
+		return "", fmt.Errorf("failed to locate user cache directory for yt-dlp install")
+	}
+
+	installDir := filepath.Join(cacheDir, "openagent", "yt-dlp")
+	executableName := "yt-dlp"
+	if runtime.GOOS == "windows" {
+		executableName = "yt-dlp.exe"
+	}
+	executablePath := filepath.Join(installDir, executableName)
+	if fileExists(executablePath) {
+		if runtime.GOOS != "windows" {
+			_ = os.Chmod(executablePath, 0o755)
+		}
+		return executablePath, nil
+	}
+
+	downloadURL := fmt.Sprintf("https://github.com/yt-dlp/yt-dlp/releases/latest/download/%s", assetName)
+	if err = downloadYtDlpBinary(downloadURL, executablePath); err != nil {
+		return "", err
+	}
+	if runtime.GOOS != "windows" {
+		if err = os.Chmod(executablePath, 0o755); err != nil {
+			return "", fmt.Errorf("failed to mark yt-dlp executable as runnable: %w", err)
+		}
+	}
+	return executablePath, nil
+}
+
+func ytDlpReleaseAssetName() (string, error) {
+	switch runtime.GOOS {
+	case "linux":
+		return "yt-dlp_linux", nil
+	case "darwin":
+		return "yt-dlp_macos", nil
+	case "windows":
+		return "yt-dlp.exe", nil
+	default:
+		return "", fmt.Errorf("yt-dlp managed install is not supported on %s", runtime.GOOS)
+	}
+}
+
+func downloadYtDlpBinary(downloadURL, executablePath string) error {
+	if err := os.MkdirAll(filepath.Dir(executablePath), 0o755); err != nil {
+		return fmt.Errorf("failed to create yt-dlp install directory: %w", err)
+	}
+
+	client := &http.Client{Timeout: 5 * time.Minute}
+	resp, err := client.Get(downloadURL)
+	if err != nil {
+		return fmt.Errorf("failed to download yt-dlp from %s: %w", downloadURL, err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Errorf("failed to download yt-dlp from %s: HTTP %d", downloadURL, resp.StatusCode)
+	}
+
+	tmpPath := executablePath + ".tmp"
+	_ = os.Remove(tmpPath)
+	out, err := os.Create(tmpPath)
+	if err != nil {
+		return fmt.Errorf("failed to create yt-dlp binary %s: %w", tmpPath, err)
+	}
+	written, copyErr := io.Copy(out, resp.Body)
+	closeErr := out.Close()
+	if copyErr != nil {
+		_ = os.Remove(tmpPath)
+		return fmt.Errorf("failed to write yt-dlp binary %s: %w", tmpPath, copyErr)
+	}
+	if closeErr != nil {
+		_ = os.Remove(tmpPath)
+		return fmt.Errorf("failed to close yt-dlp binary %s: %w", tmpPath, closeErr)
+	}
+	if resp.ContentLength > 0 && written != resp.ContentLength {
+		_ = os.Remove(tmpPath)
+		return fmt.Errorf("yt-dlp download was incomplete: got %d bytes, expected %d", written, resp.ContentLength)
+	}
+	if err = os.Rename(tmpPath, executablePath); err != nil {
+		_ = os.Remove(tmpPath)
+		return fmt.Errorf("failed to move yt-dlp binary to %s: %w", executablePath, err)
+	}
+	return nil
 }
 
 // buildResult constructs a CallToolResult from yt-dlp output.
@@ -87,7 +212,9 @@ func buildYtDlpResult(stdout, stderr string, runErr error) *protocol.CallToolRes
 
 // ─── video_download ───────────────────────────────────────────────────────────
 
-type videoDownloadBuiltin struct{}
+type videoDownloadBuiltin struct {
+	ytDlpPath string
+}
 
 func (v *videoDownloadBuiltin) GetName() string { return "video_download" }
 
@@ -171,13 +298,15 @@ func (v *videoDownloadBuiltin) Execute(ctx context.Context, arguments map[string
 	execCtx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
 
-	stdout, stderr, err := runYtDlp(execCtx, args)
+	stdout, stderr, err := runYtDlp(execCtx, v.ytDlpPath, args)
 	return buildYtDlpResult(stdout, stderr, err), nil
 }
 
 // ─── video_info ───────────────────────────────────────────────────────────────
 
-type videoInfoBuiltin struct{}
+type videoInfoBuiltin struct {
+	ytDlpPath string
+}
 
 func (v *videoInfoBuiltin) GetName() string { return "video_info" }
 
@@ -229,13 +358,15 @@ func (v *videoInfoBuiltin) Execute(ctx context.Context, arguments map[string]int
 	execCtx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
 
-	stdout, stderr, err := runYtDlp(execCtx, args)
+	stdout, stderr, err := runYtDlp(execCtx, v.ytDlpPath, args)
 	return buildYtDlpResult(stdout, stderr, err), nil
 }
 
 // ─── video_audio_extract ──────────────────────────────────────────────────────
 
-type videoAudioExtractBuiltin struct{}
+type videoAudioExtractBuiltin struct {
+	ytDlpPath string
+}
 
 func (v *videoAudioExtractBuiltin) GetName() string { return "video_audio_extract" }
 
@@ -330,6 +461,6 @@ func (v *videoAudioExtractBuiltin) Execute(ctx context.Context, arguments map[st
 	execCtx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSecs)*time.Second)
 	defer cancel()
 
-	stdout, stderr, err := runYtDlp(execCtx, args)
+	stdout, stderr, err := runYtDlp(execCtx, v.ytDlpPath, args)
 	return buildYtDlpResult(stdout, stderr, err), nil
 }

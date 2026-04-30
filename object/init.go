@@ -315,13 +315,13 @@ func initBuiltInTools() {
 			Type:        "video_download",
 			SubType:     "Default",
 			TestContent: `{"tool":"video_info","arguments":{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}`,
-			State:       "Active",
 			PromptExamples: []string{
 				"Get the title and duration of this YouTube video: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-				"Download a YouTube video to /tmp/videos in the best available quality.",
+				"Download a YouTube video to the videos folder in the best available quality.",
 				"Extract the audio from a video and save it as an MP3 file.",
 				"Download a video and tell me its resolution and file size.",
 			},
+			State: "Active",
 		},
 		{
 			Owner:       "admin",
