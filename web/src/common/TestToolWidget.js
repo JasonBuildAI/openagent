@@ -70,13 +70,13 @@ const VIDEO_DOWNLOAD_TOOL_OPTIONS = [
 ];
 
 const DEFAULT_TOOL_CONTENT = {
-  Time: JSON.stringify({tool: "time", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
-  "Web Search": JSON.stringify({tool: "web_search", arguments: {query: "OpenAgent web search", count: 3, language: "en", country: "us"}}, null, 2),
-  Shell: JSON.stringify({tool: "shell", arguments: {command: "echo hello"}}, null, 2),
-  "Web Fetch": JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
-  "Web Browser": JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
-  "GUI": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
-  "Video Download": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
+  time: JSON.stringify({tool: "time", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
+  web_search: JSON.stringify({tool: "web_search", arguments: {query: "OpenAgent web search", count: 3, language: "en", country: "us"}}, null, 2),
+  shell: JSON.stringify({tool: "shell", arguments: {command: "echo hello"}}, null, 2),
+  web_fetch: JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
+  web_browser: JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
+  gui: JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
+  video_download: JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
 };
 
 function isValidToolTestJson(content) {
@@ -89,7 +89,7 @@ function isValidToolTestJson(content) {
 }
 
 function buildDefaultToolTestJson(tool) {
-  if (tool.type === "Office") {
+  if (tool.type === "office") {
     const subType = tool.subType || "All";
     return OFFICE_TOOL_CONTENT[subType] || OFFICE_TOOL_CONTENT["All"];
   }
@@ -135,7 +135,7 @@ class TestToolWidget extends React.Component {
       return;
     }
 
-    if (tool.type === "Office") {
+    if (tool.type === "office") {
       const currentSubType = tool.subType || null;
       if (currentSubType !== this.state.lastSyncedSubType) {
         // eslint-disable-next-line react/no-did-update-set-state
@@ -178,7 +178,7 @@ class TestToolWidget extends React.Component {
     if (tool.resultSummary) {
       this.setState({testResult: tool.resultSummary});
     }
-    if (tool.type === "GUI" && this.state.selectedGuiTool.startsWith("gui_")) {
+    if (tool.type === "gui" && this.state.selectedGuiTool.startsWith("gui_")) {
       this.setState({selectedGuiTool: "win_open_application"});
     }
   }
@@ -238,7 +238,7 @@ class TestToolWidget extends React.Component {
 
     return (
       <React.Fragment>
-        {tool.type === "GUI" && (
+        {tool.type === "gui" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("provider:GUI tool"), i18next.t("provider:GUI tool - Tooltip"))} :
@@ -259,7 +259,7 @@ class TestToolWidget extends React.Component {
             </Col>
           </Row>
         )}
-        {tool.type === "Video Download" && (
+        {tool.type === "video_download" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("provider:Video download tool"), i18next.t("provider:Video download tool - Tooltip"))} :
@@ -350,7 +350,7 @@ class TestToolWidget extends React.Component {
               <ChatWidget
                 key={`${tool.name}-${selectedModelProvider}`}
                 chatName={`chat_tool_${tool.name}`}
-                displayName={`${tool.displayName || tool.name} - Chat Test`}
+                displayName={`${tool.name} - Chat Test`}
                 category="ToolTest"
                 modelProvider={selectedModelProvider}
                 tool={tool.name}

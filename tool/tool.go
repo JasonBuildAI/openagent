@@ -39,21 +39,21 @@ type Config struct {
 // New instantiates a tool implementation from its type.
 func New(config Config, lang string) (Tool, error) {
 	switch config.Type {
-	case "Time":
+	case "time":
 		return &TimeTool{}, nil
-	case "Web Search":
+	case "web_search":
 		return NewWebSearchTool(config)
-	case "Shell":
+	case "shell":
 		return &ShellTool{}, nil
-	case "Office":
+	case "office":
 		return &OfficeTool{subType: officeSubType(config.SubType)}, nil
-	case "Web Fetch":
+	case "web_fetch":
 		return NewWebFetchTool(config)
-	case "Web Browser":
+	case "web_browser":
 		return NewBrowserTool(config)
-	case "GUI":
+	case "gui":
 		return NewWindowsUiaTool(config)
-	case "Video Download":
+	case "video_download":
 		return &VideoDownloadTool{}, nil
 	default:
 		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool type: %s"), config.Type)

@@ -59,22 +59,22 @@ class ToolEditPage extends React.Component {
   }
 
   shouldShowClientIdInput(tool) {
-    return tool.type === "Web Search" && tool.subType === "Google";
+    return tool.type === "web_search" && tool.subType === "Google";
   }
 
   shouldShowClientSecretInput(tool) {
-    return tool.type === "Web Search" && ["Google", "Baidu"].includes(tool.subType);
+    return tool.type === "web_search" && ["Google", "Baidu"].includes(tool.subType);
   }
 
   getClientIdLabel(tool) {
-    if (tool.type === "Web Search" && tool.subType === "Google") {
+    if (tool.type === "web_search" && tool.subType === "Google") {
       return Setting.getLabel(i18next.t("provider:Search engine ID (cx)"), i18next.t("provider:Search engine ID (cx) - Tooltip"));
     }
     return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID - Tooltip"));
   }
 
   getClientSecretLabel(tool) {
-    if (tool.type === "Web Search") {
+    if (tool.type === "web_search") {
       return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key - Tooltip"));
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret - Tooltip"));
@@ -82,14 +82,6 @@ class ToolEditPage extends React.Component {
 
   getProviderUrlLabel(tool) {
     return Setting.getLabel(i18next.t("general:Provider URL"), i18next.t("general:Provider URL - Tooltip"));
-  }
-
-  shouldShowProviderDisplayName2Field() {
-    const lang = Setting.getLanguage();
-    if (!lang || lang === "null") {
-      return false;
-    }
-    return lang !== "en" && !lang.startsWith("en-");
   }
 
   renderTool() {
@@ -114,48 +106,26 @@ class ToolEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
-          </Col>
-          <Col span={22}>
-            <Input value={this.state.tool.displayName} onChange={e => {
-              this.updateToolField("displayName", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        {this.shouldShowProviderDisplayName2Field() ? (
-          <Row style={{marginTop: "20px"}}>
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("general:Display name 2"), i18next.t("general:Display name 2 - Tooltip"))} :
-            </Col>
-            <Col span={22}>
-              <Input value={this.state.tool.displayName2 ?? ""} onChange={e => {
-                this.updateToolField("displayName2", e.target.value);
-              }} />
-            </Col>
-          </Row>
-        ) : null}
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Select virtual={false} style={{width: "100%"}} value={this.state.tool.type} onChange={(value) => {
               this.updateToolField("type", value);
-              if (value === "Time") {
+              if (value === "time") {
                 this.updateToolField("subType", "Default");
-              } else if (value === "Web Search") {
+              } else if (value === "web_search") {
                 this.updateToolField("subType", "DuckDuckGo");
-              } else if (value === "Shell") {
+              } else if (value === "shell") {
                 this.updateToolField("subType", "Default");
-              } else if (value === "Office") {
+              } else if (value === "office") {
                 this.updateToolField("subType", "All");
-              } else if (value === "Web Fetch") {
+              } else if (value === "web_fetch") {
                 this.updateToolField("subType", "Default");
-              } else if (value === "Web Browser") {
+              } else if (value === "web_browser") {
                 this.updateToolField("subType", "Default");
-              } else if (value === "GUI") {
+              } else if (value === "gui") {
                 this.updateToolField("subType", "Windows UIA");
-              } else if (value === "Video Download") {
+              } else if (value === "video_download") {
                 this.updateToolField("subType", "Default");
               }
             }}
@@ -221,7 +191,7 @@ class ToolEditPage extends React.Component {
             </Col>
           </Row>
         ) : null}
-        {["Web Search", "Web Fetch", "Web Browser"].includes(this.state.tool.type) ? (
+        {["web_search", "web_fetch", "web_browser"].includes(this.state.tool.type) ? (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {this.getProviderUrlLabel(this.state.tool)} :
@@ -233,7 +203,7 @@ class ToolEditPage extends React.Component {
             </Col>
           </Row>
         ) : null}
-        {["Web Search", "Web Fetch", "Web Browser"].includes(this.state.tool.type) ? (
+        {["web_search", "web_fetch", "web_browser"].includes(this.state.tool.type) ? (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("provider:Enable proxy"), i18next.t("provider:Enable proxy - Tooltip"))} :

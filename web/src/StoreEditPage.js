@@ -100,7 +100,7 @@ class StoreEditPage extends React.Component {
         <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
           src={Setting.getProviderLogoURL({category: "Tool", type: tool.type})}
           alt={tool.name} />
-        {tool.displayName || tool.name} ({tool.name})
+        {tool.name}
       </Option>
     );
   }

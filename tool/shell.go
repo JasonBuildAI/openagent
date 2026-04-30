@@ -27,7 +27,7 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// ShellTool is the Tool Type "Shell".
+// ShellTool is the Tool Type "shell".
 type ShellTool struct{}
 
 func (p *ShellTool) BuiltinTools() []builtin_tool.BuiltinTool {

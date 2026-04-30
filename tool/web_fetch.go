@@ -36,7 +36,7 @@ const (
 	webFetchUserAgent        = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
 )
 
-// WebFetchTool is the Tool Type "Web Fetch".
+// WebFetchTool is the Tool Type "web_fetch".
 type WebFetchTool struct {
 	httpClient *http.Client
 }

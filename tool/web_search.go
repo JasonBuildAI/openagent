@@ -32,7 +32,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// WebSearchTool is the Tool Type "WebSearch" (single web_search tool).
+// WebSearchTool is the Tool Type "web_search" (single web_search tool).
 type WebSearchTool struct {
 	engine         webSearchEngine
 	apiKey         string

@@ -26,7 +26,7 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// VideoDownloadTool is the Tool Type "Video Download".
+// VideoDownloadTool is the Tool Type "video_download".
 type VideoDownloadTool struct{}
 
 func (p *VideoDownloadTool) BuiltinTools() []builtin_tool.BuiltinTool {

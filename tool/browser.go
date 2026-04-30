@@ -34,7 +34,7 @@ const (
 	browserMaxContentLen  = 50000
 )
 
-// BrowserTool is the Tool Type "Web Browser".
+// BrowserTool is the Tool Type "web_browser".
 type BrowserTool struct {
 	enableProxy bool
 }

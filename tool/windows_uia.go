@@ -19,7 +19,7 @@ import (
 	windowsuia "github.com/the-open-agent/openagent/tool/windows_uia"
 )
 
-// WindowsUiaTool implements the Windows UI Automation tool (Type "GUI", SubType "Windows UIA").
+// WindowsUiaTool implements the Windows UI Automation tool (Type "gui", SubType "Windows UIA").
 type WindowsUiaTool struct{}
 
 func NewWindowsUiaTool(_ Config) (*WindowsUiaTool, error) {

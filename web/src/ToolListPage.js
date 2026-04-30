@@ -33,9 +33,9 @@ class ToolListPage extends BaseListPage {
       owner: "admin",
       name: `tool_${randomName}`,
       createdTime: moment().format(),
-      displayName: `New Tool - ${randomName}`,
+      displayName: "",
       displayName2: "",
-      type: "Time",
+      type: "time",
       subType: "Default",
       clientId: "",
       clientSecret: "",
@@ -104,14 +104,6 @@ class ToolListPage extends BaseListPage {
         render: (text) => (
           <Link to={`/tools/${text}`}>{text}</Link>
         ),
-      },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "200px",
-        sorter: (a, b) => (a.displayName || "").localeCompare(b.displayName || ""),
-        ...this.getColumnSearchProps("displayName"),
       },
       {
         title: i18next.t("general:Type"),

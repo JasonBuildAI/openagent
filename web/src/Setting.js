@@ -1103,35 +1103,35 @@ export function getOtherProviderInfo() {
       },
     },
     Tool: {
-      "Time": {
+      time: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "Web Search": {
+      web_search: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "Shell": {
+      shell: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "Office": {
+      office: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "Web Fetch": {
+      web_fetch: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "Web Browser": {
+      web_browser: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/the-open-agent/openagent",
       },
-      "GUI": {
+      gui: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32",
       },
-      "Video Download": {
+      video_download: {
         logo: `${StaticBaseUrl}/img/social_mcp.png`,
         url: "https://github.com/yt-dlp/yt-dlp",
       },
@@ -1451,14 +1451,14 @@ export function getProviderTypeOptions(category) {
     ]);
   } else if (category === "Tool") {
     return [
-      {id: "Time", name: "Time"},
-      {id: "Web Search", name: "Web Search"},
-      {id: "Shell", name: "Shell"},
-      {id: "Office", name: "Office"},
-      {id: "Web Fetch", name: "Web Fetch"},
-      {id: "Web Browser", name: "Web Browser"},
-      {id: "GUI", name: "GUI"},
-      {id: "Video Download", name: "Video Download"},
+      {id: "time", name: "time"},
+      {id: "web_search", name: "web_search"},
+      {id: "shell", name: "shell"},
+      {id: "office", name: "office"},
+      {id: "web_fetch", name: "web_fetch"},
+      {id: "web_browser", name: "web_browser"},
+      {id: "gui", name: "gui"},
+      {id: "video_download", name: "video_download"},
     ];
   } else if (category === "Public Cloud") {
     return ([
@@ -2200,22 +2200,22 @@ export function getProviderSubTypeOptions(category, type) {
     }
     return [];
   } else if (category === "Tool") {
-    if (type === "Time") {
+    if (type === "time") {
       return [
         {id: "Default", name: "Default"},
       ];
-    } else if (type === "Web Search") {
+    } else if (type === "web_search") {
       return [
         {id: "DuckDuckGo", name: "DuckDuckGo"},
         {id: "Bing", name: "Bing"},
         {id: "Google", name: "Google"},
         {id: "Baidu", name: "Baidu"},
       ];
-    } else if (type === "Shell") {
+    } else if (type === "shell") {
       return [
         {id: "Default", name: "Default"},
       ];
-    } else if (type === "Office") {
+    } else if (type === "office") {
       return [
         {id: "All", name: "All"},
         {id: "Word Read", name: "Word Read"},
@@ -2225,19 +2225,19 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "PowerPoint Read", name: "PowerPoint Read"},
         {id: "PowerPoint Write", name: "PowerPoint Write"},
       ];
-    } else if (type === "Web Fetch") {
+    } else if (type === "web_fetch") {
       return [
         {id: "Default", name: "Default"},
       ];
-    } else if (type === "Web Browser") {
+    } else if (type === "web_browser") {
       return [
         {id: "Default", name: "Default"},
       ];
-    } else if (type === "GUI") {
+    } else if (type === "gui") {
       return [
         {id: "Windows UIA", name: "Windows UIA"},
       ];
-    } else if (type === "Video Download") {
+    } else if (type === "video_download") {
       return [
         {id: "Default", name: "Default"},
       ];
@@ -2819,7 +2819,7 @@ export function getFormTypeItems(formType) {
       {name: "textToSpeechProvider", label: "store:Text-to-Speech provider", visible: true, width: "300"},
       {name: "speechToTextProvider", label: "store:Speech-to-Text provider", visible: true, width: "200"},
       {name: "agentProvider", label: "store:Agent provider", visible: true, width: "250"},
-      {name: "tools", label: "provider:Tools", visible: true, width: "280"},
+      {name: "tools", label: "general:Tools", visible: true, width: "280"},
       {name: "memoryLimit", label: "store:Memory limit", visible: true, width: "120"},
       {name: "state", label: "general:State", visible: true, width: "90"},
     ];

@@ -77,7 +77,7 @@ var officeToolBySubType = map[officeSubType]builtin_tool.BuiltinTool{
 	officeSubTypePowerPointWrite: &pptxWriteBuiltin{},
 }
 
-// OfficeTool is the Tool Type "Office".
+// OfficeTool is the Tool Type "office".
 // It exposes read/write tools for Word (.docx), Excel (.xlsx), and PowerPoint (.pptx).
 // SubType controls which tool(s) are exposed: "All" exposes all six; any specific
 // SubType (e.g. "Word Read") exposes only that single tool.

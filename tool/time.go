@@ -23,7 +23,7 @@ import (
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
 )
 
-// TimeTool is the Tool Type "Time".
+// TimeTool is the Tool Type "time".
 type TimeTool struct{}
 
 func (p *TimeTool) BuiltinTools() []builtin_tool.BuiltinTool {
