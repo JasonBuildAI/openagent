@@ -81,7 +81,7 @@ const MessageActions = ({
           icon={<CopyOutlined />}
           color="primary"
           variant="text"
-          onClick={() => onCopy(message.text)}
+          onClick={() => onCopy(message)}
         />
       </Tooltip>
 

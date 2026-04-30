@@ -177,10 +177,37 @@ class ChatBox extends React.Component {
   };
 
   copyMessageFromHTML(message) {
+    const parts = [];
+
+    if (message.toolCalls && message.toolCalls.length > 0) {
+      message.toolCalls.forEach((toolCall) => {
+        let part = `Tool calls (1)\n${toolCall.name}`;
+        if (toolCall.arguments) {
+          try {
+            part += `\nArguments:\n${JSON.stringify(JSON.parse(toolCall.arguments), null, 2)}`;
+          } catch {
+            part += `\nArguments:\n${toolCall.arguments}`;
+          }
+        }
+        if (toolCall.content) {
+          try {
+            part += `\nResult:\n${JSON.stringify(JSON.parse(toolCall.content), null, 2)}`;
+          } catch {
+            part += `\nResult:\n${toolCall.content}`;
+          }
+        }
+        parts.push(part);
+      });
+    }
+
     const tempElement = document.createElement("div");
-    tempElement.innerHTML = message;
+    tempElement.innerHTML = message.text || message;
     const text = tempElement.innerText;
-    copy(text);
+    if (text) {
+      parts.push(text);
+    }
+
+    copy(parts.join("\n\n"));
     Setting.showMessage("success", i18next.t("general:Successfully copied"));
   }
 
