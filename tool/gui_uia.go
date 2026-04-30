@@ -524,11 +524,17 @@ func (b *winOpenApplicationBuiltin) Execute(ctx context.Context, arguments map[s
 			return cmd.Start()
 		case "search":
 			// Fallback: open Start and type.
-			_ = sendKeyTap("win")
+			if err := sendKeyTap("win"); err != nil {
+				return err
+			}
 			time.Sleep(350 * time.Millisecond)
-			_ = sendTextInput(target)
+			if err := sendTextInput(target); err != nil {
+				return err
+			}
 			time.Sleep(150 * time.Millisecond)
-			_ = sendKeyTap("enter")
+			if err := sendKeyTap("enter"); err != nil {
+				return err
+			}
 			return nil
 		default:
 			return fmt.Errorf("unsupported method: %s", m)
