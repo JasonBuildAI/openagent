@@ -79,6 +79,14 @@ const DEFAULT_TOOL_CONTENT = {
   video_download: JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
 };
 
+function tryFormatJson(str) {
+  try {
+    return JSON.stringify(JSON.parse(str), null, 2);
+  } catch (e) {
+    return str;
+  }
+}
+
 function isValidToolTestJson(content) {
   try {
     const parsed = JSON.parse(content);
@@ -174,6 +182,11 @@ class TestToolWidget extends React.Component {
       !isValidToolTestJson(tool.testContent);
     if (needsDefault && onUpdateTool) {
       onUpdateTool("testContent", buildDefaultToolTestJson(tool));
+    } else if (onUpdateTool && tool.testContent) {
+      const formatted = tryFormatJson(tool.testContent);
+      if (formatted !== tool.testContent) {
+        onUpdateTool("testContent", formatted);
+      }
     }
     if (tool.resultSummary) {
       this.setState({testResult: tool.resultSummary});
@@ -238,53 +251,49 @@ class TestToolWidget extends React.Component {
 
     return (
       <React.Fragment>
-        {tool.type === "gui" && (
-          <Row style={{marginTop: "20px"}}>
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
-            </Col>
-            <Col span={10}>
-              <Select
-                style={{width: "100%"}}
-                value={this.state.selectedGuiTool}
-                onChange={(value) => {
-                  this.setState({selectedGuiTool: value});
-                  onUpdateTool("testContent", GUI_TOOL_CONTENT[value]);
-                }}
-              >
-                {GUI_TOOL_OPTIONS.map((opt) => (
-                  <Option key={opt.value} value={opt.value}>{opt.label}</Option>
-                ))}
-              </Select>
-            </Col>
-          </Row>
-        )}
-        {tool.type === "video_download" && (
-          <Row style={{marginTop: "20px"}}>
-            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
-            </Col>
-            <Col span={10}>
-              <Select
-                style={{width: "100%"}}
-                value={this.state.selectedVideoTool}
-                onChange={(value) => {
-                  this.setState({selectedVideoTool: value});
-                  onUpdateTool("testContent", VIDEO_DOWNLOAD_TOOL_CONTENT[value]);
-                }}
-              >
-                {VIDEO_DOWNLOAD_TOOL_OPTIONS.map((opt) => (
-                  <Option key={opt.value} value={opt.value}>{opt.label}</Option>
-                ))}
-              </Select>
-            </Col>
-          </Row>
-        )}
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("provider:Tool test"), i18next.t("provider:Tool test JSON - Tooltip"))} :
           </Col>
           <Col span={10}>
+            {tool.type === "gui" && (
+              <div style={{marginBottom: "8px"}}>
+                <div style={{marginBottom: "4px"}}>
+                  {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
+                </div>
+                <Select
+                  style={{width: "100%"}}
+                  value={this.state.selectedGuiTool}
+                  onChange={(value) => {
+                    this.setState({selectedGuiTool: value});
+                    onUpdateTool("testContent", GUI_TOOL_CONTENT[value]);
+                  }}
+                >
+                  {GUI_TOOL_OPTIONS.map((opt) => (
+                    <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                  ))}
+                </Select>
+              </div>
+            )}
+            {tool.type === "video_download" && (
+              <div style={{marginBottom: "8px"}}>
+                <div style={{marginBottom: "4px"}}>
+                  {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
+                </div>
+                <Select
+                  style={{width: "100%"}}
+                  value={this.state.selectedVideoTool}
+                  onChange={(value) => {
+                    this.setState({selectedVideoTool: value});
+                    onUpdateTool("testContent", VIDEO_DOWNLOAD_TOOL_CONTENT[value]);
+                  }}
+                >
+                  {VIDEO_DOWNLOAD_TOOL_OPTIONS.map((opt) => (
+                    <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                  ))}
+                </Select>
+              </div>
+            )}
             <Editor
               value={tool.testContent}
               lang="json"
@@ -344,6 +353,17 @@ class TestToolWidget extends React.Component {
                     </Option>
                   ))}
                 </Select>
+              </Col>
+            </Row>
+            <Row style={{marginBottom: "10px"}}>
+              <Col span={24}>
+                <div style={{marginBottom: "4px"}}>
+                  {Setting.getLabel(i18next.t("tool:Prompt examples"), i18next.t("tool:Prompt examples - Tooltip"))} :
+                </div>
+                <Select virtual={false} mode="tags" style={{width: "100%"}}
+                  value={tool.promptExamples}
+                  onChange={(value) => onUpdateTool("promptExamples", value)}
+                />
               </Col>
             </Row>
             {selectedModelProvider ? (
