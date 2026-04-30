@@ -15,12 +15,10 @@
 package object
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
 
-	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/the-open-agent/openagent/agent"
 	"github.com/the-open-agent/openagent/auth"
 	"github.com/the-open-agent/openagent/chat"
@@ -30,7 +28,6 @@ import (
 	"github.com/the-open-agent/openagent/scan"
 	"github.com/the-open-agent/openagent/storage"
 	"github.com/the-open-agent/openagent/stt"
-	"github.com/the-open-agent/openagent/tool"
 	"github.com/the-open-agent/openagent/tts"
 	"github.com/the-open-agent/openagent/util"
 	"xorm.io/core"
@@ -567,9 +564,6 @@ func collectProviderNames(store *Store) []string {
 	if store.AgentProvider != "" {
 		providerNames = append(providerNames, store.AgentProvider)
 	}
-	if store.ToolProviders != nil {
-		providerNames = append(providerNames, store.ToolProviders...)
-	}
 	if store.ChildModelProviders != nil {
 		providerNames = append(providerNames, store.ChildModelProviders...)
 	}
@@ -703,119 +697,6 @@ func TestMcpProvider(p *Provider, lang string) (string, error) {
 		payload.Arguments = map[string]interface{}{}
 	}
 	return agent.TestMcpToolCall(p.Text, p.McpTools, payload.Tool, payload.Arguments)
-}
-
-// TestToolProvider parses provider.testContent as {"tool":"...","arguments":{}} and invokes one builtin tool.
-func TestToolProvider(p *Provider, lang string) (string, error) {
-	return p.testToolProviderWithLoader(lang, getProvider)
-}
-
-func (p *Provider) testToolProviderWithLoader(lang string, loadProvider func(owner string, name string) (*Provider, error)) (string, error) {
-	if p.Category != "Tool" {
-		return "", fmt.Errorf(i18n.Translate(lang, "object:provider is not a Tool provider"))
-	}
-	if err := p.restoreMaskedToolProviderSecrets(loadProvider); err != nil {
-		return "", err
-	}
-
-	var payload struct {
-		Tool      string                 `json:"tool"`
-		Arguments map[string]interface{} `json:"arguments"`
-	}
-	if err := json.Unmarshal([]byte(p.TestContent), &payload); err != nil {
-		return "", fmt.Errorf(i18n.Translate(lang, "object:invalid tool test JSON in testContent: %v"), err)
-	}
-	if strings.TrimSpace(payload.Tool) == "" {
-		return "", fmt.Errorf(i18n.Translate(lang, "object:tool test JSON must include non-empty \"tool\""))
-	}
-	if payload.Arguments == nil {
-		payload.Arguments = map[string]interface{}{}
-	}
-
-	tp, err := tool.NewProvider(getToolProviderConfig(p), lang)
-	if err != nil {
-		return "", err
-	}
-
-	var foundTool interface {
-		Execute(ctx context.Context, arguments map[string]interface{}) (*protocol.CallToolResult, error)
-	}
-	for _, t := range tp.BuiltinTools() {
-		if t.GetName() == payload.Tool {
-			foundTool = t
-			break
-		}
-	}
-	if foundTool == nil {
-		return "", fmt.Errorf("tool not found: %s", payload.Tool)
-	}
-
-	result, err := foundTool.Execute(context.Background(), payload.Arguments)
-	if err != nil {
-		return "", err
-	}
-
-	var texts []string
-	for _, c := range result.Content {
-		if tc, ok := c.(*protocol.TextContent); ok {
-			texts = append(texts, tc.Text)
-		}
-	}
-	output := strings.Join(texts, "\n")
-	if result.IsError {
-		return "", fmt.Errorf("%s", output)
-	}
-	return output, nil
-}
-
-func getToolProviderConfig(p *Provider) tool.ProviderConfig {
-	return tool.ProviderConfig{
-		Category:     p.Category,
-		Type:         p.Type,
-		SubType:      p.SubType,
-		ProviderUrl:  p.ProviderUrl,
-		ClientId:     p.ClientId,
-		ClientSecret: p.ClientSecret,
-		EnableProxy:  p.EnableProxy,
-	}
-}
-
-func (p *Provider) restoreMaskedToolProviderSecrets(loadProvider func(owner string, name string) (*Provider, error)) error {
-	if p == nil {
-		return nil
-	}
-
-	maskedClientSecret := p.ClientSecret == "***"
-	maskedUserKey := p.UserKey == "***"
-	maskedSignKey := p.SignKey == "***"
-	if !maskedClientSecret && !maskedUserKey && !maskedSignKey {
-		return nil
-	}
-	if strings.TrimSpace(p.Owner) == "" || strings.TrimSpace(p.Name) == "" {
-		return fmt.Errorf("cannot restore masked tool provider secrets without owner and name")
-	}
-
-	providerDb, err := loadProvider(p.Owner, p.Name)
-	if err != nil {
-		return err
-	}
-	if providerDb == nil {
-		return fmt.Errorf("provider not found: %s/%s", p.Owner, p.Name)
-	}
-
-	p.processProviderParams(providerDb)
-
-	if maskedClientSecret && (p.ClientSecret == "" || p.ClientSecret == "***") {
-		return fmt.Errorf("masked clientSecret could not be restored")
-	}
-	if maskedUserKey && (p.UserKey == "" || p.UserKey == "***") {
-		return fmt.Errorf("masked userKey could not be restored")
-	}
-	if maskedSignKey && (p.SignKey == "" || p.SignKey == "***") {
-		return fmt.Errorf("masked signKey could not be restored")
-	}
-
-	return nil
 }
 
 func (p *Provider) processProviderParams(providerDb *Provider) {

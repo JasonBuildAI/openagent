@@ -21,14 +21,13 @@ import (
 	"github.com/the-open-agent/openagent/i18n"
 )
 
-// Provider supplies LLM-callable tools (object.Provider category "Tool").
+// Provider supplies LLM-callable tools.
 type Provider interface {
 	BuiltinTools() []builtin_tool.BuiltinTool
 }
 
-// ProviderConfig contains the Provider fields needed to construct builtin tools.
-type ProviderConfig struct {
-	Category     string
+// Config contains the fields needed to construct builtin tools.
+type Config struct {
 	Type         string
 	SubType      string
 	ProviderUrl  string
@@ -37,11 +36,8 @@ type ProviderConfig struct {
 	EnableProxy  bool
 }
 
-// NewProvider instantiates a Tool provider implementation from category and type.
-func NewProvider(config ProviderConfig, lang string) (Provider, error) {
-	if config.Category != "Tool" {
-		return nil, fmt.Errorf(i18n.Translate(lang, "tool:expected category Tool, got %s"), config.Category)
-	}
+// NewProvider instantiates a Tool provider implementation from type.
+func NewProvider(config Config, lang string) (Provider, error) {
 	switch config.Type {
 	case "Time":
 		return &TimeProvider{}, nil
@@ -57,6 +53,8 @@ func NewProvider(config ProviderConfig, lang string) (Provider, error) {
 		return NewBrowserProvider(config)
 	case "GUI":
 		return NewGuiProvider(config)
+	case "Video Download":
+		return &VideoDownloadProvider{}, nil
 	default:
 		return nil, fmt.Errorf(i18n.Translate(lang, "tool:unsupported tool provider type: %s"), config.Type)
 	}

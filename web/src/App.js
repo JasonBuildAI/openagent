@@ -26,7 +26,7 @@ import {shadcnThemeComponents, shadcnThemeToken} from "./shadcnTheme";
 import HomePage from "./HomePage";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import * as FormBackend from "./backend/FormBackend";
-import * as StoreBackend from "./backend/StoreBackend";
+import * as SiteBackend from "./backend/SiteBackend";
 import * as FetchFilter from "./backend/FetchFilter";
 import {PreviewInterceptor} from "./PreviewInterceptor";
 import {withTranslation} from "react-i18next";
@@ -52,7 +52,7 @@ class App extends Component {
       themeAlgorithm: storageThemeAlgorithm,
       themeData: Conf.ThemeDefault,
       forms: [],
-      store: undefined,
+      site: undefined,
     };
     this.initConfig();
   }
@@ -77,23 +77,18 @@ class App extends Component {
   }
 
   setTheme() {
-    StoreBackend.getStore("admin", "_casibase_default_store_").then((res) => {
-      const applyConfigTheme = () => Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
-
+    SiteBackend.getBuiltInSite().then((res) => {
       if (res.status !== "ok") {
-        applyConfigTheme();
-        if (res.msg) {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        } else {
-          Setting.showMessage("error", i18next.t("general:Failed to get"));
-        }
+        Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         return;
       }
-      applyConfigTheme();
-      if (!res.data) {
+      const site = res.data;
+      if (!site) {
+        Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
         return;
       }
-      this.setState({store: res.data});
+      Setting.setThemeColor(site.themeColor || Conf.ThemeDefault.colorPrimary);
+      this.setState({site});
     });
   }
 
@@ -140,6 +135,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/scans"});
     } else if (uri.includes("/usages")) {
       this.setState({selectedMenuKey: "/usages"});
+    } else if (uri.includes("/sites")) {
+      this.setState({selectedMenuKey: "/sites"});
     } else if (uri.includes("/activities")) {
       this.setState({selectedMenuKey: "/activities"});
     } else if (uri.includes("/nodes")) {
@@ -273,7 +270,7 @@ class App extends Component {
   setLogoAndThemeAlgorithm = (nextThemeAlgorithm) => {
     this.setState({
       themeAlgorithm: nextThemeAlgorithm,
-      logo: Setting.getLogo(nextThemeAlgorithm, this.state.store?.logoUrl),
+      logo: Setting.getLogo(nextThemeAlgorithm, this.state.site?.logoUrl),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
   };
@@ -293,7 +290,7 @@ class App extends Component {
       <Layout id="parent-area">
         <ManagementPage
           account={this.state.account}
-          store={this.state.store}
+          site={this.state.site}
           forms={this.state.forms}
           themeAlgorithm={this.state.themeAlgorithm}
           logo={this.state.logo}
@@ -349,8 +346,8 @@ class App extends Component {
     return (
       <React.Fragment>
         <Helmet>
-          <title>{Setting.getHtmlTitle(this.state.store?.htmlTitle)}</title>
-          <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.store?.faviconUrl)} />
+          <title>{Setting.getHtmlTitle(this.state.site?.htmlTitle)}</title>
+          <link rel="icon" href={Setting.getFaviconUrl(this.state.themeAlgorithm, this.state.site?.faviconUrl)} />
         </Helmet>
         <ConfigProvider
           locale={this.getAntdLocale()}

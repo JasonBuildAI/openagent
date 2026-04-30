@@ -100,14 +100,16 @@ func (c *ApiController) UploadTaskDocument() {
 
 	// Upload file to storage
 	filePath := fmt.Sprintf("openagent/task-documents/%s/%s", userName, fileName)
-	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadTaskDocument", filePath, fileBytes)
+	host := c.Ctx.Request.Host
+	origin := getOriginFromHost(host)
+	fileUrl, err := object.UploadFileToStorageSafe(filePath, fileBytes, origin, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
 	// Record the upload as a resource
-	resource := object.NewResourceFromUpload("admin", userName, "document", fileName, "application", ext, fileUrl, storageName, len(fileBytes), "task", taskId)
+	resource := object.NewResourceFromUpload("admin", userName, "document", fileName, "application", ext, fileUrl, filePath, len(fileBytes), "task", taskId)
 	if _, addErr := object.AddResource(resource); addErr != nil {
 		logs.Warning("Failed to save resource record for task document: %v", addErr)
 	}

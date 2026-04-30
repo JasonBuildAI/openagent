@@ -147,7 +147,7 @@ func createStore(paperId string) (*object.Store, error) {
 		Prompt:               "You are an expert in analyzing papers and you specialize in answering questions based on the paper content.",
 		KnowledgeCount:       15,
 		SuggestionCount:      3,
-		ThemeColor:           "#5734d3",
+		ThemeColor:           "#262626",
 		IsDefault:            false,
 		State:                "Active",
 	}

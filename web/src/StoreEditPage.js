@@ -14,20 +14,17 @@
 
 import React from "react";
 import Loading from "./common/Loading";
-import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Modal, Popover, Row, Select, Spin, Switch} from "antd";
+import {Avatar, Button, Card, Cascader, Col, Input, InputNumber, Modal, Row, Select, Spin, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ToolBackend from "./backend/ToolBackend";
 import * as OrganizationUserBackend from "./backend/OrganizationUserBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
-import {ThemeDefault} from "./Conf";
 import ExampleQuestionTable from "./table/ExampleQuestionTable";
 import StoreAvatarUploader from "./AvatarUpload";
-import {LinkOutlined} from "@ant-design/icons";
-import Editor from "./common/Editor";
-import {NavItemTree} from "./component/nav-item-tree/NavItemTree";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -53,7 +50,6 @@ class StoreEditPage extends React.Component {
       builtinTools: [],
       enableTtsStreaming: false,
       store: null,
-      themeColor: ThemeDefault.colorPrimary,
       isNewStore: props.location?.state?.isNewStore || false,
       ownerUsers: [],
       ownerUsersLoading: false,
@@ -65,6 +61,7 @@ class StoreEditPage extends React.Component {
     this.getStores();
     this.getStorageProviders();
     this.getProviders();
+    this.getTools();
   }
 
   loadOwnerUsers() {
@@ -93,6 +90,17 @@ class StoreEditPage extends React.Component {
           src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})}
           alt={provider.name} />
         {Setting.getProviderDisplayName(provider)} ({provider.name})
+      </Option>
+    );
+  }
+
+  renderToolOption(tool, index) {
+    return (
+      <Option key={index} value={tool.name}>
+        <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
+          src={Setting.getProviderLogoURL({category: "Tool", type: tool.type})}
+          alt={tool.name} />
+        {tool.displayName || tool.name} ({tool.name})
       </Option>
     );
   }
@@ -163,8 +171,18 @@ class StoreEditPage extends React.Component {
             textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
             speechToTextProviders: res.data.filter(provider => provider.category === "Speech-to-Text"),
             agentProviders: res.data.filter(provider => provider.category === "Agent"),
-            toolProvidersProviders: res.data.filter(provider => provider.category === "Tool"),
           });
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
+        }
+      });
+  }
+
+  getTools() {
+    ToolBackend.getTools(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({toolProvidersProviders: res.data});
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
@@ -540,7 +558,7 @@ class StoreEditPage extends React.Component {
                   onChange={(value => {this.updateStoreField("toolProviders", value || []);})}
                 >
                   {
-                    this.state.toolProvidersProviders.map((provider, index) => this.renderProviderOption(provider, index))
+                    this.state.toolProvidersProviders.map((tool, index) => this.renderToolOption(tool, index))
                   }
                 </Select>
               </Col>
@@ -704,116 +722,6 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Site setting"), i18next.t("general:Site setting - Tooltip"))} :
-          </Col>
-          <Col span={22} >
-            <Row style={{marginTop: "20px"}}>
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Theme color"), i18next.t("store:Theme color - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <input type="color" value={this.state.store.themeColor} onChange={(e) => {
-                  this.updateStoreField("themeColor", e.target.value);
-                }} />
-              </Col>
-            </Row>
-            {this.state.store.enableExtraOptions ? (
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("store:Navbar items"), i18next.t("store:Navbar items - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <NavItemTree
-                    disabled={!Setting.isAdminUser(this.props.account)}
-                    checkedKeys={this.state.store.navItems ?? ["all"]}
-                    defaultExpandedKeys={["all"]}
-                    onCheck={(checked) => {
-                      this.updateStoreField("navItems", checked);
-                    }}
-                  />
-                </Col>
-              </Row>
-            ) : null}
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:HTML title"), i18next.t("general:HTML title - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.store.htmlTitle} onChange={e => {
-                  this.updateStoreField("htmlTitle", e.target.value);
-                }} />
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Favicon URL"), i18next.t("general:Favicon URL - Tooltip"))} :
-              </Col>
-              <Col span={22} >
-                <Input prefix={<LinkOutlined />} value={this.state.store.faviconUrl} onChange={e => {
-                  this.updateStoreField("faviconUrl", e.target.value);
-                }} />
-              </Col>
-            </Row>
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                {i18next.t("general:Preview")}:
-              </Col>
-              <Col span={23} >
-                <a target="_blank" rel="noreferrer" href={Setting.getFaviconUrl("", this.state.store.faviconUrl)}>
-                  <img src={Setting.getFaviconUrl("", this.state.store.faviconUrl)} alt={Setting.getFaviconUrl("", this.state.store.faviconUrl)} height={90} style={{marginBottom: "20px"}} />
-                </a>
-              </Col>
-            </Row>
-            <Col span={22} >
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Logo URL"), i18next.t("general:Logo URL - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Input prefix={<LinkOutlined />} value={this.state.store.logoUrl} onChange={e => {
-                    this.updateStoreField("logoUrl", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                  {i18next.t("general:Preview")}:
-                </Col>
-                <Col span={23} >
-                  <a target="_blank" rel="noreferrer" href={Setting.getLogo("", this.state.store.logoUrl)}>
-                    <img src={Setting.getLogo("", this.state.store.logoUrl)} alt={Setting.getLogo("", this.state.store.logoUrl)} height={90} style={{marginBottom: "20px"}} />
-                  </a>
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {Setting.getLabel(i18next.t("general:Footer HTML"), i18next.t("general:Footer HTML - Tooltip"))} :
-                </Col>
-                <Col span={22} >
-                  <Popover placement="right" content={
-                    <div style={{width: "900px", height: "300px"}} >
-                      <Editor
-                        value={this.state.store.footerHtml}
-                        lang="html"
-                        fillHeight
-                        dark
-                        onChange={value => {
-                          this.updateStoreField("footerHtml", value);
-                        }}
-                      />
-                    </div>
-                  } title={i18next.t("store:Footer HTML - Edit")} trigger="click">
-                    <Input value={this.state.store.footerHtml} style={{marginBottom: "10px"}} onChange={e => {
-                      this.updateStoreField("footerHtml", e.target.value);
-                    }} />
-                  </Popover>
-                </Col>
-              </Row>
-            </Col>
-          </Col>
-        </Row>
         {this.state.store.enableExtraOptions ? (
           <React.Fragment>
             <Row style={{marginTop: "20px"}} >
@@ -926,7 +834,6 @@ class StoreEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.setThemeColor(ThemeDefault.colorPrimary);
             Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,

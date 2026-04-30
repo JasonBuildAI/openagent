@@ -1131,6 +1131,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_microsoft.png`,
         url: "https://learn.microsoft.com/en-us/windows/win32/winauto/entry-uiauto-win32",
       },
+      "Video Download": {
+        logo: `${StaticBaseUrl}/img/social_mcp.png`,
+        url: "https://github.com/yt-dlp/yt-dlp",
+      },
     },
     "Public Cloud": {
       "Aliyun": {
@@ -1454,6 +1458,7 @@ export function getProviderTypeOptions(category) {
       {id: "Web Fetch", name: "Web Fetch"},
       {id: "Web Browser", name: "Web Browser"},
       {id: "GUI", name: "GUI"},
+      {id: "Video Download", name: "Video Download"},
     ];
   } else if (category === "Public Cloud") {
     return ([
@@ -2231,6 +2236,10 @@ export function getProviderSubTypeOptions(category, type) {
     } else if (type === "GUI") {
       return [
         {id: "UIA", name: "UIA"},
+      ];
+    } else if (type === "Video Download") {
+      return [
+        {id: "Default", name: "Default"},
       ];
     }
     return [];

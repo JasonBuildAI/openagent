@@ -41,7 +41,7 @@ import (
 // This provider intentionally exposes "win_*" tools.
 type GuiUiaProvider struct{}
 
-func NewGuiUiaProvider(config ProviderConfig) (*GuiUiaProvider, error) {
+func NewGuiUiaProvider(config Config) (*GuiUiaProvider, error) {
 	// ProviderUrl is unused for local UIA implementation.
 	return &GuiUiaProvider{}, nil
 }

@@ -41,7 +41,7 @@ type WebSearchProvider struct {
 	httpClient     *http.Client
 }
 
-func NewWebSearchProvider(config ProviderConfig) (*WebSearchProvider, error) {
+func NewWebSearchProvider(config Config) (*WebSearchProvider, error) {
 	engine, err := parseWebSearchEngine(config.SubType)
 	if err != nil {
 		return nil, err

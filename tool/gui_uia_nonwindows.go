@@ -21,7 +21,7 @@ import "fmt"
 // GuiUiaProvider is a non-Windows placeholder.
 type GuiUiaProvider struct{}
 
-func NewGuiUiaProvider(config ProviderConfig) (*GuiUiaProvider, error) {
+func NewGuiUiaProvider(config Config) (*GuiUiaProvider, error) {
 	_ = config
 	return nil, fmt.Errorf("GUI/UIA is only supported on Windows")
 }

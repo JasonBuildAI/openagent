@@ -39,7 +39,7 @@ type BrowserProvider struct {
 	enableProxy bool
 }
 
-func NewBrowserProvider(config ProviderConfig) (*BrowserProvider, error) {
+func NewBrowserProvider(config Config) (*BrowserProvider, error) {
 	return &BrowserProvider{enableProxy: config.EnableProxy}, nil
 }
 

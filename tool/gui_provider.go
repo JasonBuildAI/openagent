@@ -22,7 +22,7 @@ import (
 // NewGuiProvider constructs the Tool provider Type "GUI".
 // GUI is UIA-only. Empty subtype is accepted for backward compatibility and
 // normalized to UIA behavior. Non-UIA subtypes fail explicitly.
-func NewGuiProvider(config ProviderConfig) (Provider, error) {
+func NewGuiProvider(config Config) (Provider, error) {
 	subType := strings.TrimSpace(config.SubType)
 	if subType != "" && !strings.EqualFold(subType, "UIA") {
 		return nil, fmt.Errorf("unsupported GUI subtype: %s (only UIA is supported)", config.SubType)

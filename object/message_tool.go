@@ -24,6 +24,17 @@ import (
 	"github.com/the-open-agent/openagent/util"
 )
 
+func getToolProviderConfig(p *Provider) tool.Config {
+	return tool.Config{
+		Type:         p.Type,
+		SubType:      p.SubType,
+		ProviderUrl:  p.ProviderUrl,
+		ClientId:     p.ClientId,
+		ClientSecret: p.ClientSecret,
+		EnableProxy:  p.EnableProxy,
+	}
+}
+
 func buildAgentClientsForToolProvider(toolProviderName string, lang string) (*agent.AgentClients, error) {
 	if toolProviderName == "" {
 		return nil, nil

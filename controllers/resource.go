@@ -157,8 +157,7 @@ func (c *ApiController) DeleteResource() {
 		return
 	}
 
-	// Delete the actual file from Casdoor storage first.
-	err = object.DeleteResourceFile(&resource)
+	err = object.DeleteResourceFile(&resource, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -227,20 +226,22 @@ func (c *ApiController) UploadResourceFile() {
 
 	fullFilePath := fmt.Sprintf("openagent/resources/%s/%s/%s", category, userName, fileName)
 
-	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadResource", fullFilePath, fileBytes)
+	host := c.Ctx.Request.Host
+	origin := getOriginFromHost(host)
+	fileUrl, err := object.UploadFileToStorageSafe(fullFilePath, fileBytes, origin, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	resource := object.NewResourceFromUpload("admin", userName, category, fileName, fileType, ext, fileUrl, storageName, fileSize, objectType, objectId)
+	resource := object.NewResourceFromUpload("admin", userName, category, fileName, fileType, ext, fileUrl, fullFilePath, fileSize, objectType, objectId)
 	_, err = object.AddResource(resource)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(fileUrl, storageName)
+	c.ResponseOk(fileUrl, fullFilePath)
 }
 
 // UploadFile
@@ -291,7 +292,9 @@ func (c *ApiController) UploadFile() {
 
 	filePath := fmt.Sprintf("openagent/resources/%s/%s/%s", category, userName, fileName)
 
-	fileUrl, storageName, err := object.UploadFileToStorageSafe(userName, "file", "UploadFile", filePath, fileBytes)
+	host := c.Ctx.Request.Host
+	origin := getOriginFromHost(host)
+	fileUrl, err := object.UploadFileToStorageSafe(filePath, fileBytes, origin, c.GetAcceptLanguage())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -305,7 +308,7 @@ func (c *ApiController) UploadFile() {
 		detectedFileType = fileTypeParts[0]
 	}
 
-	resource := object.NewResourceFromUpload("admin", userName, category, fileName, detectedFileType, ext, fileUrl, storageName, len(fileBytes), objectType, objectId)
+	resource := object.NewResourceFromUpload("admin", userName, category, fileName, detectedFileType, ext, fileUrl, filePath, len(fileBytes), objectType, objectId)
 	_, err = object.AddResource(resource)
 	if err != nil {
 		c.ResponseError(err.Error())

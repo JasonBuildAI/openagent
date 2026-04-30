@@ -16,14 +16,14 @@ import React from "react";
 import {Button, Col, Row, Select} from "antd";
 import * as Setting from "../Setting";
 import i18next from "i18next";
+import * as ToolBackend from "../backend/ToolBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
-import {checkProvider} from "./ProviderWidget";
 import Editor from "./Editor";
 import ChatWidget from "./ChatWidget";
 
 const {Option} = Select;
 
-const UIA_TOOL_CONTENT = {
+const GUI_TOOL_CONTENT = {
   "win_open_application": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
   "win_focus_window": JSON.stringify({tool: "win_focus_window", arguments: {title_contains: "Calculator"}}, null, 2),
   "win_find_element": JSON.stringify({tool: "win_find_element", arguments: {window_title_contains: "Calculator", control_type: "button", name_contains: "1"}}, null, 2),
@@ -35,7 +35,7 @@ const UIA_TOOL_CONTENT = {
   "win_safety_emergency_stop": JSON.stringify({tool: "win_safety_emergency_stop", arguments: {}}, null, 2),
 };
 
-const UIA_TOOL_OPTIONS = [
+const GUI_TOOL_OPTIONS = [
   {value: "win_open_application", label: "win_open_application — Launch app"},
   {value: "win_focus_window", label: "win_focus_window — Focus top-level window"},
   {value: "win_find_element", label: "win_find_element — Find UIA element by criteria"},
@@ -57,6 +57,18 @@ const OFFICE_TOOL_CONTENT = {
   "PowerPoint Write": JSON.stringify({tool: "pptx_write", arguments: {path: "/path/to/output.pptx", slides: ["Slide 1 title\nSlide 1 content", "Slide 2 title\nSlide 2 content"]}}, null, 2),
 };
 
+const VIDEO_DOWNLOAD_TOOL_CONTENT = {
+  "video_info": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
+  "video_download": JSON.stringify({tool: "video_download", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "/tmp/videos", format: "bestvideo+bestaudio/best"}}, null, 2),
+  "video_audio_extract": JSON.stringify({tool: "video_audio_extract", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "/tmp/audio", audio_format: "mp3", audio_quality: "0"}}, null, 2),
+};
+
+const VIDEO_DOWNLOAD_TOOL_OPTIONS = [
+  {value: "video_info", label: "video_info — Get video metadata (no download)"},
+  {value: "video_download", label: "video_download — Download video file"},
+  {value: "video_audio_extract", label: "video_audio_extract — Extract audio from video"},
+];
+
 const DEFAULT_TOOL_CONTENT = {
   Time: JSON.stringify({tool: "time", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
   "Web Search": JSON.stringify({tool: "web_search", arguments: {query: "OpenAgent web search", count: 3, language: "en", country: "us"}}, null, 2),
@@ -64,6 +76,7 @@ const DEFAULT_TOOL_CONTENT = {
   "Web Fetch": JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
   "Web Browser": JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
   "GUI": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
+  "Video Download": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
 };
 
 function isValidToolTestJson(content) {
@@ -75,16 +88,13 @@ function isValidToolTestJson(content) {
   }
 }
 
-function buildDefaultToolTestJson(provider) {
-  if (provider.type === "Office") {
-    const subType = provider.subType || "All";
+function buildDefaultToolTestJson(tool) {
+  if (tool.type === "Office") {
+    const subType = tool.subType || "All";
     return OFFICE_TOOL_CONTENT[subType] || OFFICE_TOOL_CONTENT["All"];
   }
-  if (provider.type === "GUI") {
-    return UIA_TOOL_CONTENT["win_open_application"];
-  }
-  if (DEFAULT_TOOL_CONTENT[provider.type]) {
-    return DEFAULT_TOOL_CONTENT[provider.type];
+  if (DEFAULT_TOOL_CONTENT[tool.type]) {
+    return DEFAULT_TOOL_CONTENT[tool.type];
   }
   return JSON.stringify({tool: "", arguments: {}}, null, 2);
 }
@@ -97,48 +107,41 @@ class TestToolWidget extends React.Component {
       testResult: "",
       modelProviders: [],
       modelProvidersLoading: false,
-      // Track the last subType we synced so we can detect in-place mutations.
-      // ProviderEditPage mutates the provider object reference rather than
-      // replacing it, so provider !== prevProps.provider is always false.
-      lastSyncedType: props.provider ? (props.provider.type || null) : null,
-      lastSyncedSubType: props.provider ? (props.provider.subType || null) : null,
-      // GUI tool picker
+      lastSyncedType: props.tool ? (props.tool.type || null) : null,
+      lastSyncedSubType: props.tool ? (props.tool.subType || null) : null,
       selectedGuiTool: "win_open_application",
+      selectedVideoTool: "video_info",
     };
   }
 
   componentDidMount() {
-    this.syncFromProvider(this.props.provider);
-    if (this.props.provider && this.props.provider.category === "Tool") {
-      this.loadModelProviders();
-    }
+    this.syncFromTool(this.props.tool);
+    this.loadModelProviders();
   }
 
   componentDidUpdate() {
-    const {provider} = this.props;
-    if (!provider || provider.category !== "Tool") {
+    const {tool} = this.props;
+    if (!tool) {
       return;
     }
 
-    // Detect type change and reset example content.
-    const currentType = provider.type || null;
+    const currentType = tool.type || null;
     if (currentType !== this.state.lastSyncedType) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({lastSyncedType: currentType, lastSyncedSubType: provider.subType || null, testResult: ""});
-      if (this.props.onUpdateProvider) {
-        this.props.onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+      this.setState({lastSyncedType: currentType, lastSyncedSubType: tool.subType || null, testResult: ""});
+      if (this.props.onUpdateTool) {
+        this.props.onUpdateTool("testContent", buildDefaultToolTestJson(tool));
       }
       return;
     }
 
-    // Detect Office subType change via our own tracked state.
-    if (provider.type === "Office") {
-      const currentSubType = provider.subType || null;
+    if (tool.type === "Office") {
+      const currentSubType = tool.subType || null;
       if (currentSubType !== this.state.lastSyncedSubType) {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({lastSyncedSubType: currentSubType});
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+        if (this.props.onUpdateTool) {
+          this.props.onUpdateTool("testContent", buildDefaultToolTestJson(tool));
         }
         return;
       }
@@ -161,30 +164,29 @@ class TestToolWidget extends React.Component {
       });
   }
 
-  syncFromProvider(provider, prevProvider) {
-    const {onUpdateProvider} = this.props;
-    if (!provider || provider.category !== "Tool") {
+  syncFromTool(tool) {
+    const {onUpdateTool} = this.props;
+    if (!tool) {
       return;
     }
-    const needsDefault = !provider.testContent ||
-      provider.testContent.trim() === "" ||
-      !isValidToolTestJson(provider.testContent);
-    if (needsDefault && onUpdateProvider) {
-      onUpdateProvider("testContent", buildDefaultToolTestJson(provider));
+    const needsDefault = !tool.testContent ||
+      tool.testContent.trim() === "" ||
+      !isValidToolTestJson(tool.testContent);
+    if (needsDefault && onUpdateTool) {
+      onUpdateTool("testContent", buildDefaultToolTestJson(tool));
     }
-    const prevSummary = prevProvider ? prevProvider.resultSummary : null;
-    if (provider.resultSummary && provider.resultSummary !== prevSummary) {
-      this.setState({testResult: provider.resultSummary});
+    if (tool.resultSummary) {
+      this.setState({testResult: tool.resultSummary});
     }
-    if (provider.type === "GUI" && this.state.selectedGuiTool.startsWith("gui_")) {
+    if (tool.type === "GUI" && this.state.selectedGuiTool.startsWith("gui_")) {
       this.setState({selectedGuiTool: "win_open_application"});
     }
   }
 
-  async sendTestTool(provider, originalProvider) {
+  async sendTestTool(tool, originalTool) {
     let parsed;
     try {
-      parsed = JSON.parse(provider.testContent);
+      parsed = JSON.parse(tool.testContent);
     } catch (e) {
       Setting.showMessage("error", `${i18next.t("provider:Invalid tool test JSON")}: ${e.message}`);
       return;
@@ -194,11 +196,10 @@ class TestToolWidget extends React.Component {
       return;
     }
 
-    await checkProvider(provider, originalProvider);
     this.setState({testButtonLoading: true, testResult: ""});
 
     try {
-      const res = await ProviderBackend.testToolProvider(provider);
+      const res = await ToolBackend.testTool(tool);
       if (res.status === "ok") {
         let out;
         if (typeof res.data === "string") {
@@ -212,11 +213,10 @@ class TestToolWidget extends React.Component {
         }
         this.setState({testResult: out});
         Setting.showMessage("success", i18next.t("general:Success"));
-        if (this.props.onUpdateProvider) {
-          this.props.onUpdateProvider("resultSummary", out);
-          this.props.onUpdateProvider("errorText", "");
+        if (this.props.onUpdateTool) {
+          this.props.onUpdateTool("resultSummary", out);
         }
-        await ProviderBackend.updateProvider(provider.owner, provider.name, {...provider, resultSummary: out, errorText: ""});
+        await ToolBackend.updateTool(tool.owner, tool.name, {...tool, resultSummary: out});
       } else {
         Setting.showMessage("error", res.msg || i18next.t("general:Failed to save"));
       }
@@ -228,20 +228,17 @@ class TestToolWidget extends React.Component {
   }
 
   render() {
-    const {provider, originalProvider, onUpdateProvider, account} = this.props;
+    const {tool, originalTool, onUpdateTool, account} = this.props;
     const {modelProviders} = this.state;
-    const selectedModelProvider = provider.modelProvider || "";
+    const selectedModelProvider = tool.modelProvider || "";
 
-    const guiToolOptions = UIA_TOOL_OPTIONS;
-    const guiToolContent = UIA_TOOL_CONTENT;
-
-    if (!provider || provider.category !== "Tool") {
+    if (!tool) {
       return null;
     }
 
     return (
       <React.Fragment>
-        {provider.type === "GUI" && (
+        {tool.type === "GUI" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
               {Setting.getLabel(i18next.t("provider:GUI tool"), i18next.t("provider:GUI tool - Tooltip"))} :
@@ -252,36 +249,57 @@ class TestToolWidget extends React.Component {
                 value={this.state.selectedGuiTool}
                 onChange={(value) => {
                   this.setState({selectedGuiTool: value});
-                  onUpdateProvider("testContent", guiToolContent[value]);
+                  onUpdateTool("testContent", GUI_TOOL_CONTENT[value]);
                 }}
               >
-                {guiToolOptions.map((opt) => (
+                {GUI_TOOL_OPTIONS.map((opt) => (
                   <Option key={opt.value} value={opt.value}>{opt.label}</Option>
                 ))}
               </Select>
             </Col>
           </Row>
         )}
-        <Row style={{marginTop: "20px"}} >
+        {tool.type === "Video Download" && (
+          <Row style={{marginTop: "20px"}}>
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("provider:Video download tool"), i18next.t("provider:Video download tool - Tooltip"))} :
+            </Col>
+            <Col span={10}>
+              <Select
+                style={{width: "100%"}}
+                value={this.state.selectedVideoTool}
+                onChange={(value) => {
+                  this.setState({selectedVideoTool: value});
+                  onUpdateTool("testContent", VIDEO_DOWNLOAD_TOOL_CONTENT[value]);
+                }}
+              >
+                {VIDEO_DOWNLOAD_TOOL_OPTIONS.map((opt) => (
+                  <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+        )}
+        <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("provider:Provider test"), i18next.t("provider:Tool test JSON - Tooltip"))} :
           </Col>
-          <Col span={10} >
+          <Col span={10}>
             <Editor
-              value={provider.testContent}
+              value={tool.testContent}
               lang="json"
               height="150px"
               dark
-              onChange={value => {onUpdateProvider("testContent", value);}}
+              onChange={value => {onUpdateTool("testContent", value);}}
             />
           </Col>
-          <Col span={6} >
+          <Col span={6}>
             <Button
               style={{marginLeft: "10px", marginBottom: "5px"}}
               type="primary"
               loading={this.state.testButtonLoading}
-              disabled={!provider.testContent || provider.testContent.trim() === ""}
-              onClick={() => this.sendTestTool(provider, originalProvider)}
+              disabled={!tool.testContent || tool.testContent.trim() === ""}
+              onClick={() => this.sendTestTool(tool, originalTool)}
             >
               {i18next.t("provider:Invoke tool")}
             </Button>
@@ -311,7 +329,7 @@ class TestToolWidget extends React.Component {
                   style={{width: "100%"}}
                   placeholder={i18next.t("provider:Select model provider")}
                   value={selectedModelProvider || undefined}
-                  onChange={(value) => onUpdateProvider("modelProvider", value)}
+                  onChange={(value) => onUpdateTool("modelProvider", value)}
                   showSearch
                   filterOption={(input, option) =>
                     option.children[1].toLowerCase().includes(input.toLowerCase())
@@ -330,12 +348,12 @@ class TestToolWidget extends React.Component {
             </Row>
             {selectedModelProvider ? (
               <ChatWidget
-                key={`${provider.name}-${selectedModelProvider}`}
-                chatName={`chat_tool_${provider.name}`}
-                displayName={`${provider.displayName || provider.name} - Chat Test`}
+                key={`${tool.name}-${selectedModelProvider}`}
+                chatName={`chat_tool_${tool.name}`}
+                displayName={`${tool.displayName || tool.name} - Chat Test`}
                 category="ToolTest"
                 modelProvider={selectedModelProvider}
-                toolProvider={provider.name}
+                toolProvider={tool.name}
                 account={account}
                 height="600px"
                 showHeader={true}

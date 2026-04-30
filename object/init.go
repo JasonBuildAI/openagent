@@ -26,6 +26,8 @@ import (
 func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
+	initBuiltInTools()
+	initBuiltInSite()
 	InitUsers()
 }
 
@@ -71,7 +73,6 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		ExampleQuestions:     []ExampleQuestion{},
 		KnowledgeCount:       5,
 		SuggestionCount:      3,
-		ThemeColor:           "#5734d3",
 		ChildStores:          []string{},
 		ChildModelProviders:  []string{},
 		IsDefault:            true,
@@ -205,4 +206,137 @@ func initBuiltInProviders() (string, string, string, string) {
 	sttProviderName := "Browser Built-In"
 
 	return modelProvider.Name, embeddingProvider.Name, ttsProviderName, sttProviderName
+}
+
+func initBuiltInTools() {
+	builtInTools := []*Tool{
+		{
+			Owner:       "admin",
+			Name:        "tool-time",
+			DisplayName: "Time",
+			Type:        "Time",
+			SubType:     "Default",
+			TestContent: `{"tool":"time","arguments":{"operation":"current"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-search",
+			DisplayName: "Web Search",
+			Type:        "Web Search",
+			SubType:     "DuckDuckGo",
+			TestContent: `{"tool":"web_search","arguments":{"query":"hello world"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-shell",
+			DisplayName: "Shell",
+			Type:        "Shell",
+			SubType:     "Default",
+			TestContent: `{"tool":"shell","arguments":{"command":"echo hello"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-office",
+			DisplayName: "Office",
+			Type:        "Office",
+			SubType:     "Default",
+			TestContent: `{"tool":"word_read","arguments":{"path":"test.docx"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-fetch",
+			DisplayName: "Web Fetch",
+			Type:        "Web Fetch",
+			SubType:     "Default",
+			TestContent: `{"tool":"web_fetch","arguments":{"url":"https://example.com"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-web-browser",
+			DisplayName: "Web Browser",
+			Type:        "Web Browser",
+			SubType:     "Default",
+			TestContent: `{"tool":"web_browser","arguments":{"url":"https://example.com"}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-gui",
+			DisplayName: "GUI",
+			Type:        "GUI",
+			SubType:     "UIA",
+			TestContent: `{"tool":"win_open_application","arguments":{"target":"calc","method":"auto","wait_seconds":2}}`,
+			State:       "Active",
+		},
+		{
+			Owner:       "admin",
+			Name:        "tool-video-download",
+			DisplayName: "Video Download",
+			Type:        "Video Download",
+			SubType:     "Default",
+			TestContent: `{"tool":"video_info","arguments":{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}`,
+			State:       "Active",
+		},
+	}
+
+	for _, t := range builtInTools {
+		existing, err := getTool(t.Owner, t.Name)
+		if err != nil {
+			panic(err)
+		}
+		if existing != nil {
+			continue
+		}
+		t.CreatedTime = util.GetCurrentTime()
+		_, err = AddTool(t)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func initBuiltInSite() {
+	sites, err := GetGlobalSites()
+	if err != nil {
+		panic(err)
+	}
+
+	if len(sites) > 0 {
+		return
+	}
+
+	// Navbar leaves enabled by default: all groups except Cloud (/cloud/*) and Multimedia (/multimedia/*).
+	// Keys must match ManagementPage.getMenuItems admin-branch child keys (filterMenuItems).
+	builtInNavItems := []string{
+		"/chat",
+		"/stores", "/chats", "/messages",
+		"/files", "/vectors", "/resources",
+		"/providers", "/tools",
+		"/records", "/sessions",
+		"/users", "/casdoor-resources", "/permissions",
+		"/sites", "/usages", "/activities", "/sysinfo", "/swagger",
+	}
+
+	site := &Site{
+		Owner:       "admin",
+		Name:        "site-built-in",
+		CreatedTime: util.GetCurrentTime(),
+		DisplayName: "Built-in Site",
+		ThemeColor:  "#262626",
+		HtmlTitle:   "",
+		FaviconUrl:  "https://cdn.casibase.com/img/casibase.png",
+		LogoUrl:     "https://cdn.casibase.org/img/casibase-logo_1200x256.png",
+		FooterHtml:  "",
+		NavItems:    builtInNavItems,
+	}
+
+	_, err = AddSite(site)
+	if err != nil {
+		panic(err)
+	}
 }
