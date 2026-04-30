@@ -2819,7 +2819,7 @@ export function getFormTypeItems(formType) {
       {name: "textToSpeechProvider", label: "store:Text-to-Speech provider", visible: true, width: "300"},
       {name: "speechToTextProvider", label: "store:Speech-to-Text provider", visible: true, width: "200"},
       {name: "agentProvider", label: "store:Agent provider", visible: true, width: "250"},
-      {name: "tools", label: "store:Tools", visible: true, width: "280"},
+      {name: "tools", label: "provider:Tools", visible: true, width: "280"},
       {name: "memoryLimit", label: "store:Memory limit", visible: true, width: "120"},
       {name: "state", label: "general:State", visible: true, width: "90"},
     ];

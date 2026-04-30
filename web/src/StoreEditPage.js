@@ -545,7 +545,7 @@ class StoreEditPage extends React.Component {
             </Row>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("store:Tools"), i18next.t("store:Tools - Tooltip"))} :
+                {Setting.getLabel(i18next.t("general:Tools"), i18next.t("general:Tools - Tooltip"))} :
               </Col>
               <Col span={22} >
                 <Select

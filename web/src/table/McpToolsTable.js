@@ -62,7 +62,7 @@ class McpToolsTable extends React.Component {
         },
       },
       {
-        title: i18next.t("provider:Tools"),
+        title: i18next.t("general:Tools"),
         dataIndex: "tools",
         key: "tools",
         width: "800px",

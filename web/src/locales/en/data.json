@@ -454,6 +454,8 @@
     "Title": "Title",
     "Title - Tooltip": "Subtitle for additional context (optional)",
     "Tokens": "Tokens",
+    "Tools": "Tools",
+    "Tools - Tooltip": "Tools - Tooltip",
     "Total": "Total",
     "Type": "Type",
     "Type - Tooltip": "Logical type or category code for this field (provider-specific).",
@@ -690,13 +692,12 @@
     "Tool result": "Tool result",
     "Tool test JSON - Tooltip": "JSON for one tool invocation: {\"tool\":\"toolName\", \"arguments\":{...}}. The tool field is required.",
     "Tool test JSON must include tool": "Tool test JSON must include tool",
-    "Tools": "Tools",
     "Top K": "Top K",
     "Top K - Tooltip": "Number of candidate tokens",
     "Top P": "Top P",
     "Top P - Tooltip": "Probability sampling threshold",
-    "UFO server URL": "UFO server URL",
-    "UFO server URL - Tooltip": "UFO server URL - Tooltip",
+    "Video download tool": "Video download tool",
+    "Video download tool - Tooltip": "Video download tool - Tooltip",
     "Webhook": "Webhook",
     "Webhook - Tooltip": "HTTPS URL that receives asynchronous callbacks or events for this integration.",
     "Webhook set successfully": "Webhook set successfully"
@@ -710,10 +711,6 @@
     "View Record": "View Record"
   },
   "resource": {
-    "Category": "Category",
-    "Copy Link": "Copy Link",
-    "File name": "File name",
-    "File size": "File size",
     "Format": "Format",
     "Upload a file...": "Upload a file..."
   },
@@ -814,7 +811,6 @@
     "Hide chat": "Hide chat",
     "Hide thinking": "Hide thinking",
     "Hide thinking - Tooltip": "Hide AI reasoning process from display",
-    "Icon URL (optional)": "Icon URL (optional)",
     "Image provider": "Image provider",
     "Image provider - Tooltip": "Image storage service provider for media files",
     "Is default": "Is default",
@@ -870,8 +866,6 @@
     "Text-to-Speech provider - Tooltip": "Text-to-Speech service provider",
     "Theme color": "Theme color",
     "Theme color - Tooltip": "Primary color for UI theme",
-    "Tools": "Tools",
-    "Tools - Tooltip": "Tools (MCP, Office, shell, etc.) available in this store.",
     "Upload file": "Upload file",
     "Upload folder": "Upload folder",
     "Vector count": "Vector count",
@@ -973,6 +967,9 @@
   "theme": {
     "Compact": "Compact",
     "Dark": "Dark"
+  },
+  "tool": {
+    "Edit Tool": "Edit Tool"
   },
   "usage": {
     "Apr": "Apr",

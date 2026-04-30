@@ -113,7 +113,7 @@ class ResourceListPage extends BaseListPage {
         ...this.getColumnSearchProps("user"),
       },
       {
-        title: i18next.t("resource:Category"),
+        title: i18next.t("general:Category"),
         dataIndex: "category",
         key: "category",
         width: "100px",
@@ -122,7 +122,7 @@ class ResourceListPage extends BaseListPage {
         render: (text) => <Tag color={getCategoryColor(text)}>{text}</Tag>,
       },
       {
-        title: i18next.t("resource:File name"),
+        title: i18next.t("store:File name"),
         dataIndex: "fileName",
         key: "fileName",
         sorter: true,
@@ -145,7 +145,7 @@ class ResourceListPage extends BaseListPage {
         ...this.getColumnSearchProps("fileFormat"),
       },
       {
-        title: i18next.t("resource:File size"),
+        title: i18next.t("store:File size"),
         dataIndex: "fileSize",
         key: "fileSize",
         width: "100px",
@@ -189,7 +189,7 @@ class ResourceListPage extends BaseListPage {
               Setting.showMessage("success", i18next.t("general:Copied to clipboard successfully"));
             }}
           >
-            {i18next.t("resource:Copy Link")}
+            {i18next.t("general:Copy Link")}
           </Button>
         ),
       },

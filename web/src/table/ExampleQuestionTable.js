@@ -93,7 +93,7 @@ class ExampleQuestionTable extends React.Component {
           <Input
             value={text}
             onChange={e => this.updateField(this.props.table, index, "image", e.target.value)}
-            placeholder={i18next.t("store:Icon URL (optional)")}
+            placeholder={i18next.t("general:Icon URL (optional)")}
           />
         ),
       },

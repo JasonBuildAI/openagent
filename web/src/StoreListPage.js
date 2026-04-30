@@ -454,7 +454,7 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("store:Tools"),
+        title: i18next.t("general:Tools"),
         dataIndex: "tools",
         key: "tools",
         width: "280px",
