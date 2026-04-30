@@ -32,6 +32,7 @@ import {
   UnorderedListOutlined
 } from "@ant-design/icons";
 import i18next from "i18next";
+import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import * as VectorBackend from "./backend/VectorBackend";
@@ -173,7 +174,7 @@ class FileViewPage extends React.Component {
       letterSpacing: "0.5px",
     };
     const valueStyle = {
-      color: "#262626",
+      color: ThemeDefault.colorPrimary,
       fontSize: "14px",
       fontWeight: 600,
       wordBreak: "break-all",
@@ -198,7 +199,7 @@ class FileViewPage extends React.Component {
           <Title level={5} style={{
             ...labelTitleStyle,
             fontSize: "14px",
-            color: "#262626",
+            color: ThemeDefault.colorPrimary,
             marginBottom: "16px",
           }}>
             DOCUMENTATION INFO
@@ -217,7 +218,7 @@ class FileViewPage extends React.Component {
           <Title level={5} style={{
             ...labelTitleStyle,
             fontSize: "14px",
-            color: "#262626",
+            color: ThemeDefault.colorPrimary,
             marginBottom: "16px",
           }}>
             TECHNICAL SPECS

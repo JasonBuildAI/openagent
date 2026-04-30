@@ -119,6 +119,11 @@ func GetConfigString(key string) string {
 	return res
 }
 
+// GetDefaultColorPrimary returns app.conf `defaultColorPrimary` (hex), the default Ant Design primary color.
+func GetDefaultColorPrimary() string {
+	return GetConfigString("defaultColorPrimary")
+}
+
 func GetConfigBool(key string) bool {
 	value := GetConfigString(key)
 	if value == "true" {
@@ -218,7 +223,7 @@ func GetWebConfig() *WebConfig {
 	config.DisablePreviewMode = GetConfigBool("disablePreviewMode")
 
 	config.ThemeDefault.ThemeType = GetConfigString("defaultThemeType")
-	config.ThemeDefault.ColorPrimary = GetConfigString("defaultColorPrimary")
+	config.ThemeDefault.ColorPrimary = GetDefaultColorPrimary()
 	config.ThemeDefault.BorderRadius = GetConfigInt("defaultBorderRadius")
 	config.ThemeDefault.IsCompact = GetConfigBool("defaultIsCompact")
 

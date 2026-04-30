@@ -389,7 +389,7 @@ func initBuiltInSite() {
 		Name:        "site-built-in",
 		CreatedTime: util.GetCurrentTime(),
 		DisplayName: "Built-in Site",
-		ThemeColor:  "#262626",
+		ThemeColor:  conf.GetDefaultColorPrimary(),
 		HtmlTitle:   "",
 		FaviconUrl:  "https://cdn.casibase.com/img/casibase.png",
 		LogoUrl:     "https://cdn.casibase.org/img/casibase-logo_1200x256.png",

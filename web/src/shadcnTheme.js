@@ -15,14 +15,27 @@
 // Shadcn-style Ant Design theme configuration.
 // Adapted from the "shadcn" preset on https://ant.design/
 
+import {DefaultColorPrimary} from "./Conf";
+
+function hexToRgbComma(hex) {
+  const h = hex.replace(/^#/, "");
+  const n = parseInt(h, 16);
+  if (h.length !== 6 || Number.isNaN(n)) {
+    return "38, 38, 38";
+  }
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+}
+
+const primaryRgb = hexToRgbComma(DefaultColorPrimary);
+
 export const shadcnThemeToken = {
   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  colorPrimary: "#262626",
+  colorPrimary: DefaultColorPrimary,
   colorSuccess: "#22c55e",
   colorWarning: "#f97316",
   colorError: "#ef4444",
-  colorInfo: "#262626",
-  colorTextBase: "#262626",
+  colorInfo: DefaultColorPrimary,
+  colorTextBase: DefaultColorPrimary,
   colorBgBase: "#ffffff",
   colorPrimaryBg: "#f5f5f5",
   colorPrimaryBgHover: "#e5e5e5",
@@ -30,7 +43,7 @@ export const shadcnThemeToken = {
   colorPrimaryBorderHover: "#a3a3a3",
   colorPrimaryHover: "#404040",
   colorPrimaryActive: "#171717",
-  colorPrimaryText: "#262626",
+  colorPrimaryText: DefaultColorPrimary,
   colorPrimaryTextHover: "#404040",
   colorPrimaryTextActive: "#171717",
   colorSuccessBg: "#f0fdf4",
@@ -66,13 +79,13 @@ export const shadcnThemeToken = {
   colorInfoBorderHover: "#a3a3a3",
   colorInfoHover: "#404040",
   colorInfoActive: "#171717",
-  colorInfoText: "#262626",
+  colorInfoText: DefaultColorPrimary,
   colorInfoTextHover: "#404040",
   colorInfoTextActive: "#171717",
-  colorLink: "#262626",
+  colorLink: DefaultColorPrimary,
   colorLinkHover: "#404040",
   colorLinkActive: "#171717",
-  colorText: "#262626",
+  colorText: DefaultColorPrimary,
   colorTextSecondary: "#525252",
   colorTextTertiary: "#737373",
   colorTextQuaternary: "#a3a3a3",
@@ -80,8 +93,8 @@ export const shadcnThemeToken = {
   colorBgContainer: "#ffffff",
   colorBgElevated: "#ffffff",
   colorBgLayout: "#fafafa",
-  colorBgSpotlight: "rgba(38, 38, 38, 0.85)",
-  colorBgMask: "rgba(38, 38, 38, 0.45)",
+  colorBgSpotlight: `rgba(${primaryRgb}, 0.85)`,
+  colorBgMask: `rgba(${primaryRgb}, 0.45)`,
   colorBorder: "#e5e5e5",
   colorBorderSecondary: "#f5f5f5",
   borderRadius: 10,
