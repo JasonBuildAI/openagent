@@ -241,7 +241,7 @@ class TestToolWidget extends React.Component {
         {tool.type === "gui" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("provider:GUI tool"), i18next.t("provider:GUI tool - Tooltip"))} :
+              {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
             </Col>
             <Col span={10}>
               <Select
@@ -262,7 +262,7 @@ class TestToolWidget extends React.Component {
         {tool.type === "video_download" && (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-              {Setting.getLabel(i18next.t("provider:Video download tool"), i18next.t("provider:Video download tool - Tooltip"))} :
+              {Setting.getLabel(i18next.t("provider:Tool function"), i18next.t("provider:Tool function - Tooltip"))} :
             </Col>
             <Col span={10}>
               <Select
