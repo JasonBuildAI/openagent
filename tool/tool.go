@@ -34,6 +34,7 @@ type Config struct {
 	ClientId     string
 	ClientSecret string
 	EnableProxy  bool
+	Mode         string
 }
 
 // New instantiates a tool implementation from its type.

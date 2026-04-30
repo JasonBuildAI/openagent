@@ -217,6 +217,21 @@ class ToolEditPage extends React.Component {
             </Col>
           </Row>
         ) : null}
+        {this.state.tool.type === "browser_use" ? (
+          <Row style={{marginTop: "20px"}}>
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("tool:Chrome mode"), i18next.t("tool:Chrome mode - Tooltip"))} :
+            </Col>
+            <Col span={22}>
+              <Select virtual={false} style={{width: "100%"}} value={this.state.tool.mode || "User Chrome"}
+                onChange={value => this.updateToolField("mode", value)}
+              >
+                <Option value="User Chrome">{i18next.t("tool:User Chrome")}</Option>
+                <Option value="Chrome for Testing">{i18next.t("tool:Chrome for Testing")}</Option>
+              </Select>
+            </Col>
+          </Row>
+        ) : null}
         <TestToolWidget
           tool={this.state.tool}
           originalTool={this.state.originalTool}

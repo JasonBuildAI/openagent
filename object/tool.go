@@ -42,6 +42,7 @@ type Tool struct {
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
 	EnableProxy  bool   `json:"enableProxy"`
 
+	Mode        string `xorm:"varchar(100)" json:"mode"`
 	TestContent    string   `xorm:"varchar(500)" json:"testContent"`
 	ModelProvider  string   `xorm:"varchar(100)" json:"modelProvider"`
 	ResultSummary  string   `xorm:"varchar(500)" json:"resultSummary"`
@@ -189,6 +190,7 @@ func getToolConfig(t *Tool) tool.Config {
 		ClientId:     t.ClientId,
 		ClientSecret: t.ClientSecret,
 		EnableProxy:  t.EnableProxy,
+		Mode:         t.Mode,
 	}
 }
 

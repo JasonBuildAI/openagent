@@ -53,15 +53,21 @@ type BrowserUseTool struct {
 	sessionKey  string
 	userDataDir string
 	enableProxy bool
+	mode        string
 }
 
 func NewBrowserUseTool(config Config) (*BrowserUseTool, error) {
 	userDataDir := defaultBrowserUseDataDir()
-	sessionKey := strings.Join([]string{userDataDir, strconv.FormatBool(config.EnableProxy)}, "|")
+	mode := config.Mode
+	if mode == "" {
+		mode = "User Chrome"
+	}
+	sessionKey := strings.Join([]string{userDataDir, strconv.FormatBool(config.EnableProxy), mode}, "|")
 	return &BrowserUseTool{
 		sessionKey:  sessionKey,
 		userDataDir: userDataDir,
 		enableProxy: config.EnableProxy,
+		mode:        mode,
 	}, nil
 }
 
@@ -89,6 +95,7 @@ type browserUseSession struct {
 	executablePath string
 	userDataDir    string
 	enableProxy    bool
+	mode           string
 	allocCancel    context.CancelFunc
 	browserCancel  context.CancelFunc
 	targetCancel   context.CancelFunc
@@ -111,6 +118,7 @@ func (m *browserUseManager) get(provider *BrowserUseTool) *browserUseSession {
 	session = &browserUseSession{
 		userDataDir: provider.userDataDir,
 		enableProxy: provider.enableProxy,
+		mode:        provider.mode,
 	}
 	m.sessions[provider.sessionKey] = session
 	return session
@@ -180,10 +188,12 @@ func (s *browserUseSession) ensureLocked() error {
 	if err = os.MkdirAll(s.userDataDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create browser profile directory %s: %w", s.userDataDir, err)
 	}
-	if s.executablePath == "" || !fileExists(s.executablePath) {
-		s.executablePath, err = ensureBrowserUseChromeForTesting()
-		if err != nil {
-			return err
+	if s.mode == "Chrome for Testing" {
+		if s.executablePath == "" || !fileExists(s.executablePath) {
+			s.executablePath, err = ensureBrowserUseChromeForTesting()
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -200,8 +210,10 @@ func (s *browserUseSession) ensureLocked() error {
 		chromedp.NoDefaultBrowserCheck,
 		chromedp.UserDataDir(s.userDataDir),
 		chromedp.WindowSize(1280, 900),
-		chromedp.ExecPath(s.executablePath),
 	)
+	if s.mode == "Chrome for Testing" {
+		opts = append(opts, chromedp.ExecPath(s.executablePath))
+	}
 	if s.enableProxy {
 		if socks5Addr := proxy.GetSocks5ProxyAddress(); socks5Addr != "" {
 			opts = append(opts, chromedp.Flag("proxy-server", "socks5://"+socks5Addr))
