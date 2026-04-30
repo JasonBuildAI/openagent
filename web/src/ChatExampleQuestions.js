@@ -191,14 +191,16 @@ class ChatExampleQuestions extends React.Component {
           maxWidth: isMobile ? "100%" : "760px",
           pointerEvents: "auto",
         }}>
-          <div style={{
-            fontSize: "13px",
-            color: "#9ca3af",
-            textAlign: "center",
-            marginBottom: "24px",
-          }}>
-            {i18next.t("store:Click a question to get started")}
-          </div>
+          {exampleQuestions.length > 0 && (
+            <div style={{
+              fontSize: "13px",
+              color: "#9ca3af",
+              textAlign: "center",
+              marginBottom: "24px",
+            }}>
+              {i18next.t("store:Click a question to get started")}
+            </div>
+          )}
 
           <div style={{
             display: "grid",
