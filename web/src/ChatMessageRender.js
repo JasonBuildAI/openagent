@@ -33,6 +33,8 @@ marked.setOptions({
 export function renderMarkdown(text) {
   const rawHtml = marked(text);
   let cleanHtml = DOMPurify.sanitize(rawHtml);
+  /* open all links in a new tab */
+  cleanHtml = cleanHtml.replace(/<a /g, "<a target=\"_blank\" rel=\"noreferrer noopener\" ");
   /* replace <p></p> with <div></div>, reduce paragraph spacing. */
   cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>");
   /* h2 is larger than h1, h2 is the largest, so replace h1 with h2, and set margin as 20px. */
