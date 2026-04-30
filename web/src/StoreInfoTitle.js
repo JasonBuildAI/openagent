@@ -277,108 +277,116 @@ const StoreInfoTitle = (props) => {
     return null;
   }
 
+  const labelStyle = {
+    fontSize: "12px",
+    color: "#9ca3af",
+    marginRight: "8px",
+    fontWeight: 500,
+    letterSpacing: "0.3px",
+  };
+
   return (
     <div style={{
-      padding: "8px 16px",
+      padding: "6px 16px",
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
+      gap: "10px",
       minHeight: "48px",
+      borderBottom: "1px solid #f0f0f0",
+      backgroundColor: "#fafafa",
     }}>
-      <div style={{display: "flex", alignItems: "center"}}>
-        {storeInfo && (
-          <div style={{marginRight: "20px", display: "flex", alignItems: "center"}}>
-            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
-            <Select value={selectedStore?.name || storeInfo.name} style={{width: isMobile ? "35vw" : "12rem"}} onChange={handleStoreChange} disabled={isUpdating || !canChangeStores} popupMatchSelectWidth={false} optionLabelProp="children">
-              {storeOptions.map(store => (
-                <Select.Option key={store.name} value={store.name}>
-                  <div style={{display: "flex", alignItems: "center"}}>
-                    <img
-                      src={Setting.getStoreIconUrl(store)}
-                      alt=""
-                      style={{width: 20, height: 20, marginRight: 8, borderRadius: 4, objectFit: "cover", flexShrink: 0}}
-                    />
-                    <span>{store.displayName || store.name}</span>
-                  </div>
-                </Select.Option>
-              ))}
-            </Select>
-          </div>)}
-
-        {modelProviders.length > 0 && typeof onGenerationModeChange === "function" && (
-          <div style={{marginRight: "20px", display: "flex", alignItems: "center"}}>
-            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("chat:Mode")}:</span>}
-            <Select
-              value={generationMode}
-              style={{width: isMobile ? "34vw" : "11rem"}}
-              onChange={onGenerationModeChange}
-              disabled={isUpdating}
-            >
-              <Select.Option value="text">{i18next.t("chat:Text generation")}</Select.Option>
-              <Select.Option value="image">{i18next.t("chat:Image generation")}</Select.Option>
-            </Select>
-          </div>
-        )}
-
-        {modelProviders.length > 0 && (
-          <div style={{display: "flex", alignItems: "center"}}>
-            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
-            {filteredModelProviders.length === 0 ? (
-              <span style={{color: "#999"}}>{i18next.t("chat:No models for this mode")}</span>
-            ) : (
-              <Select value={selectedProvider || chat?.modelProvider || storeInfo?.modelProvider || (filteredModelProviders[0]?.name)} style={{width: isMobile ? "35vw" : "15rem"}} onChange={handleProviderChange} disabled={isUpdating} popupMatchSelectWidth={false} optionLabelProp="children" suffixIcon={<div />}>
-                {filteredModelProviders.map(provider => {
-                  const displayName = Setting.getProviderDisplayName(provider);
-                  return (
-                    <Select.Option
-                      key={provider.name}
-                      value={provider.name}
-                    >
-                      <div style={{display: "flex", alignItems: "center"}}>
-                        <img
-                          src={Setting.getProviderLogoURL(provider)}
-                          alt={provider.name}
-                          style={{width: 20, height: 20, marginRight: 8}}
-                        />
-                        <span>{displayName}</span>
-                      </div>
-                    </Select.Option>
-                  );
-                })}
-              </Select>
-            )}
-          </div>)}
-
-        {
-          storeInfo?.showAutoRead && (
-            <div style={{display: "flex", alignItems: "center"}}>
-              <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("store:Auto read")}:</span>
-              <Switch checked={autoRead} onChange={checked => {
-                onUpdateAutoRead(checked);
-              }} />
-            </div>
-          )
-        }
-
-        {showPaneControls && canManagePanes && (
-          <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-            <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("chat:Panes")}: {paneCount}</span>
-            <Button size="small" icon={<PlusOutlined />} onClick={addPane} />
-            <Button size="small" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
-          </div>
-        )}
-      </div>
-
       {storeInfo && (
-        <div>
-          {storeInfo.type && (
-            <span><strong>Type:</strong> {storeInfo.type}</span>
+        <div style={{display: "flex", alignItems: "center"}}>
+          {!isMobile && <span style={labelStyle}>{i18next.t("general:Store")}</span>}
+          <Select
+            className="store-pill-select"
+            value={selectedStore?.name || storeInfo.name}
+            style={{width: isMobile ? "35vw" : "12rem"}}
+            onChange={handleStoreChange}
+            disabled={isUpdating || !canChangeStores}
+            popupMatchSelectWidth={false}
+            optionLabelProp="children"
+          >
+            {storeOptions.map(store => (
+              <Select.Option key={store.name} value={store.name}>
+                <div style={{display: "flex", alignItems: "center"}}>
+                  <img
+                    src={Setting.getStoreIconUrl(store)}
+                    alt=""
+                    style={{width: 18, height: 18, marginRight: 8, borderRadius: 4, objectFit: "cover", flexShrink: 0}}
+                  />
+                  <span>{store.displayName || store.name}</span>
+                </div>
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      )}
+
+      {modelProviders.length > 0 && typeof onGenerationModeChange === "function" && (
+        <div style={{display: "flex", alignItems: "center"}}>
+          {!isMobile && <span style={labelStyle}>{i18next.t("chat:Mode")}</span>}
+          <Select
+            className="store-pill-select"
+            value={generationMode}
+            style={{width: isMobile ? "34vw" : "11rem"}}
+            onChange={onGenerationModeChange}
+            disabled={isUpdating}
+          >
+            <Select.Option value="text">{i18next.t("chat:Text generation")}</Select.Option>
+            <Select.Option value="image">{i18next.t("chat:Image generation")}</Select.Option>
+          </Select>
+        </div>
+      )}
+
+      {modelProviders.length > 0 && (
+        <div style={{display: "flex", alignItems: "center"}}>
+          {!isMobile && <span style={labelStyle}>{i18next.t("general:Model")}</span>}
+          {filteredModelProviders.length === 0 ? (
+            <span style={{fontSize: "13px", color: "#bbb"}}>{i18next.t("chat:No models for this mode")}</span>
+          ) : (
+            <Select
+              className="store-pill-select"
+              value={selectedProvider || chat?.modelProvider || storeInfo?.modelProvider || (filteredModelProviders[0]?.name)}
+              style={{width: isMobile ? "35vw" : "15rem"}}
+              onChange={handleProviderChange}
+              disabled={isUpdating}
+              popupMatchSelectWidth={false}
+              optionLabelProp="children"
+              suffixIcon={<div />}
+            >
+              {filteredModelProviders.map(provider => {
+                const displayName = Setting.getProviderDisplayName(provider);
+                return (
+                  <Select.Option key={provider.name} value={provider.name}>
+                    <div style={{display: "flex", alignItems: "center"}}>
+                      <img
+                        src={Setting.getProviderLogoURL(provider)}
+                        alt={provider.name}
+                        style={{width: 18, height: 18, marginRight: 8}}
+                      />
+                      <span>{displayName}</span>
+                    </div>
+                  </Select.Option>
+                );
+              })}
+            </Select>
           )}
-          {storeInfo.url && (
-            <span style={{marginLeft: "15px"}}>
-              <strong>URL:</strong> {Setting.getShortText(storeInfo.url, 30)}
-            </span>
-          )}
+        </div>
+      )}
+
+      {storeInfo?.showAutoRead && (
+        <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
+          <span style={labelStyle}>{i18next.t("store:Auto read")}</span>
+          <Switch size="small" checked={autoRead} onChange={checked => onUpdateAutoRead(checked)} />
+        </div>
+      )}
+
+      {showPaneControls && canManagePanes && (
+        <div style={{display: "flex", alignItems: "center", gap: "6px"}}>
+          <span style={{...labelStyle, marginRight: 0}}>{i18next.t("chat:Panes")}: {paneCount}</span>
+          <Button size="small" shape="circle" icon={<PlusOutlined />} onClick={addPane} />
+          <Button size="small" shape="circle" icon={<MinusOutlined />} onClick={deletePane} disabled={paneCount <= 1} />
         </div>
       )}
     </div>

@@ -151,6 +151,31 @@ code {
   padding: 0 0 5px 0 !important;
 }
 
+/* StoreInfoTitle pill-shaped dropdowns */
+.store-pill-select .ant-select-selector {
+  border-radius: 20px !important;
+  padding-left: 14px !important;
+}
+
+.store-pill-select .ant-select-selection-item {
+  padding-right: 8px !important;
+}
+
+/* Chat message list gap */
+.chat-message-list .ant-list-item {
+  padding: 0 !important;
+  margin-bottom: 20px !important;
+}
+
+/* Chat input area styling */
+.chat-input-sender .ant-sender {
+  border-radius: 16px !important;
+}
+
+.chat-input-sender .ant-sender-content {
+  border-radius: 16px !important;
+}
+
 .custom-link {
   transition: opacity 0.2s ease, color 0.2s ease;
 }

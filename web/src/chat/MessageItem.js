@@ -342,8 +342,10 @@ const MessageItem = ({
             avatar={<Avatar src={avatarSrc} onError={handleAvatarError} />}
             styles={{
               content: {
-                borderRadius: "16px",
-                padding: "12px 16px",
+                borderRadius: "4px 18px 18px 18px",
+                padding: "11px 16px",
+                backgroundColor: "#f4f6fa",
+                border: "1px solid #eaedf3",
               },
             }}
           />
@@ -442,9 +444,17 @@ const MessageItem = ({
           } : undefined}
           avatar={<Avatar src={avatarSrc} onError={handleAvatarError} />}
           styles={{
-            content: {
-              borderRadius: "16px",
-              padding: "12px 16px",
+            content: isUserMessage ? {
+              borderRadius: "18px 18px 4px 18px",
+              padding: "11px 16px",
+              backgroundColor: themeColor,
+              color: "#fff",
+              minWidth: isEditing ? "300px" : "auto",
+            } : {
+              borderRadius: "4px 18px 18px 18px",
+              padding: "11px 16px",
+              backgroundColor: "#f4f6fa",
+              border: "1px solid #eaedf3",
               minWidth: isEditing ? "300px" : "auto",
             },
           }}
@@ -460,18 +470,20 @@ const MessageItem = ({
           maxWidth: "90%",
           margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
           position: "relative",
+          marginBottom: "4px",
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <div style={{
           textAlign: message.author === "AI" ? "left" : "right",
-          color: "#999",
-          fontSize: "12px",
-          marginBottom: "8px",
-          padding: "0 12px",
+          color: "#c0c4cc",
+          fontSize: "11px",
+          marginBottom: "6px",
+          padding: "0 14px",
+          letterSpacing: "0.2px",
         }}>
-          {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+          {moment(message.createdTime).format("HH:mm")}
         </div>
 
         {renderReasoningBubble()}

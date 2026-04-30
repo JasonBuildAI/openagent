@@ -46,6 +46,7 @@ class MessageList extends React.Component {
       <List
         ref={this.props.innerRef}
         locale={{emptyText: " "}}
+        className="chat-message-list"
         style={{
           flex: 1,
           overflow: previewMode ? "hidden" : "auto",
