@@ -323,6 +323,20 @@ func initBuiltInTools() {
 				"Download a video and tell me its resolution and file size.",
 			},
 		},
+		{
+			Owner:       "admin",
+			Name:        "browser_use",
+			Type:        "browser_use",
+			SubType:     "Default",
+			TestContent: `{"tool":"browser_use_open","arguments":{"url":"https://www.openagentai.org"}}`,
+			State:       "Active",
+			PromptExamples: []string{
+				"Play a Michael Jackson song on YouTube.",
+				"Create a paste with \"Hello from OpenAgent\" and give me the link.",
+				"Start a 45-minute Pomofocus session for my Work task.",
+				"Generate a QR code for https://www.openagentai.org.",
+			},
+		},
 	}
 
 	for _, t := range builtInTools {
