@@ -30,6 +30,7 @@ import (
 
 	"github.com/ThinkInAIXYZ/go-mcp/protocol"
 	"github.com/the-open-agent/openagent/agent/builtin_tool"
+	"github.com/the-open-agent/openagent/proxy"
 )
 
 // VideoDownloadTool is the Tool Type "video_download".
@@ -135,7 +136,10 @@ func downloadYtDlpBinary(downloadURL, executablePath string) error {
 		return fmt.Errorf("failed to create yt-dlp install directory: %w", err)
 	}
 
-	client := &http.Client{Timeout: 5 * time.Minute}
+	client := &http.Client{
+		Transport: proxy.GetHttpClient(downloadURL).Transport,
+		Timeout:   5 * time.Minute,
+	}
 	resp, err := client.Get(downloadURL)
 	if err != nil {
 		return fmt.Errorf("failed to download yt-dlp from %s: %w", downloadURL, err)
