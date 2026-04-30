@@ -19,6 +19,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -54,9 +55,24 @@ func (p *VideoDownloadTool) BuiltinTools() []builtin_tool.BuiltinTool {
 	}
 }
 
+// ytDlpProxyArgs returns --proxy args if a socks5 proxy is configured and reachable.
+func ytDlpProxyArgs() []string {
+	addr := proxy.GetSocks5ProxyAddress()
+	if addr == "" {
+		return nil
+	}
+	conn, err := net.DialTimeout("tcp", addr, 200*time.Millisecond)
+	if err != nil {
+		return nil
+	}
+	conn.Close()
+	return []string{"--proxy", "socks5://" + addr}
+}
+
 // runYtDlp executes yt-dlp with the given arguments and returns stdout/stderr.
 func runYtDlp(ctx context.Context, ytDlpPath string, args []string) (string, string, error) {
-	cmd := exec.CommandContext(ctx, ytDlpPath, args...)
+	allArgs := append(ytDlpProxyArgs(), args...)
+	cmd := exec.CommandContext(ctx, ytDlpPath, allArgs...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
