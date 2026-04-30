@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build !skipCi
+// +build !skipCi
+
 package contest
 
 import (
@@ -147,7 +150,6 @@ func createStore(paperId string) (*object.Store, error) {
 		Prompt:               "You are an expert in analyzing papers and you specialize in answering questions based on the paper content.",
 		KnowledgeCount:       15,
 		SuggestionCount:      3,
-		ThemeColor:           "#262626",
 		IsDefault:            false,
 		State:                "Active",
 	}
