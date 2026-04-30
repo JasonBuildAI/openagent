@@ -27,6 +27,8 @@ func InitDb() {
 	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
 	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
 	initBuiltInTools()
+	ensureBuiltInStoreToolProviders()
+	migrateLegacyGuiTool()
 	initBuiltInSite()
 	InitUsers()
 }
@@ -299,6 +301,64 @@ func initBuiltInTools() {
 			panic(err)
 		}
 	}
+}
+
+func ensureBuiltInStoreToolProviders() {
+	store, err := getStore("admin", "store-built-in")
+	if err != nil {
+		panic(err)
+	}
+	if store == nil {
+		return
+	}
+	if stringSliceContains(store.ToolProviders, "tool-gui") {
+		return
+	}
+
+	next := append([]string{}, store.ToolProviders...)
+	next = append(next, "tool-gui")
+	store.ToolProviders = next
+	_, err = UpdateStore(store.GetId(), store)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func migrateLegacyGuiTool() {
+	guiTool, err := getTool("admin", "tool-gui")
+	if err != nil {
+		panic(err)
+	}
+	if guiTool == nil {
+		return
+	}
+
+	shouldUpdate := false
+	if guiTool.SubType == "" || guiTool.SubType == "Default" {
+		guiTool.SubType = "UIA"
+		shouldUpdate = true
+	}
+	if guiTool.TestContent == "" || guiTool.TestContent == `{"tool":"gui_screenshot","arguments":{}}` {
+		guiTool.TestContent = `{"tool":"win_open_application","arguments":{"target":"calc","method":"auto","wait_seconds":2}}`
+		shouldUpdate = true
+	}
+	if !shouldUpdate {
+		return
+	}
+
+	_, err = UpdateTool(guiTool.GetId(), guiTool)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func stringSliceContains(items []string, target string) bool {
+	for _, item := range items {
+		if item == target {
+			return true
+		}
+	}
+	return false
 }
 
 func initBuiltInSite() {
