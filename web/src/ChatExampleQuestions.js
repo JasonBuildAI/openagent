@@ -13,22 +13,135 @@
 // limitations under the License.
 
 import React from "react";
-import ImageWithFallback from "./ChatExampleQuestionIcon";
-import * as Setting from "./Setting";
+import {
+  BulbOutlined,
+  FireOutlined,
+  GiftOutlined,
+  HeartOutlined,
+  IssuesCloseOutlined,
+  QuestionOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  TrophyOutlined
+} from "@ant-design/icons";
 import {Button} from "antd";
 import i18next from "i18next";
+import * as Setting from "./Setting";
+
+const DEFAULT_ICONS = [
+  {icon: QuestionOutlined, color: "#6366f1", bg: "#eef2ff"},
+  {icon: IssuesCloseOutlined, color: "#3b82f6", bg: "#eff6ff"},
+  {icon: BulbOutlined, color: "#10b981", bg: "#ecfdf5"},
+  {icon: FireOutlined, color: "#f59e0b", bg: "#fffbeb"},
+  {icon: HeartOutlined, color: "#ec4899", bg: "#fdf2f8"},
+  {icon: GiftOutlined, color: "#8b5cf6", bg: "#f5f3ff"},
+  {icon: TrophyOutlined, color: "#f59e0b", bg: "#fffbeb"},
+  {icon: SearchOutlined, color: "#0ea5e9", bg: "#f0f9ff"},
+];
+
+class QuestionCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {hovered: false};
+    const idx = props.index % DEFAULT_ICONS.length;
+    this.iconDef = DEFAULT_ICONS[idx];
+  }
+
+  render() {
+    const {exampleQuestion, onClick} = this.props;
+    const {hovered} = this.state;
+    const {icon: Icon, color, bg} = this.iconDef;
+
+    const hasImage = exampleQuestion.image && exampleQuestion.image.length > 0;
+
+    return (
+      <div
+        onClick={onClick}
+        onMouseEnter={() => this.setState({hovered: true})}
+        onMouseLeave={() => this.setState({hovered: false})}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          gap: "12px",
+          padding: "14px 16px",
+          borderRadius: "12px",
+          border: hovered ? `1.5px solid ${color}` : "1.5px solid #e5e7eb",
+          backgroundColor: hovered ? bg : "#ffffff",
+          cursor: "pointer",
+          transition: "all 0.18s ease",
+          boxShadow: hovered ? `0 4px 16px ${color}22` : "0 1px 4px rgba(0,0,0,0.06)",
+          transform: hovered ? "translateY(-2px)" : "none",
+        }}
+      >
+        <div style={{
+          flexShrink: 0,
+          width: "36px",
+          height: "36px",
+          borderRadius: "8px",
+          backgroundColor: bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: `1px solid ${color}33`,
+        }}>
+          {hasImage ? (
+            <img
+              src={exampleQuestion.image}
+              alt="icon"
+              style={{width: "20px", height: "20px", objectFit: "contain"}}
+              referrerPolicy="no-referrer"
+              onError={(e) => {e.target.style.display = "none";}}
+            />
+          ) : (
+            <Icon style={{fontSize: "16px", color}} />
+          )}
+        </div>
+        <div style={{flex: 1, minWidth: 0}}>
+          {exampleQuestion.title && exampleQuestion.title !== exampleQuestion.text && (
+            <div style={{
+              fontSize: "13px",
+              fontWeight: 600,
+              color: "#374151",
+              marginBottom: "4px",
+              lineHeight: "1.4",
+            }}>
+              {exampleQuestion.title}
+            </div>
+          )}
+          <div style={{
+            fontSize: "13px",
+            color: "#6b7280",
+            lineHeight: "1.5",
+            wordBreak: "break-word",
+          }}>
+            {exampleQuestion.text || exampleQuestion.title}
+          </div>
+        </div>
+        <div style={{
+          flexShrink: 0,
+          color: hovered ? color : "#d1d5db",
+          fontSize: "14px",
+          marginTop: "2px",
+          transition: "color 0.18s ease",
+        }}>
+          ↗
+        </div>
+      </div>
+    );
+  }
+}
 
 class ChatExampleQuestions extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      exampleQuestions: [],
-    };
+    this.state = {exampleQuestions: []};
   }
 
   componentDidMount() {
     this.selectExampleQuestions();
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     return (
       this.state.exampleQuestions !== nextState.exampleQuestions ||
@@ -43,121 +156,91 @@ class ChatExampleQuestions extends React.Component {
   }
 
   selectExampleQuestions = () => {
-    const limit = Setting.isMobile() ? 4 : 8;
-    if (this.props.exampleQuestions.length <= limit) {
-      this.setState({
-        exampleQuestions: this.props.exampleQuestions,
-      });
-    } else if (this.props.exampleQuestions.length > limit) {
-      this.setState({
-        exampleQuestions: this.props.exampleQuestions.sort(() => 0.5 - Math.random()).slice(0, limit),
-      });
+    const limit = Setting.isMobile() ? 4 : 6;
+    const all = this.props.exampleQuestions;
+    if (all.length <= limit) {
+      this.setState({exampleQuestions: all});
+    } else {
+      this.setState({exampleQuestions: [...all].sort(() => 0.5 - Math.random()).slice(0, limit)});
     }
   };
 
-  render = () => {
-    const groupedExampleQuestions = [];
-    for (let i = 0; i < this.state.exampleQuestions.length; i += 4) {
-      groupedExampleQuestions.push(this.state.exampleQuestions.slice(i, i + 4));
-    }
-    const limit = Setting.isMobile() ? 4 : 8;
-    const direction = Setting.isMobile() ? "column" : "row";
-    const fontSize = Setting.isMobile() ? "12px" : "16px";
+  render() {
+    const {exampleQuestions} = this.state;
+    const isMobile = Setting.isMobile();
+    const limit = isMobile ? 4 : 6;
+    const canRefresh = this.props.exampleQuestions.length > limit;
 
     return (
       <div style={{
         position: "absolute",
-        zIndex: "100",
-        height: "80%",
-        width: "80%",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
+        zIndex: 100,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        padding: isMobile ? "16px" : "24px",
+        pointerEvents: "none",
       }}>
-        {
-          groupedExampleQuestions.map((group, index) => (
-            <div key={index} style={{
-              display: "flex",
-              flexDirection: direction,
-              justifyContent: "center",
-              alignItems: "center",
-              margin: "10px",
-            }}>
-              {
-                group.map((exampleQuestion, index) => (
-                  <div key={index} style={{
-                    padding: "10px",
-                    position: "relative",
-                    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-                    backgroundColor: "#ffffff",
-                    width: "150px",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                    margin: "10px",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                  }} onClick={() => {
-                    this.props.sendMessage(exampleQuestion.text, "");
-                  }}
-                  onMouseEnter={
-                    (e) => {
-                      e.currentTarget.style.backgroundColor = "#fafafa";
-                      e.currentTarget.style.transition = "background-color 0.2s";
-                    }
-                  }
-                  onMouseLeave={
-                    (e) => {
-                      e.currentTarget.style.backgroundColor = "#ffffff";
-                      e.currentTarget.style.transition = "background-color 0.2s";
-                    }
-                  }
-                  >
-                    <div style={{
-                      top: "10px",
-                      left: "10px",
-                    }}>
-                      <ImageWithFallback src={exampleQuestion.image} />
-                    </div>
-                    <p
-                      style={{
-                        marginTop: "10px",
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                        WebkitLineClamp: "2",
-                        WebkitBoxOrient: "vertical",
-                        fontSize: fontSize,
-                        lineHeight: "1.5em",
-                        height: "3em",
-                      }}>{exampleQuestion.title}</p>
-                  </div>
-                ))
-              }
-            </div>
-          ))
-        }
-        {
-          this.props.exampleQuestions.length <= limit ? null : (
+        <div style={{
+          width: "100%",
+          maxWidth: isMobile ? "100%" : "760px",
+          pointerEvents: "auto",
+        }}>
+          <div style={{
+            fontSize: "13px",
+            color: "#9ca3af",
+            textAlign: "center",
+            marginBottom: "24px",
+          }}>
+            {i18next.t("store:Click a question to get started")}
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: "10px",
+          }}>
+            {exampleQuestions.map((q, i) => (
+              <QuestionCard
+                key={`${q.text}-${i}`}
+                exampleQuestion={q}
+                index={i}
+                onClick={() => this.props.sendMessage(q.text, "")}
+              />
+            ))}
+          </div>
+
+          {canRefresh && (
             <div style={{
               display: "flex",
-              flexDirection: "row",
               justifyContent: "center",
-              alignItems: "center",
               marginTop: "20px",
-              height: "40px",
-              width: "100%",
             }}>
-              <Button type="primary" onClick={this.selectExampleQuestions}>{i18next.t("store:Refresh")}</Button>
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={this.selectExampleQuestions}
+                style={{
+                  border: "1.5px solid #e5e7eb",
+                  borderRadius: "8px",
+                  color: "#6b7280",
+                  fontSize: "13px",
+                  height: "36px",
+                  padding: "0 16px",
+                }}
+              >
+                {i18next.t("store:Refresh")}
+              </Button>
             </div>
-          )
-        }
+          )}
+        </div>
       </div>
     );
-  };
+  }
 }
 
 export default ChatExampleQuestions;
