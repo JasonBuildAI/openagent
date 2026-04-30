@@ -167,6 +167,16 @@ code {
   margin-bottom: 20px !important;
 }
 
+/* User message bubble: links must be light-colored against the dark themed background */
+.user-message-content a {
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-decoration: underline;
+}
+
+.user-message-content a:hover {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
 /* Chat input area styling */
 .chat-input-sender .ant-sender {
   border-radius: 16px !important;

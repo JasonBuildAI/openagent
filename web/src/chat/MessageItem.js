@@ -374,7 +374,7 @@ const MessageItem = ({
         <Bubble
           placement={isUserMessage ? "end" : "start"}
           content={
-            <div style={{position: "relative", width: "100%"}}>
+            <div style={{position: "relative", width: "100%"}} className={isUserMessage ? "user-message-content" : ""}>
               {renderMessageContent()}
             </div>
           }
