@@ -176,6 +176,37 @@ code {
   border-radius: 16px !important;
 }
 
+/* Sider menu item refinements */
+.sider-menu-container .ant-menu-item {
+  border-radius: 8px !important;
+  margin: 1px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.sider-menu-container .ant-menu-submenu-title {
+  border-radius: 8px !important;
+  margin: 1px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.sider-menu-container .ant-menu-sub .ant-menu-item {
+  border-radius: 6px !important;
+  margin: 1px 8px 1px 4px !important;
+  width: calc(100% - 12px) !important;
+}
+
+/* Collapsed sider icon items */
+.ant-layout-sider-collapsed .sider-menu-container .ant-menu-item {
+  margin: 2px 4px !important;
+  width: calc(100% - 8px) !important;
+  border-radius: 8px !important;
+}
+
+/* Header right-side action buttons in select-box */
+.select-box svg {
+  font-size: 16px;
+}
+
 .custom-link {
   transition: opacity 0.2s ease, color 0.2s ease;
 }

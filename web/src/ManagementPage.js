@@ -286,32 +286,41 @@ function ManagementPage(props) {
   }
 
   function renderAvatar() {
+    const avatarStyle = {verticalAlign: "middle", flexShrink: 0};
     if (account.avatar === "") {
       return (
-        <Avatar style={{backgroundColor: Setting.getAvatarColor(account.name), verticalAlign: "middle", marginLeft: 8}} size="large">
+        <Avatar style={{...avatarStyle, backgroundColor: Setting.getAvatarColor(account.name)}} size={32}>
           {Setting.getShortName(account.name)}
         </Avatar>
       );
     } else {
       return (
-        <Avatar src={account.avatar} style={{verticalAlign: "middle", marginLeft: 8}} size="large">
+        <Avatar src={account.avatar} style={avatarStyle} size={32}>
           {Setting.getShortName(account.name)}
         </Avatar>
       );
     }
   }
 
+  function renderUserInfo() {
+    return (
+      <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+        {renderAvatar()}
+        {!Setting.isMobile() && (
+          <span style={{fontSize: "14px", fontWeight: 500, maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+            {Setting.getShortName(account.displayName)}
+          </span>
+        )}
+        <DownOutlined style={{fontSize: "10px", opacity: 0.45}} />
+      </div>
+    );
+  }
+
   function renderRightDropdown() {
     if ((Setting.isAnonymousUser(account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown select-box">
-          {renderAvatar()}
-          &nbsp;
-          &nbsp;
-          {Setting.isMobile() ? null : Setting.getShortName(account.displayName)} &nbsp; <DownOutlined />
-          &nbsp;
-          &nbsp;
-          &nbsp;
+          {renderUserInfo()}
         </div>
       );
     }
@@ -347,13 +356,7 @@ function ManagementPage(props) {
     return (
       <Dropdown key="/rightDropDown" menu={{items, onClick}}>
         <div className="rightDropDown">
-          {renderAvatar()}
-          &nbsp;
-          &nbsp;
-          {Setting.isMobile() ? null : Setting.getShortName(account.displayName)} &nbsp; <DownOutlined />
-          &nbsp;
-          &nbsp;
-          &nbsp;
+          {renderUserInfo()}
         </div>
       </Dropdown>
     );
@@ -364,30 +367,22 @@ function ManagementPage(props) {
       return null;
     } else if (account === null) {
       return (
-        <React.Fragment>
-          {Setting.getSignupUrl() !== "" ? (
-            <div key="/signup" style={{float: "right", marginRight: "20px"}}>
-              <a href={Setting.getSignupUrl()}>{i18next.t("account:Sign Up")}</a>
-            </div>
-          ) : null}
-          <div key="/signin" style={{float: "right", marginRight: "20px"}}>
-            <a href={Setting.getSigninUrl() || "/signin"}>{i18next.t("account:Sign In")}</a>
-          </div>
-          <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
-            <ThemeSelect themeAlgorithm={themeAlgorithm} onChange={setLogoAndThemeAlgorithm} />
-          </div>
-          <div className="select-box" style={{float: "right", margin: "0px", padding: "0px"}}>
-            <LanguageSelect />
-          </div>
-        </React.Fragment>
+        <div style={{display: "flex", alignItems: "center", gap: "4px", paddingRight: "8px"}}>
+          <ThemeSelect themeAlgorithm={themeAlgorithm} onChange={setLogoAndThemeAlgorithm} />
+          <LanguageSelect />
+          {Setting.getSignupUrl() !== "" && (
+            <a key="/signup" href={Setting.getSignupUrl()} style={{padding: "0 12px", fontSize: "14px"}}>{i18next.t("account:Sign Up")}</a>
+          )}
+          <a key="/signin" href={Setting.getSigninUrl() || "/signin"} style={{padding: "0 12px", fontSize: "14px"}}>{i18next.t("account:Sign In")}</a>
+        </div>
       );
     } else {
       return (
-        <React.Fragment>
-          {renderRightDropdown()}
-          <ThemeSelect className="select-box" themeAlgorithm={themeAlgorithm} onChange={setLogoAndThemeAlgorithm} />
-          <LanguageSelect className="select-box" />
-          {Setting.isLocalAdminUser(account) &&
+        <div style={{display: "flex", alignItems: "center", gap: "2px", paddingRight: "8px"}}>
+          {Conf.NavbarHtml && (
+            <div style={{display: "flex", alignItems: "center"}} dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
+          )}
+          {Setting.isLocalAdminUser(account) && (
             <StoreSelect
               account={account}
               className="store-select"
@@ -395,11 +390,11 @@ function ManagementPage(props) {
               style={{display: Setting.isMobile() ? "none" : "flex"}}
               disabled={!isStoreSelectEnabled()}
             />
-          }
-          <div className="select-box" style={{float: "right", marginRight: "20px", padding: "0px"}}>
-            <div dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
-          </div>
-        </React.Fragment>
+          )}
+          <ThemeSelect className="select-box" themeAlgorithm={themeAlgorithm} onChange={setLogoAndThemeAlgorithm} />
+          <LanguageSelect className="select-box" />
+          {renderRightDropdown()}
+        </div>
       );
     }
   }
@@ -790,7 +785,7 @@ function ManagementPage(props) {
     };
 
     return (
-      <Header style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0", marginBottom: "4px", backgroundColor: isDark ? "black" : "white", position: "sticky", top: 0, zIndex: 99, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", height: "52px", lineHeight: "52px"}}>
+      <Header style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 8px 0 0", marginBottom: "0", backgroundColor: isDark ? "#141414" : "#ffffff", position: "sticky", top: 0, zIndex: 99, borderBottom: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid #f0f0f0", boxShadow: "none", height: "52px", lineHeight: "52px"}}>
         <div style={{display: "flex", alignItems: "center"}}>
           {Setting.isMobile() ? (
             <React.Fragment>
@@ -864,7 +859,9 @@ function ManagementPage(props) {
             top: 0,
             bottom: 0,
             zIndex: 100,
-            boxShadow: "2px 0 8px rgba(0,0,0,0.08)",
+            boxShadow: "none",
+            borderRight: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid #eaedf3",
+            background: isDark ? "#141414" : "#fafbfc",
             display: "flex",
             flexDirection: "column",
           }}
@@ -877,23 +874,24 @@ function ManagementPage(props) {
             justifyContent: siderCollapsed ? "center" : "flex-start",
             padding: siderCollapsed ? "0" : "0 16px 0 24px",
             overflow: "hidden",
+            borderBottom: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid #eaedf3",
           }}>
             <Link to="/">
               <img
                 src={siderLogo}
                 alt="logo"
                 style={{
-                  height: siderCollapsed ? 28 : 40,
+                  height: siderCollapsed ? 28 : 38,
                   width: siderCollapsed ? 28 : undefined,
                   maxWidth: siderCollapsed ? 28 : 160,
                   objectFit: "contain",
-                  borderRadius: siderCollapsed ? 4 : 0,
+                  borderRadius: siderCollapsed ? 6 : 0,
                   transition: "max-width 0.2s, height 0.2s, width 0.2s",
                 }}
               />
             </Link>
           </div>
-          <div className="sider-menu-container" style={{flex: 1, overflow: "auto"}}>
+          <div className="sider-menu-container" style={{flex: 1, overflow: "auto", paddingTop: "6px"}}>
             <Menu
               mode="inline"
               items={getMenuItems()}
@@ -901,7 +899,7 @@ function ManagementPage(props) {
               openKeys={menuOpenKeys}
               onOpenChange={setMenuOpenKeys}
               theme={isDark ? "dark" : "light"}
-              style={{borderRight: 0}}
+              style={{borderRight: 0, background: isDark ? "#141414" : "#fafbfc"}}
               onClick={({key}) => onMenuClick({key})}
             />
           </div>
