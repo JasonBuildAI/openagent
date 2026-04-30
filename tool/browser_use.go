@@ -57,10 +57,19 @@ type BrowserUseTool struct {
 }
 
 func NewBrowserUseTool(config Config) (*BrowserUseTool, error) {
-	userDataDir := defaultBrowserUseDataDir()
 	mode := config.Mode
 	if mode == "" {
 		mode = "User Chrome"
+	}
+	var userDataDir string
+	if mode == "User Chrome" {
+		dir, err := userChromeDataDir()
+		if err != nil {
+			return nil, err
+		}
+		userDataDir = dir
+	} else {
+		userDataDir = defaultBrowserUseDataDir()
 	}
 	sessionKey := strings.Join([]string{userDataDir, strconv.FormatBool(config.EnableProxy), mode}, "|")
 	return &BrowserUseTool{
@@ -188,7 +197,14 @@ func (s *browserUseSession) ensureLocked() error {
 	if err = os.MkdirAll(s.userDataDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create browser profile directory %s: %w", s.userDataDir, err)
 	}
-	if s.mode == "Chrome for Testing" {
+	if s.mode == "User Chrome" {
+		if s.executablePath == "" || !fileExists(s.executablePath) {
+			s.executablePath, err = findUserChromeExecutable()
+			if err != nil {
+				return err
+			}
+		}
+	} else if s.mode == "Chrome for Testing" {
 		if s.executablePath == "" || !fileExists(s.executablePath) {
 			s.executablePath, err = ensureBrowserUseChromeForTesting()
 			if err != nil {
@@ -211,9 +227,7 @@ func (s *browserUseSession) ensureLocked() error {
 		chromedp.UserDataDir(s.userDataDir),
 		chromedp.WindowSize(1280, 900),
 	)
-	if s.mode == "Chrome for Testing" {
-		opts = append(opts, chromedp.ExecPath(s.executablePath))
-	}
+	opts = append(opts, chromedp.ExecPath(s.executablePath))
 	if s.enableProxy {
 		if socks5Addr := proxy.GetSocks5ProxyAddress(); socks5Addr != "" {
 			opts = append(opts, chromedp.Flag("proxy-server", "socks5://"+socks5Addr))
@@ -521,6 +535,59 @@ func browserUseChromeExecutablePath(installDir, platform string) string {
 		return filepath.Join(installDir, "chrome-"+platform, "chrome.exe")
 	default:
 		return ""
+	}
+}
+
+// findUserChromeExecutable returns the path to the user's installed Google Chrome binary.
+func findUserChromeExecutable() (string, error) {
+	var candidates []string
+	switch runtime.GOOS {
+	case "windows":
+		for _, base := range []string{os.Getenv("PROGRAMFILES"), os.Getenv("PROGRAMFILES(X86)"), os.Getenv("LOCALAPPDATA")} {
+			if base != "" {
+				candidates = append(candidates, filepath.Join(base, "Google", "Chrome", "Application", "chrome.exe"))
+			}
+		}
+	case "darwin":
+		candidates = []string{
+			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+		}
+	default:
+		candidates = []string{
+			"/usr/bin/google-chrome",
+			"/usr/bin/google-chrome-stable",
+			"/usr/local/bin/google-chrome",
+		}
+	}
+	for _, p := range candidates {
+		if fileExists(p) {
+			return p, nil
+		}
+	}
+	return "", fmt.Errorf("Google Chrome not found; please install Google Chrome")
+}
+
+// userChromeDataDir returns the default Chrome user data directory for the current OS.
+func userChromeDataDir() (string, error) {
+	switch runtime.GOOS {
+	case "windows":
+		localAppData := os.Getenv("LOCALAPPDATA")
+		if localAppData == "" {
+			return "", fmt.Errorf("LOCALAPPDATA environment variable is not set")
+		}
+		return filepath.Join(localAppData, "Google", "Chrome", "User Data"), nil
+	case "darwin":
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(home, "Library", "Application Support", "Google", "Chrome"), nil
+	default:
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(home, ".config", "google-chrome"), nil
 	}
 }
 
