@@ -473,7 +473,7 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Volcano Engine") {
                   this.updateProviderField("subType", "Doubao-lite-4k");
                 } else if (value === "DeepSeek") {
-                  this.updateProviderField("subType", "deepseek-chat");
+                  this.updateProviderField("subType", "deepseek-v4-pro");
                 } else if (value === "StepFun") {
                   this.updateProviderField("subType", "step-1-8k");
                 } else if (value === "Tencent Cloud") {

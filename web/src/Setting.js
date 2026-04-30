@@ -2019,6 +2019,8 @@ export function getModelSubTypeOptions(type) {
     ];
   } else if (type === "DeepSeek") {
     return [
+      {id: "deepseek-v4-pro", name: "deepseek-v4-pro"},
+      {id: "deepseek-v4-flash", name: "deepseek-v4-flash"},
       {id: "deepseek-chat", name: "deepseek-chat"},
       {id: "deepseek-reasoner", name: "deepseek-reasoner"},
     ];

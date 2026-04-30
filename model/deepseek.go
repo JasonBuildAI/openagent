@@ -41,18 +41,22 @@ func (p *DeepSeekProvider) GetPricing() string {
 	return `URL:
 https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 
-| Model            | sub-type           | Input Price per 1K characters    | Output Price per 1K characters |
-|------------------|--------------------|----------------------------------|--------------------------------|
-| deepseek-V3.2    | deepseek-chat      | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens        |
-| deepseek-V3.2    | deepseek-reasoner  | 0.002 yuan/1,000 tokens          | 0.003 yuan/1,000 tokens        |
+| Model          | sub-type           | Input Price per 1K tokens | Output Price per 1K tokens |
+|----------------|--------------------|---------------------------|----------------------------|
+| DeepSeek-V4-Pro  | deepseek-v4-pro    | 0.003 yuan/1,000 tokens   | 0.006 yuan/1,000 tokens    |
+| DeepSeek-V4-Flash| deepseek-v4-flash  | 0.001 yuan/1,000 tokens   | 0.002 yuan/1,000 tokens    |
+| DeepSeek-V3.2  | deepseek-chat      | 0.001 yuan/1,000 tokens   | 0.002 yuan/1,000 tokens    |
+| DeepSeek-V3.2  | deepseek-reasoner  | 0.003 yuan/1,000 tokens   | 0.006 yuan/1,000 tokens    |
 `
 }
 
 func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult, lang string) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"deepseek-chat":     {0.002, 0.003},
-		"deepseek-reasoner": {0.002, 0.003},
+		"deepseek-v4-pro":   {0.003, 0.006},
+		"deepseek-v4-flash": {0.001, 0.002},
+		"deepseek-chat":     {0.001, 0.002},
+		"deepseek-reasoner": {0.003, 0.006},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
@@ -72,9 +76,10 @@ func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history 
 	const BaseUrl = "https://api.deepseek.com/v1"
 
 	var localType string
-	if p.subType == "deepseek-reasoner" {
+	switch p.subType {
+	case "deepseek-v4-pro", "deepseek-reasoner":
 		localType = "Custom-think"
-	} else if p.subType == "deepseek-chat" {
+	case "deepseek-v4-flash", "deepseek-chat":
 		localType = "Custom"
 	}
 	localProvider, err := NewLocalModelProvider(localType, "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
