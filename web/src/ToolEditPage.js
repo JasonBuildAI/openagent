@@ -14,7 +14,7 @@
 
 import React from "react";
 import Loading from "./common/Loading";
-import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
+import {Button, Card, Col, Input, Row, Select, Switch, Table, Tag} from "antd";
 import * as ToolBackend from "./backend/ToolBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -169,6 +169,34 @@ class ToolEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
+        {Setting.getToolFunctions(this.state.tool).length > 0 && (
+          <Row style={{marginTop: "20px"}}>
+            <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+              {Setting.getLabel(i18next.t("tool:Functions"), i18next.t("tool:Functions - Tooltip"))} :
+            </Col>
+            <Col span={22}>
+              <Table
+                size="small"
+                pagination={false}
+                columns={[
+                  {
+                    title: i18next.t("tool:Function name"),
+                    dataIndex: "name",
+                    key: "name",
+                    width: 280,
+                    render: (text) => <Tag style={{fontFamily: "monospace"}}>{text}</Tag>,
+                  },
+                  {
+                    title: i18next.t("tool:Description"),
+                    dataIndex: "description",
+                    key: "description",
+                  },
+                ]}
+                dataSource={Setting.getToolFunctions(this.state.tool).map((f, i) => ({...f, key: i}))}
+              />
+            </Col>
+          </Row>
+        )}
         {this.shouldShowClientIdInput(this.state.tool) ? (
           <Row style={{marginTop: "20px"}}>
             <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

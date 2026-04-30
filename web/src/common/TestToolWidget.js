@@ -23,63 +23,6 @@ import ChatWidget from "./ChatWidget";
 
 const {Option} = Select;
 
-const GUI_TOOL_CONTENT = {
-  "win_open_application": JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
-  "win_focus_window": JSON.stringify({tool: "win_focus_window", arguments: {title_contains: "Calculator"}}, null, 2),
-  "win_find_element": JSON.stringify({tool: "win_find_element", arguments: {window_title_contains: "Calculator", control_type: "button", name_contains: "1"}}, null, 2),
-  "win_interact": JSON.stringify({tool: "win_interact", arguments: {action: "click", element_id: "el_1"}}, null, 2),
-  "win_wait": JSON.stringify({tool: "win_wait", arguments: {window_title_contains: "Calculator", timeout_seconds: 10}}, null, 2),
-  "win_assert": JSON.stringify({tool: "win_assert", arguments: {check: "window_exists", window_title_contains: "Calculator"}}, null, 2),
-  "win_read_system_metric": JSON.stringify({tool: "win_read_system_metric", arguments: {metric: "cpu_percent", duration_seconds: 10, interval_seconds: 1, aggregation: "avg"}}, null, 2),
-  "win_word_write_and_save": JSON.stringify({tool: "win_word_write_and_save", arguments: {content: "CPU avg: 12.34%", file_name: "CPU_Report.docx", overwrite: true}}, null, 2),
-  "win_safety_emergency_stop": JSON.stringify({tool: "win_safety_emergency_stop", arguments: {}}, null, 2),
-};
-
-const GUI_TOOL_OPTIONS = [
-  {value: "win_open_application", label: "win_open_application — Launch app"},
-  {value: "win_focus_window", label: "win_focus_window — Focus top-level window"},
-  {value: "win_find_element", label: "win_find_element — Find UIA element by criteria"},
-  {value: "win_interact", label: "win_interact — click/set_text/get_text/hotkey"},
-  {value: "win_wait", label: "win_wait — Wait by time/window condition"},
-  {value: "win_assert", label: "win_assert — Assert window/file/text condition"},
-  {value: "win_read_system_metric", label: "win_read_system_metric — Read CPU metric"},
-  {value: "win_word_write_and_save", label: "win_word_write_and_save — Legacy Word fallback"},
-  {value: "win_safety_emergency_stop", label: "win_safety_emergency_stop — Emergency stop"},
-];
-
-const OFFICE_TOOL_CONTENT = {
-  "All": JSON.stringify({tool: "word_read", arguments: {path: "/path/to/document.docx"}}, null, 2),
-  "Word Read": JSON.stringify({tool: "word_read", arguments: {path: "/path/to/document.docx"}}, null, 2),
-  "Word Write": JSON.stringify({tool: "word_write", arguments: {path: "/path/to/output.docx", content: "Hello, World!\nThis is a new paragraph."}}, null, 2),
-  "Excel Read": JSON.stringify({tool: "excel_read", arguments: {path: "/path/to/spreadsheet.xlsx", sheet: "Sheet1"}}, null, 2),
-  "Excel Write": JSON.stringify({tool: "excel_write", arguments: {path: "/path/to/output.xlsx", data: "Name,Age\nAlice,30\nBob,25", sheet: "Sheet1"}}, null, 2),
-  "PowerPoint Read": JSON.stringify({tool: "pptx_read", arguments: {path: "/path/to/presentation.pptx"}}, null, 2),
-  "PowerPoint Write": JSON.stringify({tool: "pptx_write", arguments: {path: "/path/to/output.pptx", slides: ["Slide 1 title\nSlide 1 content", "Slide 2 title\nSlide 2 content"]}}, null, 2),
-};
-
-const VIDEO_DOWNLOAD_TOOL_CONTENT = {
-  "video_info": JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
-  "video_download": JSON.stringify({tool: "video_download", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "videos", format: "bestvideo+bestaudio/best"}}, null, 2),
-  "video_audio_extract": JSON.stringify({tool: "video_audio_extract", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", output_dir: "audio", audio_format: "mp3", audio_quality: "0"}}, null, 2),
-};
-
-const VIDEO_DOWNLOAD_TOOL_OPTIONS = [
-  {value: "video_info", label: "video_info — Get video metadata (no download)"},
-  {value: "video_download", label: "video_download — Download video file"},
-  {value: "video_audio_extract", label: "video_audio_extract — Extract audio from video"},
-];
-
-const DEFAULT_TOOL_CONTENT = {
-  time: JSON.stringify({tool: "time", arguments: {operation: "current", timezone: "Asia/Shanghai"}}, null, 2),
-  web_search: JSON.stringify({tool: "web_search", arguments: {query: "OpenAgent web search", count: 3, language: "en", country: "us"}}, null, 2),
-  shell: JSON.stringify({tool: "shell", arguments: {command: "echo hello"}}, null, 2),
-  web_fetch: JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
-  web_browser: JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
-  gui: JSON.stringify({tool: "win_open_application", arguments: {target: "calc", method: "auto", wait_seconds: 2}}, null, 2),
-  video_download: JSON.stringify({tool: "video_info", arguments: {url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}, null, 2),
-  browser_use: JSON.stringify({tool: "browser_use_open", arguments: {url: "https://casibase.org"}}, null, 2),
-};
-
 function tryFormatJson(str) {
   try {
     return JSON.stringify(JSON.parse(str), null, 2);
@@ -98,12 +41,9 @@ function isValidToolTestJson(content) {
 }
 
 function buildDefaultToolTestJson(tool) {
-  if (tool.type === "office") {
-    const subType = tool.subType || "All";
-    return OFFICE_TOOL_CONTENT[subType] || OFFICE_TOOL_CONTENT["All"];
-  }
-  if (DEFAULT_TOOL_CONTENT[tool.type]) {
-    return DEFAULT_TOOL_CONTENT[tool.type];
+  const fns = Setting.getToolFunctions(tool);
+  if (fns.length > 0) {
+    return fns[0].testContent;
   }
   return JSON.stringify({tool: "", arguments: {}}, null, 2);
 }
@@ -111,6 +51,8 @@ function buildDefaultToolTestJson(tool) {
 class TestToolWidget extends React.Component {
   constructor(props) {
     super(props);
+    const guiFns = Setting.getToolFunctions({type: "gui"});
+    const videoFns = Setting.getToolFunctions({type: "video_download"});
     this.state = {
       testButtonLoading: false,
       testResult: "",
@@ -118,8 +60,8 @@ class TestToolWidget extends React.Component {
       modelProvidersLoading: false,
       lastSyncedType: props.tool ? (props.tool.type || null) : null,
       lastSyncedSubType: props.tool ? (props.tool.subType || null) : null,
-      selectedGuiTool: "win_open_application",
-      selectedVideoTool: "video_info",
+      selectedGuiTool: guiFns.length > 0 ? guiFns[0].name : "",
+      selectedVideoTool: videoFns.length > 0 ? videoFns[0].name : "",
     };
   }
 
@@ -193,7 +135,8 @@ class TestToolWidget extends React.Component {
       this.setState({testResult: tool.resultSummary});
     }
     if (tool.type === "gui" && this.state.selectedGuiTool.startsWith("gui_")) {
-      this.setState({selectedGuiTool: "win_open_application"});
+      const guiFns = Setting.getToolFunctions({type: "gui"});
+      this.setState({selectedGuiTool: guiFns.length > 0 ? guiFns[0].name : ""});
     }
   }
 
@@ -250,6 +193,9 @@ class TestToolWidget extends React.Component {
       return null;
     }
 
+    const guiFunctions = Setting.getToolFunctions({type: "gui"});
+    const videoFunctions = Setting.getToolFunctions({type: "video_download"});
+
     return (
       <React.Fragment>
         <Row style={{marginTop: "20px"}}>
@@ -267,11 +213,14 @@ class TestToolWidget extends React.Component {
                   value={this.state.selectedGuiTool}
                   onChange={(value) => {
                     this.setState({selectedGuiTool: value});
-                    onUpdateTool("testContent", GUI_TOOL_CONTENT[value]);
+                    const fn = guiFunctions.find(f => f.name === value);
+                    if (fn) {
+                      onUpdateTool("testContent", fn.testContent);
+                    }
                   }}
                 >
-                  {GUI_TOOL_OPTIONS.map((opt) => (
-                    <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                  {guiFunctions.map((f) => (
+                    <Option key={f.name} value={f.name}>{`${f.name} — ${f.description}`}</Option>
                   ))}
                 </Select>
               </div>
@@ -286,11 +235,14 @@ class TestToolWidget extends React.Component {
                   value={this.state.selectedVideoTool}
                   onChange={(value) => {
                     this.setState({selectedVideoTool: value});
-                    onUpdateTool("testContent", VIDEO_DOWNLOAD_TOOL_CONTENT[value]);
+                    const fn = videoFunctions.find(f => f.name === value);
+                    if (fn) {
+                      onUpdateTool("testContent", fn.testContent);
+                    }
                   }}
                 >
-                  {VIDEO_DOWNLOAD_TOOL_OPTIONS.map((opt) => (
-                    <Option key={opt.value} value={opt.value}>{opt.label}</Option>
+                  {videoFunctions.map((f) => (
+                    <Option key={f.name} value={f.name}>{`${f.name} — ${f.description}`}</Option>
                   ))}
                 </Select>
               </div>

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Table, Tag} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -109,7 +109,7 @@ class ToolListPage extends BaseListPage {
         title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
-        width: "150px",
+        width: "180px",
         filterMultiple: false,
         filters: Setting.getProviderTypeOptions("Tool").map((o) => ({text: o.name, value: o.name})),
         onFilter: (value, record) => record.type === value,
@@ -131,17 +131,28 @@ class ToolListPage extends BaseListPage {
         ...this.getColumnSearchProps("subType"),
       },
       {
+        title: i18next.t("tool:Functions"),
+        key: "functions",
+        render: (_, record) => (
+          <div style={{display: "flex", flexDirection: "column", gap: "4px"}}>
+            {Setting.getToolFunctions(record).map((f) => (
+              <Tag key={f.name} style={{fontFamily: "monospace", margin: 0}}>{f.name}</Tag>
+            ))}
+          </div>
+        ),
+      },
+      {
         title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
-        width: "90px",
+        width: "110px",
         sorter: (a, b) => (a.state || "").localeCompare(b.state || ""),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "220px",
         fixed: (Setting.isMobile()) ? "right" : false,
         render: (text, record) => (
           <div>
