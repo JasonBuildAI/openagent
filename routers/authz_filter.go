@@ -63,29 +63,49 @@ func permissionFilter(ctx *context.Context) {
 
 	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
 
-	isUpdateRequest := strings.HasPrefix(controllerName, "update-") || strings.HasPrefix(controllerName, "add-") || strings.HasPrefix(controllerName, "delete-") || strings.HasPrefix(controllerName, "refresh-") || strings.HasPrefix(controllerName, "deploy-")
 	isGetRequest := strings.HasPrefix(controllerName, "get-")
 
 	if !disablePreviewMode && isGetRequest {
 		return
 	}
-	if !isGetRequest && !isUpdateRequest {
-		return
-	}
 
 	exemptedPaths := []string{
+		// Auth endpoints — must remain public
+		"signin", "signout", "health",
+		// Get paths accessible to regular users
 		"get-account", "get-signin-options", "get-chats", "get-forms", "get-global-videos", "get-videos", "get-video", "get-messages",
 		"delete-welcome-message", "get-message-answer", "get-answer",
 		"get-storage-providers", "get-store", "get-providers", "get-global-stores",
-		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
 		"get-chat", "get-message",
-		"get-tasks", "get-task", "get-public-scales", "update-task", "add-task", "delete-task", "upload-task-document",
+		"get-tasks", "get-task", "get-public-scales",
+		// Mutation paths accessible to regular users
+		"update-chat", "add-chat", "delete-chat", "update-message", "add-message",
+		"update-task", "add-task", "delete-task", "upload-task-document",
+		// Action paths accessible to regular users
+		"start-connection", "stop-connection",
+		"commit-record", "commit-record-second",
+		"query-record", "query-record-second",
+		"generate-text-to-speech-audio", "generate-text-to-speech-audio-stream",
+		"process-speech-to-text",
+		"analyze-task",
+		"claim-store",
+		"is-session-duplicated",
 	}
 
 	for _, exemptPath := range exemptedPaths {
 		if controllerName == exemptPath {
 			return
 		}
+	}
+
+	// Webhook callbacks must remain publicly accessible for external services
+	if strings.HasPrefix(controllerName, "wecom-bot/callback/") {
+		return
+	}
+
+	// chat/completions uses its own Bearer token auth, not session-based admin check
+	if controllerName == "chat/completions" {
+		return
 	}
 
 	user := GetSessionUser(ctx)
