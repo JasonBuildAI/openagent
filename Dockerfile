@@ -1,17 +1,17 @@
-FROM --platform=$BUILDPLATFORM node:20.18.0 AS FRONT
+FROM --platform=$BUILDPLATFORM node:22 AS front
 WORKDIR /web
 COPY ./web .
 RUN yarn install --frozen-lockfile --network-timeout 1000000 && yarn run build
 
 
-FROM --platform=$BUILDPLATFORM golang:1.25 AS BACK
+FROM --platform=$BUILDPLATFORM golang:1.25 AS back
 WORKDIR /go/src/openagent
 COPY . .
 RUN chmod +x ./build.sh
 RUN ./build.sh
 
 
-FROM alpine:latest AS STANDARD
+FROM alpine:latest AS standard
 LABEL MAINTAINER="https://github.com/the-open-agent/openagent"
 ARG USER=casibase
 ARG TARGETOS
@@ -33,10 +33,10 @@ RUN adduser -D $USER -u 1000 \
 
 USER 1000
 WORKDIR /
-COPY --from=BACK --chown=$USER:$USER /go/src/openagent/server_${BUILDX_ARCH} ./server
-COPY --from=BACK --chown=$USER:$USER /go/src/openagent/data ./data
-COPY --from=BACK --chown=$USER:$USER /go/src/openagent/conf/app.conf ./conf/app.conf
-COPY --from=FRONT --chown=$USER:$USER /web/build ./web/build
+COPY --from=back --chown=$USER:$USER /go/src/openagent/server_${BUILDX_ARCH} ./server
+COPY --from=back --chown=$USER:$USER /go/src/openagent/data ./data
+COPY --from=back --chown=$USER:$USER /go/src/openagent/conf/app.conf ./conf/app.conf
+COPY --from=front --chown=$USER:$USER /web/build ./web/build
 ENV RUNNING_IN_DOCKER=true
 
 ENTRYPOINT ["/server"]
@@ -50,7 +50,7 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 
-FROM db AS ALLINONE
+FROM db AS allinone
 LABEL MAINTAINER="https://github.com/the-open-agent/openagent"
 ARG TARGETOS
 ARG TARGETARCH
@@ -59,11 +59,11 @@ ENV BUILDX_ARCH="${TARGETOS:-linux}_${TARGETARCH:-amd64}"
 RUN apt update && apt install -y ca-certificates && update-ca-certificates
 
 WORKDIR /
-COPY --from=BACK /go/src/openagent/server_${BUILDX_ARCH} ./server
-COPY --from=BACK /go/src/openagent/data ./data
-COPY --from=BACK /go/src/openagent/docker-entrypoint.sh /docker-entrypoint.sh
-COPY --from=BACK /go/src/openagent/conf/app.conf ./conf/app.conf
-COPY --from=FRONT /web/build ./web/build
+COPY --from=back /go/src/openagent/server_${BUILDX_ARCH} ./server
+COPY --from=back /go/src/openagent/data ./data
+COPY --from=back /go/src/openagent/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --from=back /go/src/openagent/conf/app.conf ./conf/app.conf
+COPY --from=front /web/build ./web/build
 ENV RUNNING_IN_DOCKER=true
 
 ENTRYPOINT ["/bin/bash"]

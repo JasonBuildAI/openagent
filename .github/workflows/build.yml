@@ -189,7 +189,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          target: STANDARD
+          target: standard
           platforms: linux/amd64,linux/arm64
           push: true
           tags: casbin/openagent:${{ needs.tag-release.outputs.new-release-version }},casbin/openagent:latest
@@ -198,7 +198,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          target: ALLINONE
+          target: allinone
           platforms: linux/amd64,linux/arm64
           push: true
           tags: casbin/openagent-all-in-one:${{ needs.tag-release.outputs.new-release-version }},casbin/openagent-all-in-one:latest
