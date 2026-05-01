@@ -378,14 +378,13 @@ func (c *ApiController) isSafePassword() (bool, error) {
 // @Success 200 {casdoorsdk} auth.Claims The Response object
 // @router /get-account [get]
 func (c *ApiController) GetAccount() {
-	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
 	err := util.AppendWebConfigCookie(c.Ctx)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	if object.IsSigninEnabled() {
-		if !c.isPublicDomain() && disablePreviewMode {
+		if !c.isPublicDomain() {
 			_, ok := c.RequireSignedIn()
 			if !ok {
 				return
@@ -397,7 +396,7 @@ func (c *ApiController) GetAccount() {
 				return
 			}
 		}
-	} else if !c.isPublicDomain() && disablePreviewMode {
+	} else if !c.isPublicDomain() {
 		_, ok := c.RequireSignedIn()
 		if !ok {
 			return

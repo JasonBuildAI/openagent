@@ -317,7 +317,7 @@ function ManagementPage(props) {
   }
 
   function renderRightDropdown() {
-    if ((Setting.isAnonymousUser(account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
+    if (Setting.isAnonymousUser(account) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown select-box">
           {renderUserInfo()}
@@ -449,12 +449,6 @@ function ManagementPage(props) {
       }
 
       return res;
-    }
-
-    if (!Setting.isAdminUser(account) && (Setting.isAnonymousUser(account) && !Conf.DisablePreviewMode)) {
-      if (!Setting.isChatAdminUser(account)) {
-        return res;
-      }
     }
 
     const domain = Setting.getSubdomain();

@@ -21,7 +21,7 @@ import xlsx from "xlsx";
 import FileSaver from "file-saver";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
-import {DisablePreviewMode, StaticBaseUrl, ThemeDefault} from "./Conf";
+import {StaticBaseUrl, ThemeDefault} from "./Conf";
 import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
@@ -241,10 +241,6 @@ export function isLocalAdminUser(account) {
     return false;
   }
 
-  if (!DisablePreviewMode && isAnonymousUser(account)) {
-    return true;
-  }
-
   if (isChatAdminUser(account)) {
     return true;
   }
@@ -259,10 +255,6 @@ export function isLocalAndStoreAdminUser(account) {
 
   if (account.homepage === "non-store-admin") {
     return false;
-  }
-
-  if (!DisablePreviewMode && isAnonymousUser(account)) {
-    return true;
   }
 
   if (isChatAdminUser(account)) {

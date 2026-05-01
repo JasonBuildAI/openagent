@@ -32,23 +32,22 @@ type WebConfig struct {
 		OrganizationName string `json:"organizationName"`
 		RedirectPath     string `json:"redirectPath"`
 	} `json:"authConfig"`
-	EnableExtraPages   bool     `json:"enableExtraPages"`
-	ShortcutPageItems  []string `json:"shortcutPageItems"`
-	UsageEndpoints     []string `json:"usageEndpoints"`
-	IframeUrl          string   `json:"iframeUrl"`
-	ForceLanguage      string   `json:"forceLanguage"`
-	DefaultLanguage    string   `json:"defaultLanguage"`
-	StaticBaseUrl      string   `json:"staticBaseUrl"`
-	HtmlTitle          string   `json:"htmlTitle"`
-	FaviconUrl         string   `json:"faviconUrl"`
-	LogoUrl            string   `json:"logoUrl"`
-	NavbarHtml         string   `json:"navbarHtml"`
-	FooterHtml         string   `json:"footerHtml"`
-	AppUrl             string   `json:"appUrl"`
-	ShowGithubCorner   bool     `json:"showGithubCorner"`
-	IsDemoMode         bool     `json:"isDemoMode"`
-	DisablePreviewMode bool     `json:"disablePreviewMode"`
-	ThemeDefault       struct {
+	EnableExtraPages  bool     `json:"enableExtraPages"`
+	ShortcutPageItems []string `json:"shortcutPageItems"`
+	UsageEndpoints    []string `json:"usageEndpoints"`
+	IframeUrl         string   `json:"iframeUrl"`
+	ForceLanguage     string   `json:"forceLanguage"`
+	DefaultLanguage   string   `json:"defaultLanguage"`
+	StaticBaseUrl     string   `json:"staticBaseUrl"`
+	HtmlTitle         string   `json:"htmlTitle"`
+	FaviconUrl        string   `json:"faviconUrl"`
+	LogoUrl           string   `json:"logoUrl"`
+	NavbarHtml        string   `json:"navbarHtml"`
+	FooterHtml        string   `json:"footerHtml"`
+	AppUrl            string   `json:"appUrl"`
+	ShowGithubCorner  bool     `json:"showGithubCorner"`
+	IsDemoMode        bool     `json:"isDemoMode"`
+	ThemeDefault      struct {
 		ThemeType    string `json:"themeType"`
 		ColorPrimary string `json:"colorPrimary"`
 		BorderRadius int    `json:"borderRadius"`
@@ -220,7 +219,6 @@ func GetWebConfig() *WebConfig {
 	config.AppUrl = GetConfigString("appUrl")
 	config.ShowGithubCorner = GetConfigBool("showGithubCorner")
 	config.IsDemoMode = GetConfigBool("isDemoMode")
-	config.DisablePreviewMode = GetConfigBool("disablePreviewMode")
 
 	config.ThemeDefault.ThemeType = GetConfigString("defaultThemeType")
 	config.ThemeDefault.ColorPrimary = GetDefaultColorPrimary()

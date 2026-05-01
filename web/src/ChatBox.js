@@ -400,7 +400,6 @@ class ChatBox extends React.Component {
             onCopyMessage={this.copyMessageFromHTML}
             onToggleRead={this.toggleMessageReadState}
             onEditMessage={this.handleEditMessage}
-            previewMode={this.props.previewMode}
             hideInput={this.props.hideInput}
             disableInput={this.props.disableInput}
             isReading={this.state.isReading}

@@ -28,7 +28,6 @@ import ShortcutsPage from "./basic/ShortcutsPage";
 import * as FormBackend from "./backend/FormBackend";
 import * as SiteBackend from "./backend/SiteBackend";
 import * as FetchFilter from "./backend/FetchFilter";
-import {PreviewInterceptor} from "./PreviewInterceptor";
 import {withTranslation} from "react-i18next";
 import i18next from "i18next";
 import CustomGithubCorner from "./CustomGithubCorner";
@@ -65,9 +64,6 @@ class App extends Component {
 
     FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
-    if (!Conf.DisablePreviewMode) {
-      this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history);
-    }
   }
 
   UNSAFE_componentWillMount() {
