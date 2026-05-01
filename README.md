@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/the-open-agent/static/master/img/casibase.png" alt="OpenAgent Logo" width="120">
+<img src="https://raw.githubusercontent.com/the-open-agent/static/master/img/openagent-logo_1600x276.png" alt="OpenAgent Logo" width="400">
 
 <h1>OpenAgent</h1>
 
@@ -40,13 +40,13 @@ OpenAgent is an open-source personal AI assistant that brings together powerful 
 
 | 📊 Usage Analytics | 📋 Activity Monitoring |
 |:---:|:---:|
-| ![Usage Analytics](docs/images/screenshot-usages.png) | ![Activity Monitoring](docs/images/screenshot-activities.png) |
+| ![Usage Analytics](https://raw.githubusercontent.com/the-open-agent/static/master/img/screenshot-usages.png) | ![Activity Monitoring](https://raw.githubusercontent.com/the-open-agent/static/master/img/screenshot-activities.png) |
 | 🛠️ Tool Management | 🔍 Detailed Logs |
-| ![Tool Management](docs/images/screenshot-tools.png) | ![Detailed Logs](docs/images/screenshot-logs.png) |
+| ![Tool Management](https://raw.githubusercontent.com/the-open-agent/static/master/img/screenshot-tools.png) | ![Detailed Logs](https://raw.githubusercontent.com/the-open-agent/static/master/img/screenshot-logs.png) |
 
 </div>
 
-> 📝 **Note:** Screenshots above showcase the built-in admin dashboard. Replace the images in `docs/images/` with your own screenshots if needed.
+> 📝 **Note:** Screenshots above showcase the built-in admin dashboard.
 
 ---
 
