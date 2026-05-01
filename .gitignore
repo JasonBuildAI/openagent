@@ -19,6 +19,7 @@ data/**
 !data/template/
 !data/template/**
 files/
+images/
 
 .idea/
 *.iml
