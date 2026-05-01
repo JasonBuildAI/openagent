@@ -1,6 +1,8 @@
 <div align="center">
 
-<h1>🤖 OpenAgent</h1>
+<img src="https://raw.githubusercontent.com/the-open-agent/static/master/img/casibase.png" alt="OpenAgent Logo" width="120">
+
+<h1>OpenAgent</h1>
 
 <p><strong>Next-generation personal AI assistant powered by LLM, RAG and agent loops</strong><br>
 <em>Supporting computer-use, browser-use and coding agent</em></p>
