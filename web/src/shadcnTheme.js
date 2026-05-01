@@ -28,6 +28,14 @@ function hexToRgbComma(hex) {
 
 const primaryRgb = hexToRgbComma(DefaultColorPrimary);
 
+// Link tokens for dark mode — must be light enough to read on dark backgrounds.
+// colorPrimary is near-black (#404040), so the algorithm would derive dark links by default.
+const darkLinkTokens = {
+  colorLink: "#d4d4d4",
+  colorLinkHover: "#f5f5f5",
+  colorLinkActive: "#a3a3a3",
+};
+
 // Structural tokens that apply regardless of theme (no colors)
 const structuralTokens = {
   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
@@ -118,7 +126,10 @@ const lightColorTokens = {
 
 export function getShadcnThemeToken(isDark) {
   if (isDark) {
-    return structuralTokens;
+    return {
+      ...structuralTokens,
+      ...darkLinkTokens,
+    };
   }
   return {
     ...structuralTokens,

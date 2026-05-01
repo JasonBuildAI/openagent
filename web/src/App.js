@@ -44,6 +44,7 @@ class App extends Component {
     } catch {
       storageThemeAlgorithm = ["default"];
     }
+    document.documentElement.setAttribute("data-theme", storageThemeAlgorithm.includes("dark") ? "dark" : "light");
     this.state = {
       classes: props,
       selectedMenuKey: 0,
@@ -273,6 +274,7 @@ class App extends Component {
       logo: Setting.getLogo(nextThemeAlgorithm, this.state.site?.logoUrl),
     });
     localStorage.setItem("themeAlgorithm", JSON.stringify(nextThemeAlgorithm));
+    document.documentElement.setAttribute("data-theme", nextThemeAlgorithm.includes("dark") ? "dark" : "light");
   };
 
   renderContent() {
