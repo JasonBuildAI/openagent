@@ -840,6 +840,10 @@ export function getOtherProviderInfo() {
         logo: `${StaticBaseUrl}/img/social_openai.svg`,
         url: "https://platform.openai.com",
       },
+      "OpenAI Compatible": {
+        logo: `${StaticBaseUrl}/img/social_openai.svg`,
+        url: "https://platform.openai.com",
+      },
       "Gemini": {
         logo: `${StaticBaseUrl}/img/social_gemini.png`,
         url: "https://gemini.google.com/",
@@ -1398,6 +1402,7 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
+        {id: "OpenAI Compatible", name: "OpenAI Compatible"},
         {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
@@ -1633,7 +1638,7 @@ export function getTtsFlavorOptions(type, subType) {
 }
 
 export function getModelSubTypeOptions(type) {
-  if (type === "OpenAI" || type === "Azure") {
+  if (type === "OpenAI" || type === "Azure" || type === "OpenAI Compatible") {
     return openaiModels;
   } else if (type === "Gemini") {
     return [
