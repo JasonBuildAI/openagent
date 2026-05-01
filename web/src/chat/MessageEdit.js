@@ -17,6 +17,7 @@ import {Button, Input, Space} from "antd";
 import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import {ThemeDefault} from "../Conf";
+import * as Setting from "../Setting";
 
 // Styles for edit components
 export const editStyles = {
@@ -31,7 +32,7 @@ export const editStyles = {
   editButton: {
     border: "none",
     color: ThemeDefault.colorPrimary,
-    background: "rgba(255, 255, 255, 0.8)",
+    background: Setting.getIsDark() ? "rgba(50, 50, 60, 0.9)" : "rgba(255, 255, 255, 0.8)",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
     borderRadius: "50%",
     width: "32px",

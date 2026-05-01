@@ -76,7 +76,12 @@ const MessageItem = ({
   const [searchDrawerVisible, setSearchDrawerVisible] = useState(false);
   const [knowledgeDrawerVisible, setKnowledgeDrawerVisible] = useState(false);
   const themeColor = Setting.getThemeColor();
-  const toolColor = (message.reasonText && message.toolCalls) ? "#1890ff" : themeColor;
+  const toolColor = (message.reasonText && message.toolCalls) ? themeColor : themeColor;
+
+  const isDark = Setting.getIsDark();
+
+  const aiBubbleBg = isDark ? "#2a2d35" : "#f4f6fa";
+  const aiBubbleBorder = isDark ? "1px solid #383d47" : "1px solid #eaedf3";
 
   const renderThinkingAnimation = () => {
     return (
@@ -88,7 +93,7 @@ const MessageItem = ({
       }}>
         <div style={{
           fontWeight: "bold",
-          color: "#1890ff",
+          color: themeColor,
         }}>
           {i18next.t("chat:Thinking")}
         </div>
@@ -100,7 +105,7 @@ const MessageItem = ({
             <div key={i} style={{
               width: "6px",
               height: "6px",
-              backgroundColor: "#1890ff",
+              backgroundColor: themeColor,
               borderRadius: "50%",
               margin: "0 2px",
               animation: "thinkingDot 1.4s infinite ease-in-out both",
@@ -257,10 +262,10 @@ const MessageItem = ({
                       }}>
                         <div style={{
                           fontWeight: "600",
-                          color: "#096dd9",
+                          color: themeColor,
                           marginBottom: "4px",
                         }}>
-                          <a href={`/tools/${toolCall.name}`} target="_blank" rel="noreferrer" style={{color: "#096dd9"}}>
+                          <a href={`/tools/${toolCall.name}`} target="_blank" rel="noreferrer" style={{color: themeColor}}>
                             {toolCall.name}
                           </a>
                         </div>
@@ -344,8 +349,8 @@ const MessageItem = ({
               content: {
                 borderRadius: "4px 18px 18px 18px",
                 padding: "11px 16px",
-                backgroundColor: "#f4f6fa",
-                border: "1px solid #eaedf3",
+                backgroundColor: aiBubbleBg,
+                border: aiBubbleBorder,
               },
             }}
           />
@@ -453,8 +458,8 @@ const MessageItem = ({
             } : {
               borderRadius: "4px 18px 18px 18px",
               padding: "11px 16px",
-              backgroundColor: "#f4f6fa",
-              border: "1px solid #eaedf3",
+              backgroundColor: aiBubbleBg,
+              border: aiBubbleBorder,
               minWidth: isEditing ? "300px" : "auto",
             },
           }}
@@ -477,7 +482,7 @@ const MessageItem = ({
       >
         <div style={{
           textAlign: message.author === "AI" ? "left" : "right",
-          color: "#c0c4cc",
+          color: isDark ? "#4b5563" : "#c0c4cc",
           fontSize: "11px",
           marginBottom: "6px",
           padding: "0 14px",

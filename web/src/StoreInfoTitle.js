@@ -30,6 +30,8 @@ const StoreInfoTitle = (props) => {
   const [isMobile, setIsMobile] = useState(false);
   const [defaultStore, setDefaultStore] = useState(null);
 
+  const isDark = Setting.getIsDark();
+
   // Use refs to track the latest state values
   const storeRef = useRef();
   const providerRef = useRef();
@@ -279,7 +281,7 @@ const StoreInfoTitle = (props) => {
 
   const labelStyle = {
     fontSize: "12px",
-    color: "#9ca3af",
+    color: isDark ? "#6b7280" : "#9ca3af",
     marginRight: "8px",
     fontWeight: 500,
     letterSpacing: "0.3px",
@@ -292,8 +294,8 @@ const StoreInfoTitle = (props) => {
       alignItems: "center",
       gap: "10px",
       minHeight: "48px",
-      borderBottom: "1px solid #f0f0f0",
-      backgroundColor: "#fafafa",
+      borderBottom: isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid #f0f0f0",
+      backgroundColor: isDark ? "#1f1f1f" : "#fafafa",
     }}>
       {storeInfo && (
         <div style={{display: "flex", alignItems: "center"}}>
@@ -343,7 +345,7 @@ const StoreInfoTitle = (props) => {
         <div style={{display: "flex", alignItems: "center"}}>
           {!isMobile && <span style={labelStyle}>{i18next.t("general:Model")}</span>}
           {filteredModelProviders.length === 0 ? (
-            <span style={{fontSize: "13px", color: "#bbb"}}>{i18next.t("chat:No models for this mode")}</span>
+            <span style={{fontSize: "13px", color: isDark ? "#555" : "#bbb"}}>{i18next.t("chat:No models for this mode")}</span>
           ) : (
             <Select
               className="store-pill-select"

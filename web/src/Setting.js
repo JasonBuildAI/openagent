@@ -2711,6 +2711,15 @@ export function getAlgorithm(themeAlgorithmNames) {
   });
 }
 
+export function getIsDark() {
+  try {
+    const stored = localStorage.getItem("themeAlgorithm");
+    return stored ? JSON.parse(stored).includes("dark") : false;
+  } catch (_) {
+    return false;
+  }
+}
+
 export function getHtmlTitle(storeHtmlTitle) {
   const defaultHtmlTitle = "OpenAgent";
   let htmlTitle = Conf.HtmlTitle;
