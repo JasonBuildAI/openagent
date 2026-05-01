@@ -1668,7 +1668,6 @@ export function getModelSubTypeOptions(type) {
       {id: "imagen-4.0-generate-001", name: "imagen-4.0-generate-001"},
       {id: "imagen-4.0-ultra-generate-001", name: "imagen-4.0-ultra-generate-001"},
       {id: "imagen-4.0-fast-generate-001", name: "imagen-4.0-fast-generate-001"},
-      {id: "imagen-3.0-generate-002", name: "imagen-3.0-generate-002"},
       // Video generation models
       {id: "veo-3.1-generate-preview", name: "veo-3.1-generate-preview"},
       {id: "veo-3.1-fast-generate-preview", name: "veo-3.1-fast-generate-preview"},
