@@ -269,24 +269,24 @@ a[href^="mailto:"]:active {
   transition: opacity 0.08s ease;
 }
 
-/* Dark mode: override all link colors to light blue so they're readable on dark backgrounds */
+/* Dark mode: override all link colors to light neutral gray (shadcn monochrome aesthetic) */
 [data-theme="dark"] a:not(.login-link),
 [data-theme="dark"] .ant-typography a,
 [data-theme="dark"] a.ant-typography-link {
-  color: #93c5fd !important;
+  color: #d4d4d4 !important;
 }
 
 [data-theme="dark"] a:not(.login-link):hover,
 [data-theme="dark"] .ant-typography a:hover,
 [data-theme="dark"] a.ant-typography-link:hover {
-  color: #bfdbfe !important;
+  color: #f5f5f5 !important;
   opacity: 1 !important;
 }
 
 [data-theme="dark"] a:not(.login-link):active,
 [data-theme="dark"] .ant-typography a:active,
 [data-theme="dark"] a.ant-typography-link:active {
-  color: #60a5fa !important;
+  color: #a3a3a3 !important;
   opacity: 1 !important;
 }
 

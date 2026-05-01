@@ -229,10 +229,16 @@ function getDarkComponents() {
     },
     Input: {
       activeShadow: "none",
+      hoverBorderColor: "#555",
+      activeBorderColor: "#888",
       borderRadius: 6,
     },
     Select: {
       optionSelectedFontWeight: 500,
+      optionActiveBg: "rgba(255, 255, 255, 0.08)",
+      optionSelectedBg: "rgba(255, 255, 255, 0.12)",
+      hoverBorderColor: "#555",
+      activeBorderColor: "#888",
       borderRadius: 6,
     },
     Alert: {
@@ -266,6 +272,7 @@ function getDarkComponents() {
       groupTitleFontSize: 12,
       itemHeight: 40,
       fontWeightStrong: 600,
+      itemHoverBg: "rgba(255, 255, 255, 0.08)",
       itemSelectedBg: "rgba(255, 255, 255, 0.12)",
       itemSelectedColor: "inherit",
     },
