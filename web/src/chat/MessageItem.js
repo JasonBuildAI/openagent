@@ -14,8 +14,8 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Avatar, Button, Col, Collapse, Row, Space} from "antd";
-import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
+import {Alert, Avatar, Button, Col, Collapse, Row, Space, Spin} from "antd";
+import {FileTextOutlined, GlobalOutlined, LoadingOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -271,15 +271,20 @@ const MessageItem = ({
                           </a>
                         </div>
                         {toolCall.arguments && (
-                          <div style={{marginBottom: toolCall.content ? "8px" : "0"}}>
+                          <div style={{marginBottom: "8px"}}>
                             <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("chat:Arguments")}:</div>
                             {renderJsonContent(toolCall.arguments)}
                           </div>
                         )}
-                        {toolCall.content && (
+                        {toolCall.content ? (
                           <div>
                             <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("general:Result")}:</div>
                             {renderJsonContent(toolCall.content)}
+                          </div>
+                        ) : (
+                          <div style={{display: "flex", alignItems: "center", gap: "6px", color: "#999", fontSize: "12px", marginTop: "4px"}}>
+                            <Spin indicator={<LoadingOutlined style={{fontSize: 12}} spin />} size="small" />
+                            <span>{i18next.t("chat:Executing...")}</span>
                           </div>
                         )}
                       </div>

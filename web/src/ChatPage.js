@@ -430,7 +430,7 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
               });
             }, (data) => {
-              // onTool callback
+              // onTool callback (handles both tool-start and tool-complete events)
               if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
@@ -438,11 +438,36 @@ class ChatPage extends BaseListPage {
 
               const currentMessage = res.data[res.data.length - 1];
               const toolCalls = currentMessage.toolCalls || [];
-              toolCalls.push({
-                name: jsonData.name,
-                arguments: jsonData.arguments,
-                content: jsonData.content,
-              });
+
+              if (!jsonData.content) {
+                // tool-start: add new entry with empty content (tool is executing)
+                toolCalls.push({
+                  name: jsonData.name,
+                  arguments: jsonData.arguments,
+                  content: "",
+                });
+              } else {
+                // tool-complete: find the last pending entry with same name and update it
+                let found = false;
+                for (let i = toolCalls.length - 1; i >= 0; i--) {
+                  if (toolCalls[i].name === jsonData.name && !toolCalls[i].content) {
+                    toolCalls[i] = {
+                      name: jsonData.name,
+                      arguments: jsonData.arguments,
+                      content: jsonData.content,
+                    };
+                    found = true;
+                    break;
+                  }
+                }
+                if (!found) {
+                  toolCalls.push({
+                    name: jsonData.name,
+                    arguments: jsonData.arguments,
+                    content: jsonData.content,
+                  });
+                }
+              }
 
               const lastMessage2 = Setting.deepCopy(currentMessage);
               lastMessage2.toolCalls = toolCalls;
