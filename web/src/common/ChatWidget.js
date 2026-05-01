@@ -776,6 +776,7 @@ class ChatWidget extends React.Component {
         <div style={{flex: 1, position: "relative"}}>
           <ChatBox
             ref={this.chatBox}
+            autoFocusInput={false}
             disableInput={this.state.disableInput}
             loading={this.state.messageLoading}
             messages={this.state.messages}
