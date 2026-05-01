@@ -22,7 +22,7 @@ import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as Conf from "./Conf";
-import {shadcnThemeComponents, shadcnThemeToken} from "./shadcnTheme";
+import {getShadcnThemeComponents, getShadcnThemeToken} from "./shadcnTheme";
 import HomePage from "./HomePage";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import * as FormBackend from "./backend/FormBackend";
@@ -354,12 +354,12 @@ class App extends Component {
           spin={{indicator: <AiDots />}}
           theme={{
             token: {
-              ...shadcnThemeToken,
+              ...getShadcnThemeToken(this.state.themeAlgorithm.includes("dark")),
               colorPrimary: this.state.themeData.colorPrimary,
               colorInfo: this.state.themeData.colorPrimary,
               borderRadius: this.state.themeData.borderRadius,
             },
-            components: shadcnThemeComponents,
+            components: getShadcnThemeComponents(this.state.themeAlgorithm.includes("dark")),
             algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
           }}>
           <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
