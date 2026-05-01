@@ -5,6 +5,7 @@
 *.so
 *.dylib
 casibase
+openagent
 
 # Test binary, built with `go test -c`
 *.test

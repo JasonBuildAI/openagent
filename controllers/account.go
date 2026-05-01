@@ -301,7 +301,7 @@ func (c *ApiController) anonymousSignin() {
 		Id:              username,
 		Type:            "anonymous-user",
 		DisplayName:     "User",
-		Avatar:          "https://cdn.casibase.org/img/casibase-user.png",
+		Avatar:          "https://cdn.openagentai.org/img/user.png",
 		AvatarType:      "",
 		PermanentAvatar: "",
 		Email:           "",

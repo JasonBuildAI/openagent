@@ -825,7 +825,7 @@ export function submitStoreEdit(storeObj) {
 }
 
 export function getDefaultAiAvatar() {
-  return `${StaticBaseUrl}/img/casibase.png`;
+  return `${StaticBaseUrl}/img/openagent.png`;
 }
 
 export const Countries = [
@@ -2753,12 +2753,12 @@ export function getStoreIconUrl(store) {
 }
 
 export function getLogo(themes, storeLogoUrl) {
-  const defaultLogoUrl = "https://cdn.casibase.org/img/casibase-logo_1200x256.png";
+  const defaultLogoUrl = "https://cdn.openagentai.org/img/openagent-logo_1600x276.png";
   let logoUrl = Conf.LogoUrl;
   if (storeLogoUrl && storeLogoUrl !== defaultLogoUrl) {
     logoUrl = storeLogoUrl;
   }
-  logoUrl = logoUrl.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+  logoUrl = logoUrl.replace("https://cdn.openagentai.org", Conf.StaticBaseUrl);
   if (themes.includes("dark")) {
     return logoUrl.replace(/\.png$/, "_white.png");
   } else {
@@ -2767,12 +2767,12 @@ export function getLogo(themes, storeLogoUrl) {
 }
 
 export function getFooterHtml(themes, storeFooterHtml) {
-  const defaultFooterHtml = "Powered by <a target=\"_blank\" href=\"https://github.com/the-open-agent/openagent\" rel=\"noreferrer\"><img style=\"padding-bottom: 3px;\" height=\"20\" alt=\"Casibase\" src=\"https://cdn.casibase.org/img/casibase-logo_1200x256.png\" /></a>";
+  const defaultFooterHtml = "Powered by <a target=\"_blank\" href=\"https://github.com/the-open-agent/openagent\" rel=\"noreferrer\"><img style=\"padding-bottom: 3px;\" height=\"20\" alt=\"OpenAgent\" src=\"https://cdn.openagentai.org/img/openagent-logo_1600x276.png\" /></a>";
   let footerHtml = Conf.FooterHtml;
   if (storeFooterHtml && storeFooterHtml !== defaultFooterHtml) {
     footerHtml = storeFooterHtml;
   }
-  footerHtml = footerHtml.replace("https://cdn.casibase.org", Conf.StaticBaseUrl);
+  footerHtml = footerHtml.replace("https://cdn.openagentai.org", Conf.StaticBaseUrl);
   if (themes.includes("dark")) {
     return footerHtml.replace(/(\.png)/g, "_white$1");
   } else {
@@ -3016,21 +3016,21 @@ export function getToolFunctions(tool) {
     return [{
       name: "web_fetch",
       description: "Fetch and extract content from a web URL",
-      testContent: JSON.stringify({tool: "web_fetch", arguments: {url: "https://casibase.org", max_length: 3000}}, null, 2),
+      testContent: JSON.stringify({tool: "web_fetch", arguments: {url: "https://openagentai.org", max_length: 3000}}, null, 2),
     }];
   }
   if (type === "web_browser") {
     return [{
       name: "web_browser",
       description: "Open a web page in a browser and capture a screenshot",
-      testContent: JSON.stringify({tool: "web_browser", arguments: {url: "https://casibase.org", timeout: 60}}, null, 2),
+      testContent: JSON.stringify({tool: "web_browser", arguments: {url: "https://openagentai.org", timeout: 60}}, null, 2),
     }];
   }
   if (type === "browser_use") {
     return [{
       name: "browser_use",
       description: "Automate browser interactions using AI-driven control",
-      testContent: JSON.stringify({tool: "browser_use_open", arguments: {url: "https://casibase.org"}}, null, 2),
+      testContent: JSON.stringify({tool: "browser_use_open", arguments: {url: "https://openagentai.org"}}, null, 2),
     }];
   }
   if (type === "gui") {

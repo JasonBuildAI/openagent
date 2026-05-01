@@ -885,7 +885,7 @@
   "system": {
     "API Latency": "API延迟",
     "API Throughput": "API吞吐量",
-    "About Casibase": "关于OpenAgent",
+    "About OpenAgent": "关于OpenAgent",
     "CPU Usage": "CPU使用率",
     "Community": "社区",
     "Disk Usage": "磁盘使用率",

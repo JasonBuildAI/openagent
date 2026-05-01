@@ -101,7 +101,7 @@ func getDefaultStoragePath() (string, error) {
 	providerDbName := conf.GetConfigString("providerDbName")
 	if providerDbName != "" {
 		dbName := conf.GetConfigString("dbName")
-		return fmt.Sprintf("C:/casibase_data/%s", dbName), nil
+		return fmt.Sprintf("C:/openagent_data/%s", dbName), nil
 	}
 
 	cwd, err := os.Getwd()
@@ -313,7 +313,7 @@ func initBuiltInTools() {
 			TestContent: `{"tool":"web_fetch","arguments":{"url":"https://example.com"}}`,
 			State:       "Active",
 			PromptExamples: []string{
-				"Fetch and summarize the content of https://casibase.org.",
+				"Fetch and summarize the content of https://openagentai.org.",
 				"Get the main text from https://en.wikipedia.org/wiki/Go_(programming_language).",
 				"Retrieve the JSON response from a REST API endpoint.",
 				"Download and read the release notes from a GitHub page.",
@@ -429,8 +429,8 @@ func initBuiltInSite() {
 		DisplayName: "Built-in Site",
 		ThemeColor:  conf.GetDefaultColorPrimary(),
 		HtmlTitle:   "",
-		FaviconUrl:  "https://cdn.casibase.com/img/casibase.png",
-		LogoUrl:     "https://cdn.casibase.org/img/casibase-logo_1200x256.png",
+		FaviconUrl:  "https://cdn.openagentai.org/img/casibase.png",
+		LogoUrl:     "https://cdn.openagentai.org/img/openagent-logo_1600x276.png",
 		FooterHtml:  "",
 		NavItems:    builtInNavItems,
 	}
