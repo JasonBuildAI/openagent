@@ -189,6 +189,12 @@ func CalculateOpenAIModelPrice(model string, modelResult *ModelResult, lang stri
 		outputPricePerThousandTokens = 0.008
 		modelResult.Currency = "USD"
 
+	// gpt-image-2 model (token-based pricing: text $5/1M input, image $8/1M input, $30/1M output)
+	case strings.Contains(model, "gpt-image-2"):
+		inputPricePerThousandTokens = 0.005
+		outputPricePerThousandTokens = 0.030
+		modelResult.Currency = "USD"
+
 	// gpt-image-1 model
 	case strings.Contains(model, "gpt-image-1"):
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
@@ -249,7 +255,18 @@ Language models:
 | GPT-5.2-chat          | 400K    | $0.00125                 | $0.01                    |
 | GPT-5-chat-latest     | 400K    | $0.00125                 | $0.01                    |
 | Deep-Research         | 200K    | $0.002                   | $0.008                   |
-Image models:
+Image generation models (token-based, per 1M tokens):
+
+| Model             | Modality | Input   | Cached Input | Output  |
+|-------------------|----------|---------|--------------|---------|
+| GPT-Image-2       | Image    | $8.00   | $2.00        | $30.00  |
+|                   | Text     | $5.00   | $1.25        | -       |
+| GPT-Image-1.5     | Image    | $8.00   | $2.00        | $32.00  |
+|                   | Text     | $5.00   | $1.25        | $10.00  |
+| GPT-Image-1-Mini  | Image    | $2.50   | $0.25        | $8.00   |
+|                   | Text     | $2.00   | $0.20        | -       |
+
+Legacy image models:
 
 | Models       | Quality | Resolution               | Price (per image) |
 |--------------|---------|--------------------------|------------------|
