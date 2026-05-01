@@ -335,7 +335,7 @@ function ManagementPage(props) {
 
     const onClick = (e) => {
       if (e.key === "/account") {
-        if (Setting.isBasicUser(account)) {
+        if (Setting.isBasicLoginMode(account)) {
           history.push("/account");
         } else {
           Setting.openLink(Setting.getMyProfileUrl(account));
@@ -417,8 +417,9 @@ function ManagementPage(props) {
     return filteredItems.filter(item => !Array.isArray(item.children) || item.children.length > 0);
   }
 
+  /** Strip sidebar items that only open Casdoor admin URLs; built-in auth uses in-app pages instead. */
   function filterUserMenuItems(menuItems) {
-    if (!Setting.isBasicUser(account)) {
+    if (!Setting.isBasicLoginMode(account)) {
       return menuItems;
     }
     return menuItems.filter(item => !["/identity", "#", "##", "###"].includes(item.key));
@@ -619,7 +620,7 @@ function ManagementPage(props) {
           </a>, "/swagger", <ApiOutlined />),
       ]));
 
-      return Setting.isBasicUser(account) ? filterMenuItems(filterUserMenuItems(res), navItems) : filterMenuItems(res, navItems);
+      return Setting.isBasicLoginMode(account) ? filterMenuItems(filterUserMenuItems(res), navItems) : filterMenuItems(res, navItems);
     }
 
     const sortedForms = forms.slice().sort((a, b) => a.position.localeCompare(b.position));
@@ -628,7 +629,7 @@ function ManagementPage(props) {
       res.push(Setting.getItem(<Link to={path}>{form.displayName}</Link>, path, <FormOutlined />));
     });
 
-    return Setting.isBasicUser(account) ? filterUserMenuItems(res) : res;
+    return Setting.isBasicLoginMode(account) ? filterUserMenuItems(res) : res;
   }
 
   function renderHomeIfSignedIn(component) {
@@ -666,7 +667,7 @@ function ManagementPage(props) {
       <Switch>
         <Route exact path="/access/:owner/:name" render={(props) => renderSigninIfNotSignedIn(<AccessPage account={account} {...props} />)} />
         <Route exact path="/callback" component={AuthCallback} />
-        <Route exact path="/account" render={(props) => renderSigninIfNotSignedIn(Setting.isBasicUser(account) ? <AccountPage account={account} {...props} /> : <Redirect to="/" />)} />
+        <Route exact path="/account" render={(props) => renderSigninIfNotSignedIn(Setting.isBasicLoginMode(account) ? <AccountPage account={account} {...props} /> : <Redirect to="/" />)} />
         <Route exact path="/signin" render={(props) => Setting.isAnonymousUser(account) ? <SigninPage logo={siderLogo} {...props} /> : renderHomeIfSignedIn(<SigninPage logo={siderLogo} {...props} />)} />
         <Route exact path="/" render={(props) => renderSigninIfNotSignedIn(<HomePage account={account} {...props} />)} />
         <Route exact path="/home" render={(props) => renderSigninIfNotSignedIn(<HomePage account={account} {...props} />)} />

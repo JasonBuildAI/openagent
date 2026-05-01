@@ -85,7 +85,7 @@ export function getSigninUrl() {
 }
 
 export function getUserProfileUrl(userName, account) {
-  if (isBasicUser(account)) {
+  if (isBasicLoginMode(account)) {
     return "#";
   }
 
@@ -93,7 +93,7 @@ export function getUserProfileUrl(userName, account) {
 }
 
 export function getMyProfileUrl(account) {
-  if (isBasicUser(account)) {
+  if (isBasicLoginMode(account)) {
     return "#";
   }
 
@@ -229,7 +229,12 @@ export function canViewAllUsers(account) {
   return account.name === "admin" || isChatAdminUser(account);
 }
 
-export function isBasicUser(account) {
+/**
+ * Built-in login mode (`account.owner === "basic"`): not a Casdoor-synced identity session.
+ * The account may still be admin; this only distinguishes login/identity plumbing (profile URLs,
+ * Casdoor sidebar links), not role or permissions.
+ */
+export function isBasicLoginMode(account) {
   if (account === undefined || account === null) {
     return false;
   }
