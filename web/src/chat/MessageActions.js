@@ -118,7 +118,7 @@ const MessageActions = ({
       </Tooltip>
 
       {!isLastMessage ? null : (
-        <Tooltip title={i18next.t("general:Regenerate Answer")} arrow={false}>
+        <Tooltip title={i18next.t("general:Regenerate")} arrow={false}>
           <Button
             icon={<ReloadOutlined />}
             color="primary"

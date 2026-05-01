@@ -170,7 +170,7 @@ const MessageItem = ({
         >
           {isRegenerating
             ? i18next.t("general:Regenerating...")
-            : i18next.t("general:Regenerate Answer")}
+            : i18next.t("general:Regenerate")}
         </Button>
       );
       return Setting.isMobile() ? (
@@ -192,7 +192,7 @@ const MessageItem = ({
           description={message.errorText}
           type="error"
           showIcon
-          action={regenerateButton}
+          action={<div style={{marginLeft: 16}}>{regenerateButton}</div>}
         />
       );
     }
