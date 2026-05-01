@@ -1,141 +1,43 @@
-<h1 align="center" style="border-bottom: none;">📦⚡️ OpenAgent</h1>
-<h3 align="center">AI Cloud OS: Open-source enterprise-level AI knowledge base and MCP (model-context-protocol)/A2A (agent-to-agent) management platform with admin UI, user management and Single-Sign-On⚡️, supports ChatGPT, Claude, Llama, Ollama, HuggingFace, etc.</h3>
-<p align="center">
-  <a href="#badge">
-    <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
-  </a>
-  <a href="https://hub.docker.com/r/casbin/openagent">
-    <img alt="docker pull casbin/openagent" src="https://img.shields.io/docker/pulls/casbin/openagent.svg">
-  </a>
-  <a href="https://github.com/the-open-agent/openagent/actions/workflows/build.yml">
-    <img alt="GitHub Workflow Status (branch)" src="https://github.com/the-open-agent/openagent/workflows/Build/badge.svg?style=flat-square">
-  </a>
-  <a href="https://github.com/the-open-agent/openagent/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/the-open-agent/openagent.svg">
-  </a>
-  <a href="https://hub.docker.com/r/casbin/openagent">
-    <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
-  </a>
-</p>
+<h1 align="center">OpenAgent</h1>
+<h3 align="center">Next-generation personal AI assistant powered by LLM, RAG and agent loops,<br>supporting computer-use, browser-use and coding agent</h3>
 
 <p align="center">
+  <a href="https://github.com/the-open-agent/openagent/actions/workflows/build.yml">
+    <img alt="Build" src="https://github.com/the-open-agent/openagent/workflows/Build/badge.svg?style=flat-square">
+  </a>
+  <a href="https://github.com/the-open-agent/openagent/releases/latest">
+    <img alt="Release" src="https://img.shields.io/github/v/release/the-open-agent/openagent.svg">
+  </a>
+  <a href="https://hub.docker.com/r/casbin/openagent">
+    <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/casbin/openagent.svg">
+  </a>
   <a href="https://goreportcard.com/report/github.com/the-open-agent/openagent">
     <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/the-open-agent/openagent?style=flat-square">
   </a>
   <a href="https://github.com/the-open-agent/openagent/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/the-open-agent/openagent?style=flat-square" alt="license">
+    <img alt="License" src="https://img.shields.io/github/license/the-open-agent/openagent?style=flat-square">
   </a>
-  <a href="https://github.com/the-open-agent/openagent/issues">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/the-open-agent/openagent?style=flat-square">
-  </a>
-  <a href="#">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/the-open-agent/openagent?style=flat-square">
-  </a>
-  <a href="https://github.com/the-open-agent/openagent/network">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/the-open-agent/openagent?style=flat-square">
-  </a>
-  <a href="https://crowdin.com/project/casibase">
-    <img alt="Crowdin" src="https://badges.crowdin.net/casibase/localized.svg">
-  </a>
-  <a href="https://discord.gg/devUNrWXrh">
+  <a href="https://discord.gg/5rPsrAzK7S">
     <img alt="Discord" src="https://img.shields.io/discord/1022748306096537660?logo=discord&label=discord&color=5865F2">
   </a>
 </p>
 
+---
+
+OpenAgent is an open-source personal AI assistant that brings together powerful LLMs, your own knowledge base, and autonomous agent loops — all in one self-hostable platform. Connect any model provider, build a RAG knowledge base from your documents, and let agents browse the web, run code, and call any MCP-compatible tool on your behalf.
+
 ## Online Demo
 
-### Read-only site (any modification operation will fail)
+|                  | URL                          | Notes                                             |
+|------------------|------------------------------|---------------------------------------------------|
+| **Live Preview** | https://demo.openagentai.org | Read-only tour — no account needed                |
+| **Playground**   | https://try.openagentai.org  | Make changes freely — data resets every 5 minutes |
 
-- Chat bot: https://ai.casibase.com
-- Admin UI: https://ai-admin.casibase.com
+## Quick Start
 
-### Writable site (original data will be restored for every 5 minutes)
+Pre-built binaries are available for Linux, macOS, and Windows (amd64 / arm64). The install script downloads the latest release, installs it, and starts the server on **port 14000**.
 
-- Chat bot: https://demo.casibase.com
-- Admin UI: https://demo-admin.casibase.com
-
-## Documentation
-
-https://casibase.org
-
-## Architecture
-
-OpenAgent contains 2 parts:
-
-| **Name**       | **Description**                                   | **Language**                            |
-|----------------|---------------------------------------------------|-----------------------------------------|
-| Frontend       | User interface for OpenAgent                       | JavaScript + React                      |
-| Backend        | Server-side logic and API for OpenAgent            | Golang + Beego + Python + Flask + MySQL |
-
-![0-Architecture-casibase](assets/0-Architecture-casibase.png)
-
-## Supported Models
-
-**Language Model**
-
-| Model          | Sub Type                                                                                                                                                                                                                                                                                                                                                                                                         | Link                                                                 |
-|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| OpenAI         | dall-e-3, gpt-3.5-turbo-0125,  gpt-3.5-turbo,  gpt-3.5-turbo-1106,  gpt-3.5-turbo-instruct, gpt-3.5-turbo-16k-0613, gpt-3.5-turbo-16k, gpt-4-0125-preview, gpt-4-1106-preview, gpt-4-turbo-preview, gpt-4-vision-preview, gpt-4-1106-vision-preview, gpt-4,  gpt-4-0613, gpt-4-32k, gpt-4-32k-0613,  gpt-4o, gpt-4o-2024-05-13, gpt-4o-mini, gpt-4o-mini-2024-07-18                                              | [OpenAI](https://chat.openai.com/)                                   |
-| Claude         | claude-2.0, claude-2.1, claude-instant-1.2, claude-3-sonnet-20240229, claude-3-opus-20240229, claude-3-haiku-20240307                                                                                                                                                                                                                                                                                            | [Claude](https://claude.ai/chats)                                    |
-| Local          | custom-model                                                                                                                                                                                                                                                                                                                                                                                                     | [Local Computer](#)                                                  |
-| DeepSeek       | deepseek-chat, deepseek-reasoner                                                                                                                                                                                                                                                                                                                                                                                 | [DeepSeek](https://www.deepseek.com/)                                |
-| Azure          | dall-e-3, gpt-3.5-turbo-0125,  gpt-3.5-turbo,  gpt-3.5-turbo-1106,  gpt-3.5-turbo-instruct, gpt-3.5-turbo-16k-0613, gpt-3.5-turbo-16k, gpt-4-0125-preview, gpt-4-1106-preview, gpt-4-turbo-preview, gpt-4-vision-preview, gpt-4-1106-vision-preview, gpt-4,  gpt-4-0613, gpt-4-32k, gpt-4-32k-0613,  gpt-4o, gpt-4o-2024-05-13, gpt-4o-mini, gpt-4o-mini-2024-07-18                                              | [Azure](https://azure.microsoft.com/zh-cn/products/ai-model-catalog) |
-| Amazon Bedrock | claude, claude-instant, command, command-light, embed-english, embed-multilingual, jurassic-2-mid, jurassic-2-ultra, llama-2-chat-13b, llama-2-chat-70b, titan-text-lite, titan-text-express, titan-embeddings, titan-multimodal-embeddings                                                                                                                                                                      | [Amazon Bedrock](https://aws.amazon.com/cn/bedrock/)                 |
-| Qwen           | qwen-long, qwen-turbo, qwen-plus, qwen-max, qwen-max-longcontext                                                                                                                                                                                                                                                                                                                                                 | [Qwen](https://www.aliyun.com/product/tongyi)                        |
-| Gemini         | gemini-pro, gemini-pro-vision                                                                                                                                                                                                                                                                                                                                                                                    | [Gemini](https://gemini.google.com/)                                 |
-| Hugging Face   | meta-llama/Llama-2-7b, tiiuae/falcon-180B, bigscience/bloom, gpt2, baichuan-inc/Baichuan2-13B-Chat, THUDM/chatglm2-6b                                                                                                                                                                                                                                                                                            | [Hugging Face](https://huggingface.co/)                              |
-| Cohere         | command-light, command                                                                                                                                                                                                                                                                                                                                                                                           | [Cohere](https://cohere.com/)                                        |
-| iFlytek        | spark-v1.5, spark-v2.0                                                                                                                                                                                                                                                                                                                                                                                           | [iFlytek](https://xinghuo.xfyun.cn/)                                 |
-| ChatGLM        | glm-3-turbo, glm-4, glm-4V                                                                                                                                                                                                                                                                                                                                                                                       | [ChatGLM](https://chatglm.cn/)                                       |
-| MiniMax        | abab5-chat                                                                                                                                                                                                                                                                                                                                                                                                       | [MiniMax](https://api.minimax.chat/)                                 |
-| Ernie          | ERNIE-Bot, ERNIE-Bot-turbo, BLOOMZ-7B, Llama-2                                                                                                                                                                                                                                                                                                                                                                   | [Ernie](https://yiyan.baidu.com/)                                    |
-| Moonshot       | moonshot-v1-8k, moonshot-v1-32k, moonshot-v1-128k                                                                                                                                                                                                                                                                                                                                                                | [Moonshot](https://www.moonshot.cn/)                                 |
-| Baichuan       | Baichuan2-Turbo, Baichuan3-Turbo, Baichuan4                                                                                                                                                                                                                                                                                                                                                                      | [Baichuan](https://www.baichuan-ai.com/home)                         |
-| Doubao         | Doubao-lite-4k, Doubao-lite-32k, Doubao-lite-128k, Doubao-pro-4k, Doubao-pro-32k, Doubao-pro-128k                                                                                                                                                                                                                                                                                                                | [Doubao](https://team.doubao.com/zh/?view_from=homepage_tab)         |
-| StepFun        | step-1-8k, step-1-32k, step-1-128k, sstep-1-256k, step-1-flash, step-2-16k                                                                                                                                                                                                                                                                                                                                       | [StepFun](https://www.stepfun.com/)                                  |
-| Hunyuan        | hunyuan-lite, hunyuan-standard, hunyuan-standard-256K, hunyuan-pro, hunyuan-code,  hunyuan-role, hunyuan-turbo                                                                                                                                                                                                                                                                                                   | [Hunyuan](https://hunyuan.tencent.com/)                              |
-| Mistral        | mistral-large-latest, pixtral-large-latest, mistral-small-latest, codestral-latest, ministral-8b-latest, ministral-3b-latest, pixtral-12b, mistral-nemo, open-mistral-7b, open-mixtral-8x7b, open-mixtral-8x22b                                                                                                                                                                                                  | [Mistral](https://mistral.ai/)                                       |
-| OpenRouter     | google/palm-2-codechat-bison, google/palm-2-chat-bison, openai/gpt-3.5-turbo, openai/gpt-3.5-turbo-16k, openai/gpt-4, openai/gpt-4-32k, anthropic/claude-2, anthropic/claude-instant-v1, meta-llama/llama-2-13b-chat, meta-llama/llama-2-70b-chat, palm-2-codechat-bison, palm-2-chat-bison, gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, gpt-4-32k, claude-2, claude-instant-v1, llama-2-13b-chat, llama-2-70b-chat | [OpenRouter](https://openrouter.ai/)                                 |
-
-**Embedding Model**
-
-| Model        | Sub Type                                                                                                         | Link                                                                 |
-|--------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| OpenAI       | text-embedding-ada-002, text-embedding-3-small, text-embedding-3-large                                           | [OpenAI](https://chat.openai.com/)                                   |
-| Local        | custom-embedding                                                                                                 | [Local Computer](#)                                                  |
-| Azure        | text-embedding-ada-002, text-embedding-3-small, text-embedding-3-large                                           | [Azure](https://azure.microsoft.com/zh-cn/products/ai-model-catalog) |
-| Hugging Face | sentence-transformers/all-MiniLM-L6-v2                                                                           | [Hugging Face](https://huggingface.co/)                              |
-| Qwen         | text-embedding-v1, text-embedding-v2, text-embedding-v3                                                          | [Qwen](https://www.aliyun.com/product/tongyi)                        |
-| Cohere       | embed-english-v2.0, embed-english-light-v2.0, embed-multilingual-v2.0, embed-english-v3.0                        | [Cohere](https://cohere.com/)                                        |
-| Ernie        | default                                                                                                          | [Ernie](https://yiyan.baidu.com/)                                    |
-| MiniMax      | embo-01                                                                                                          | [MiniMax](https://api.minimax.chat/)                                 |
-| Hunyuan      | hunyuan-embedding                                                                                                | [Hunyuan](https://hunyuan.tencent.com/)                              |
-| Jina         | jina-embeddings-v2-base-zh, jina-embeddings-v2-base-en, jina-embeddings-v2-base-de, jina-embeddings-v2-base-code | [Jina](https://jina.ai/)                                             |
-
-**Speech-to-Text Model**
-
-| Model | Sub Type               | Link                                          |
-|-------|------------------------|-----------------------------------------------|
-| Qwen  | paraformer-realtime-v1 | [Qwen](https://www.aliyun.com/product/tongyi) |
-
-
-**Text-to-Speech Model**
-
-| Model | Sub Type     | Link                                          |
-|-------|--------------|-----------------------------------------------|
-| Qwen  | cosyvoice-v1 | [Qwen](https://www.aliyun.com/product/tongyi) |
-
-## Documentation
-
-<https://casibase.org>
-
-## Install
-
-<https://casibase.org/docs/basic/server-installation>
-
-### Quick start (Docker, one command)
-
-Requires [Docker](https://docs.docker.com/get-docker/) running. Pulls the all-in-one image `casbin/openagent-all-in-one` (includes MariaDB) and starts on **port 14000** by default.
+### Install binary (recommended)
 
 **macOS / Linux / WSL**
 
@@ -150,21 +52,67 @@ curl -fsSL --proto '=https' --tlsv1.2 \
 irm https://raw.githubusercontent.com/the-open-agent/openagent/master/scripts/install.ps1 | iex
 ```
 
-**From a local clone** (same behavior as the one-liners above)
+Then open [http://localhost:14000](http://localhost:14000).
+
+Optional environment variables: `OPENAGENT_VERSION`, `INSTALL_DIR`, `BIN_DIR`.
+
+### Build from source
 
 ```bash
-bash scripts/install.sh
+# Backend
+go build
+
+# Frontend
+cd web && yarn install && yarn start
 ```
 
-Optional environment variables: `OPENAGENT_PORT` (host port, default `14000`), `OPENAGENT_TAG`, `OPENAGENT_CONTAINER_NAME`, `MYSQL_ROOT_PASSWORD`, `OPENAGENT_FORCE=1` to replace an existing container. After start, open [http://127.0.0.1:14000/](http://127.0.0.1:14000/).
+## Highlights
 
-## How to contact?
+### Agent Loops
 
-Discord: <https://discord.gg/5rPsrAzK7S>
+- **Browser-Use** — drive a real browser: navigate, click, fill forms, scrape, and screenshot pages
+- **Web Search & Fetch** — search the web and pull page content directly into the agent's context
+- **Shell Execution** — run shell commands and scripts from within the agent loop
+- **Office Automation** — read and write Word, Excel, and PowerPoint files
+- **MCP (Model Context Protocol)** — connect any MCP-compatible server over SSE, Stdio, or StreamableHTTP and expose its tools to the agent
+- **Transparent Tool Calls** — see exactly which tool was invoked, with what arguments, and what it returned, step by step
 
-## Contribute
+### RAG & Knowledge Base
 
-For OpenAgent, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
+- **Document Ingestion** — upload PDFs, Word docs, Excel sheets, and more; they are chunked, embedded, and indexed automatically
+- **Semantic Search** — every chat retrieves the most relevant passages from your knowledge base before the LLM responds
+- **Pluggable Embedding Providers** — OpenAI, Azure, Gemini, Qwen, Cohere, Jina, HuggingFace, local models, and more
+- **Per-Store Isolation** — organise knowledge into separate stores and assign them to individual chats or applications
+
+### 30+ Model Providers
+
+Works out of the box with all major LLM providers — configure as many as you like and switch between them per chat:
+
+OpenAI · Azure OpenAI · Claude (Anthropic) · Gemini (Google) · DeepSeek · Mistral · Grok · Qwen · Doubao · Moonshot · ChatGLM · Baichuan · Ernie · iFlytek · HuggingFace · Cohere · Amazon Bedrock · OpenRouter · local models · and more
+
+### Workflow Automation
+
+- **Visual Workflow Builder** — compose multi-step pipelines with a BPMN-style editor
+- **Conditional & Parallel Execution** — branch on gateway conditions and run tasks concurrently
+- **Task Scheduling** — run workflows or agent jobs on a recurring schedule
+- **Usage Analytics** — track token consumption and cost per provider, model, and user
+
+### Platform Features
+
+- **Single Sign-On** — OIDC / OAuth2 / LDAP / SAML via the integrated auth layer
+- **Multi-tenant** — separate workspaces per user or organisation
+- **REST API + Swagger UI** — every feature is accessible programmatically
+- **Audit Logs** — full activity history for every action
+- **File & Video Management** — built-in storage for files, images, and video content
+
+## Documentation
+
+https://www.openagentai.org/
+
+## Community
+
+- Discord: https://discord.gg/5rPsrAzK7S
+- Issues and PRs are welcome — please open an issue first to discuss larger changes
 
 ## License
 
