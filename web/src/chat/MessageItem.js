@@ -14,8 +14,8 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Avatar, Button, Col, Collapse, Row, Space, Spin} from "antd";
-import {FileTextOutlined, GlobalOutlined, LoadingOutlined} from "@ant-design/icons";
+import {Alert, Avatar, Button, Col, Collapse, Row, Space} from "antd";
+import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -27,28 +27,7 @@ import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
 import SearchSourcesDrawer from "./SearchSourcesDrawer";
 import KnowledgeSourcesDrawer from "./KnowledgeSourcesDrawer";
-import Editor from "../common/Editor";
-
-function renderJsonContent(raw) {
-  let text = raw;
-  try {
-    text = JSON.stringify(JSON.parse(raw), null, 2);
-  } catch (_) {
-    // not JSON, render as-is
-  }
-  return (
-    <Editor
-      value={text}
-      lang="json"
-      dark
-      readOnly
-      editable={false}
-      fillWidth
-      lineNumbers={false}
-      lineWrapping
-    />
-  );
-}
+import ToolCallSection from "./ToolCallSection";
 
 const {Panel} = Collapse;
 
@@ -76,7 +55,6 @@ const MessageItem = ({
   const [searchDrawerVisible, setSearchDrawerVisible] = useState(false);
   const [knowledgeDrawerVisible, setKnowledgeDrawerVisible] = useState(false);
   const themeColor = Setting.getThemeColor();
-  const toolColor = (message.reasonText && message.toolCalls) ? themeColor : themeColor;
 
   const isDark = Setting.getIsDark();
 
@@ -236,64 +214,11 @@ const MessageItem = ({
               </Collapse>
             </div>
           )}
-          {message.toolCalls && message.toolCalls.length > 0 && (
-            <div className="message-tools" style={{marginBottom: "15px"}}>
-              <Collapse
-                ghost
-                style={{
-                  borderLeft: `3px solid ${toolColor}`,
-                  borderRadius: "5px",
-                  padding: "10px",
-                }}
-              >
-                <Panel
-                  header={
-                    <span style={{fontWeight: "bold", color: toolColor}}>
-                      {i18next.t("chat:Tool calls")} ({message.toolCalls.length})
-                    </span>
-                  }
-                  key="tools"
-                  className="chat-message-collapse-panel"
-                >
-                  <div>
-                    {message.toolCalls.map((toolCall, idx) => (
-                      <div key={idx} className="tool-call-item" style={{
-                        marginBottom: idx < message.toolCalls.length - 1 ? "10px" : "0",
-                        paddingBottom: "8px",
-                      }}>
-                        <div style={{
-                          fontWeight: "600",
-                          color: themeColor,
-                          marginBottom: "4px",
-                        }}>
-                          <a href={`/tools/${toolCall.name}`} target="_blank" rel="noreferrer" style={{color: themeColor}}>
-                            {toolCall.name}
-                          </a>
-                        </div>
-                        {toolCall.arguments && (
-                          <div style={{marginBottom: "8px"}}>
-                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("chat:Arguments")}:</div>
-                            {renderJsonContent(toolCall.arguments)}
-                          </div>
-                        )}
-                        {toolCall.content ? (
-                          <div>
-                            <div style={{fontSize: "12px", fontWeight: "bold", marginBottom: "2px"}}>{i18next.t("general:Result")}:</div>
-                            {renderJsonContent(toolCall.content)}
-                          </div>
-                        ) : (
-                          <div style={{display: "flex", alignItems: "center", gap: "6px", color: "#999", fontSize: "12px", marginTop: "4px"}}>
-                            <Spin indicator={<LoadingOutlined style={{fontSize: 12}} spin />} size="small" />
-                            <span>{i18next.t("chat:Executing...")}</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </Panel>
-              </Collapse>
-            </div>
-          )}
+          <ToolCallSection
+            toolCalls={message.toolCalls}
+            isDark={isDark}
+            themeColor={themeColor}
+          />
 
           <div className="message-answer">
             {message.html || renderText(message.text)}
