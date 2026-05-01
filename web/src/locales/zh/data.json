@@ -94,7 +94,6 @@
     "Hello, I'm OpenAgent AI Assistant": "您好，我是OpenAgent AI助理",
     "I'm here to help answer your questions": "我可以帮助回答您的问题",
     "I'm listening...": "正在倾听...",
-    "Image generation": "图像生成",
     "Knowledge Fragment": "知识片段",
     "Knowledge sources": "知识来源",
     "Maximize messages": "消息列最大化",
@@ -108,7 +107,6 @@
     "Relevance": "相关性",
     "Single": "单聊",
     "Speech recognition not supported in this browser": "此浏览器不支持语音识别",
-    "Text generation": "文本生成",
     "Text token count": "文本Token数量",
     "The chat is not found": "会话不存在",
     "The response has been interrupted. Please do not refresh the page during responding.": "该回答已被中断。回答期间请不要刷新页面。",
@@ -280,6 +278,7 @@
     "Icon - Tooltip": "图标URL或图片路径",
     "Icon URL (optional)": "Icon URL (optional)",
     "Identity": "身份认证",
+    "Image": "图像",
     "Images": "镜像",
     "Inactive": "已关闭",
     "Invert selection": "反选",
@@ -527,9 +526,7 @@
     "Help": "帮助",
     "Login Error": "登录错误",
     "More Details": "更多详情",
-    "Please log in to use this feature": "使用该功能前请先登录",
-    "Signing in...": "正在登录...",
-    "You will be redirected to the login page shortly": "即将重定向至登录页面"
+    "Signing in...": "正在登录..."
   },
   "machine": {
     "Edit Machine": "编辑主机",
@@ -592,7 +589,6 @@
     "API key - Tooltip": "用于身份验证的API密钥",
     "API version": "API版本",
     "API version - Tooltip": "Azure API版本",
-    "Add Storage Provider": "添加存储提供商",
     "Auth type": "认证类型",
     "Auth type - Tooltip": "认证类型",
     "Bot ID": "机器人ID",
@@ -781,6 +777,7 @@
     "Child stores - Tooltip": "关联子存储名称（用于跨存储知识检索）",
     "Chinese": "语文",
     "Claim": "认领",
+    "Click a question to get started": "Click a question to get started",
     "Collected time": "采集时间",
     "Confirm share store": "确认为所选用户复制本数据仓库？新仓库将归该用户所有，名称会带后缀以便区分。",
     "Disable file upload": "禁止文件上传",
@@ -964,14 +961,18 @@
     "Readme": "说明文件",
     "Readme - Tooltip": "说明文件的URL地址"
   },
-  "theme": {
-    "Compact": "紧凑",
-    "Dark": "深色"
-  },
   "tool": {
+    "Chrome for Testing": "Chrome for Testing",
+    "Chrome mode": "Chrome mode",
+    "Chrome mode - Tooltip": "Chrome mode - Tooltip",
+    "Description": "Description",
     "Edit Tool": "Edit Tool",
+    "Function name": "Function name",
+    "Functions": "Functions",
+    "Functions - Tooltip": "Functions - Tooltip",
     "Prompt examples": "Prompt examples",
-    "Prompt examples - Tooltip": "Prompt examples - Tooltip"
+    "Prompt examples - Tooltip": "Prompt examples - Tooltip",
+    "User Chrome": "User Chrome"
   },
   "usage": {
     "Apr": "4月",

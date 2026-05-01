@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {Button, Select, Switch} from "antd";
-import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Segmented, Select, Switch} from "antd";
+import {FontSizeOutlined, MinusOutlined, PictureOutlined, PlusOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -328,16 +328,31 @@ const StoreInfoTitle = (props) => {
       {modelProviders.length > 0 && typeof onGenerationModeChange === "function" && (
         <div style={{display: "flex", alignItems: "center"}}>
           {!isMobile && <span style={labelStyle}>{i18next.t("chat:Mode")}</span>}
-          <Select
-            className="store-pill-select"
+          <Segmented
             value={generationMode}
-            style={{width: isMobile ? "34vw" : "11rem"}}
             onChange={onGenerationModeChange}
             disabled={isUpdating}
-          >
-            <Select.Option value="text">{i18next.t("chat:Text generation")}</Select.Option>
-            <Select.Option value="image">{i18next.t("chat:Image generation")}</Select.Option>
-          </Select>
+            options={[
+              {
+                value: "text",
+                label: (
+                  <div style={{display: "flex", alignItems: "center", gap: 5, padding: "0 2px"}}>
+                    <FontSizeOutlined />
+                    <span>{i18next.t("general:Text")}</span>
+                  </div>
+                ),
+              },
+              {
+                value: "image",
+                label: (
+                  <div style={{display: "flex", alignItems: "center", gap: 5, padding: "0 2px"}}>
+                    <PictureOutlined />
+                    <span>{i18next.t("general:Image")}</span>
+                  </div>
+                ),
+              },
+            ]}
+          />
         </div>
       )}
 
