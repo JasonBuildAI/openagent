@@ -14,14 +14,14 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Avatar, Button, Col, Collapse, Row} from "antd";
+import {Alert, Avatar, Button, Col, Collapse, Row, Space} from "antd";
 import {FileTextOutlined, GlobalOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import {AvatarErrorUrl} from "../Conf";
 import {renderText} from "../ChatMessageRender";
-import MessageActions from "./MessageActions";
+import MessageActions, {CopyButton} from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
 import MessageEdit from "./MessageEdit";
 import {MessageCarrier} from "./MessageCarrier";
@@ -128,6 +128,7 @@ const MessageItem = ({
   };
 
   const {isEditing,
+    isHovering,
     setIsHovering,
     renderEditForm,
     renderEditButton,
@@ -374,7 +375,12 @@ const MessageItem = ({
         alignItems: "center",
         position: "relative",
       }}>
-        {isUserMessage && renderEditButton()}
+        {isUserMessage && !isEditing && (
+          <Space size="small" style={{opacity: isHovering ? 0.8 : 0, transition: "opacity 0.2s ease-in-out"}}>
+            <CopyButton message={message} onCopy={onCopy} />
+            {renderEditButton()}
+          </Space>
+        )}
 
         <Bubble
           placement={isUserMessage ? "end" : "start"}
