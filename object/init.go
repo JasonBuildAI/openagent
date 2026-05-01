@@ -24,14 +24,14 @@ import (
 )
 
 func InitDb() {
-	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName := initBuiltInProviders()
-	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName)
+	modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName, imageProviderName := initBuiltInProviders()
+	initBuiltInStore(modelProviderName, embeddingProviderName, ttsProviderName, sttProviderName, imageProviderName)
 	initBuiltInTools()
 	initBuiltInSite()
 	InitUsers()
 }
 
-func initBuiltInStore(modelProviderName string, embeddingProviderName string, ttsProviderName string, sttProviderName string) {
+func initBuiltInStore(modelProviderName string, embeddingProviderName string, ttsProviderName string, sttProviderName string, imageProviderName string) {
 	stores, err := GetGlobalStores()
 	if err != nil {
 		panic(err)
@@ -39,12 +39,6 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 
 	if len(stores) > 0 {
 		return
-	}
-
-	imageProviderName := ""
-	providerDbName := conf.GetConfigString("providerDbName")
-	if providerDbName != "" {
-		imageProviderName = "provider_storage_casibase_default"
 	}
 
 	store := &Store{
@@ -82,7 +76,7 @@ func initBuiltInStore(modelProviderName string, embeddingProviderName string, tt
 		PropertiesMap:        map[string]*Properties{},
 	}
 
-	if providerDbName != "" {
+	if conf.GetConfigString("providerDbName") != "" {
 		store.ShowAutoRead = true
 		store.DisableFileUpload = true
 
@@ -119,7 +113,16 @@ func getDefaultStoragePath() (string, error) {
 	return res, nil
 }
 
-func initBuiltInProviders() (string, string, string, string) {
+func getDefaultImageStoragePath() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(cwd, "images"), nil
+}
+
+func initBuiltInProviders() (string, string, string, string, string) {
 	storageProvider, err := GetDefaultStorageProvider()
 	if err != nil {
 		panic(err)
@@ -165,6 +168,41 @@ func initBuiltInProviders() (string, string, string, string) {
 		}
 	}
 
+	imageProviderName := ""
+	providerDbName := conf.GetConfigString("providerDbName")
+	if providerDbName != "" {
+		imageProviderName = "provider_storage_casibase_default"
+	} else {
+		imageProvider, err := getProvider("admin", "provider-image-built-in")
+		if err != nil {
+			panic(err)
+		}
+		if imageProvider == nil {
+			var imagePath string
+			imagePath, err = getDefaultImageStoragePath()
+			if err != nil {
+				panic(err)
+			}
+
+			util.EnsureFileFolderExists(imagePath)
+
+			imageProvider = &Provider{
+				Owner:       "admin",
+				Name:        "provider-image-built-in",
+				CreatedTime: util.GetCurrentTime(),
+				DisplayName: "Built-in Image Storage Provider",
+				Category:    "Storage",
+				Type:        "Local File System",
+				ClientId:    imagePath,
+			}
+			_, err = AddProvider(imageProvider)
+			if err != nil && !isUniqueConstraintError(err) {
+				panic(err)
+			}
+		}
+		imageProviderName = "provider-image-built-in"
+	}
+
 	if modelProvider == nil {
 		modelProvider = &Provider{
 			Owner:       "admin",
@@ -206,7 +244,7 @@ func initBuiltInProviders() (string, string, string, string) {
 
 	sttProviderName := "Browser Built-In"
 
-	return modelProvider.Name, embeddingProvider.Name, ttsProviderName, sttProviderName
+	return modelProvider.Name, embeddingProvider.Name, ttsProviderName, sttProviderName, imageProviderName
 }
 
 func initBuiltInTools() {

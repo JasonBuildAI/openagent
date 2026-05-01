@@ -466,7 +466,7 @@ class StoreEditPage extends React.Component {
                     {i18next.t("general:empty")}
                   </Option>
                   {
-                    this.state.casdoorStorageProviders.map((provider, index) =>
+                    this.state.storageProviders.concat(this.state.casdoorStorageProviders).map((provider, index) =>
                       this.renderProviderOption(provider, index)
                     )
                   }
