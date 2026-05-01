@@ -197,7 +197,7 @@ const MessageItem = ({
       );
     }
 
-    if (message.text === "" && message.author === "AI" && !message.reasonText) {
+    if (message.text === "" && message.author === "AI" && !message.reasonText && (!message.toolCalls || message.toolCalls.length === 0)) {
       return null;
     }
 
@@ -448,7 +448,7 @@ const MessageItem = ({
               )}
             </div>
           }
-          loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
+          loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText && (!message.toolCalls || message.toolCalls.length === 0)}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
             interval: 50,
