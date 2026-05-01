@@ -328,12 +328,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 	maxTokens := getContextLength(model)
 
 	modelResult := &ModelResult{}
-	// "OpenAI Compatible" providers (endpoint set) always use the Responses API Chat path
-	// so that the model can freely decide to generate images via the image_generation tool.
 	modelType := getOpenAiModelType(model)
-	if p.endpoint != "" && modelType != "Chat" {
-		modelType = "Chat"
-	}
 	if modelType == "Chat" {
 		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens, lang)
 		if err != nil {
@@ -381,22 +376,12 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			Model:        model,
 			Temperature:  param.NewOpt[float64](float64(temperature)),
 			TopP:         param.NewOpt[float64](float64(topP)),
-			Reasoning:    shared.ReasoningParam{Summary: "auto"},
 		}
-		if p.endpoint != "" {
-			// "OpenAI Compatible" providers: always attach image_generation tool so the
-			// model can decide to produce images when asked.
-			req.Tools = []responses.ToolUnionParam{
-				{OfImageGeneration: &responses.ToolImageGenerationParam{
-					Size:         "1024x1024",
-					Quality:      "medium",
-					OutputFormat: "png",
-				}},
-			}
-			req.ToolChoice = responses.ResponseNewParamsToolChoiceUnion{
-				OfToolChoiceMode: param.NewOpt(responses.ToolChoiceOptionsAuto),
-			}
-		} else if agentInfo != nil && agentInfo.AgentClients != nil {
+		// Only send Reasoning param to official OpenAI endpoints; compatible providers reject it
+		if p.endpoint == "" {
+			req.Reasoning = shared.ReasoningParam{Summary: "auto"}
+		}
+		if agentInfo != nil && agentInfo.AgentClients != nil {
 			agentTools, err := reverseMcpToolsToOpenAi(agentInfo.AgentClients.Tools)
 			if err != nil {
 				return nil, err
@@ -411,12 +396,13 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 			}
 		}
 
+		flushThink := flushData.(func(string, string, io.Writer, string) error)
+
 		respStream := client.Responses.NewStreaming(ctx, req)
 		defer respStream.Close()
 
 		isLeadingReturn := true
 		for respStream.Next() {
-			flushThink := flushData.(func(string, string, io.Writer, string) error)
 			response := respStream.Current()
 			switch variant := response.AsAny().(type) {
 			case responses.ResponseReasoningSummaryTextDeltaEvent:
@@ -434,7 +420,6 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, histo
 						isLeadingReturn = false
 					}
 				}
-
 				err = flushThink(data, "message", writer, lang)
 				if err != nil {
 					return nil, err
