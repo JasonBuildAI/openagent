@@ -21,6 +21,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/beego/beego/logs"
 )
 
 func FileExist(path string) bool {

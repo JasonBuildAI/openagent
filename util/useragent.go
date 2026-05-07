@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/beego/beego/logs"
 	"github.com/ua-parser/uap-go/uaparser"
 )
 

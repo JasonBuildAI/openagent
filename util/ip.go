@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"github.com/beego/beego"
+	"github.com/beego/beego/logs"
 )
 
 var isLocalIpDb bool
