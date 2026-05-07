@@ -50,6 +50,16 @@ func InitParser() {
 	Parser = nil
 }
 
+// InitParserSafe initializes parser safely without panic
+func InitParserSafe() {
+	defer func() {
+		if r := recover(); r != nil {
+			logs.Warn("User agent parser initialization failed (non-critical): %v", r)
+		}
+	}()
+	InitParser()
+}
+
 func GetDescFromUserAgent(userAgent string) string {
 	if Parser == nil {
 		if userAgent == "" {

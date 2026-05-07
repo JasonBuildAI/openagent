@@ -53,6 +53,16 @@ func EnsureFolderExists(path string) {
 	}
 }
 
+// EnsureDir creates a directory if it doesn't exist, without panic
+func EnsureDir(path string) {
+	if !FileExist(path) {
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			logs.Warn("Failed to create directory %s: %v", path, err)
+		}
+	}
+}
+
 func RemoveExt(filename string) string {
 	return filename[:len(filename)-len(filepath.Ext(filename))]
 }

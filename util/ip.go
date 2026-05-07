@@ -59,6 +59,16 @@ func InitIpDb() {
 	}
 }
 
+// InitIpDbSafe initializes the IP database safely without panic
+func InitIpDbSafe() {
+	defer func() {
+		if r := recover(); r != nil {
+			logs.Warn("IP database initialization failed (non-critical): %v", r)
+		}
+	}()
+	InitIpDb()
+}
+
 func GetInfoFromIP(ip string) (*LocationInfo, error) {
 	if !IsInternetIp(ip) {
 		return &LocationInfo{}, nil

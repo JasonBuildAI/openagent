@@ -224,3 +224,13 @@ func InitMaxmindFiles() {
 
 	go downloadMaxmindFiles()
 }
+
+// InitMaxmindFilesSafe initializes MaxMind files safely without panic
+func InitMaxmindFilesSafe() {
+	defer func() {
+		if r := recover(); r != nil {
+			logs.Warn("MaxMind files initialization failed (non-critical): %v", r)
+		}
+	}()
+	InitMaxmindFiles()
+}
