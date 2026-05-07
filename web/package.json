@@ -72,7 +72,7 @@
   },
   "scripts": {
     "start": "cross-env PORT=13001 craco start",
-    "build": "craco build",
+    "build": "cross-env GENERATE_SOURCEMAP=false craco build",
     "postbuild": "node mv.js",
     "test": "craco test",
     "eject": "craco eject",
