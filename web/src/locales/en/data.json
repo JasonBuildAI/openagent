@@ -383,13 +383,18 @@
   },
   "login": {
     "Additional Information": "Additional Information",
+    "Build agents that actually do things.": "Build agents that actually do things.",
     "Details": "Details",
     "Error Details": "Error Details",
     "Error Message": "Error Message",
     "Help": "Help",
+    "Loading OpenAgent sign in.": "Loading OpenAgent sign in.",
     "Login Error": "Login Error",
     "More Details": "More Details",
-    "Signing in...": "Signing in..."
+    "Preparing the workspace entry screen.": "Preparing the workspace entry screen.",
+    "Self-hosted. 30+ model providers. Full MCP support. Enterprise-grade from day one.": "Self-hosted. 30+ model providers. Full MCP support. Enterprise-grade from day one.",
+    "Signing in...": "Signing in...",
+    "Welcome back": "Welcome back"
   },
   "message": {
     "Author": "Author",
