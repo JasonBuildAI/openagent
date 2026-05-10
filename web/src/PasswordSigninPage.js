@@ -283,7 +283,7 @@ function PasswordSigninPage({logo}) {
             <span className={`inline-block w-[3px] h-[0.85em] align-middle bg-fuchsia-500 ml-0.5 ${titleDone ? "animate-pulse" : ""}`} />
           </h1>
           <p className="text-base text-muted-foreground sm:text-lg">
-            {i18next.t("login:Self-hosted. 30+ model providers. Full MCP support. Enterprise-grade from day one.")}
+            {i18next.t("login:Self-hosted. 30+ model providers. Full MCP support. Your personal AI assistant.")}
           </p>
 
         </section>
