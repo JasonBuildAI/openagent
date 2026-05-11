@@ -14,7 +14,7 @@
 
 import React from "react";
 import Loading from "./common/Loading";
-import {Avatar, Button, Cascader, Col, Input, InputNumber, Modal, Row, Select, Space, Spin, Switch} from "antd";
+import {Avatar, Button, Col, Input, InputNumber, Modal, Row, Select, Space, Spin, Switch} from "antd";
 import SectionCard from "./components/ui/section-card";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
@@ -51,7 +51,6 @@ class StoreEditPage extends React.Component {
       mcpServers: [],
       skills: [],
       tools: [],
-      builtinTools: [],
       enableTtsStreaming: false,
       store: null,
       isNewStore: props.location?.state?.isNewStore || false,
@@ -214,48 +213,6 @@ class StoreEditPage extends React.Component {
       value = Setting.myParseInt(value);
     }
     return value;
-  }
-
-  renderBuiltinTools() {
-    const builtinToolsConfig = Setting.getBuiltinTools();
-    const selectedTools = this.state.store.builtinTools || [];
-
-    const options = builtinToolsConfig.map(category => ({
-      value: category.category,
-      label: `${category.icon} ${category.name}`,
-      children: category.tools.map(tool => ({
-        value: tool.name,
-        label: (
-          <div>
-            <div style={{fontWeight: 500, color: "#1890ff"}}>{tool.name}</div>
-            <div style={{fontSize: "12px", color: "#8c8c8c"}}>{tool.description}</div>
-          </div>
-        ),
-      })),
-    }));
-
-    const value = selectedTools.map(tool => {
-      const category = builtinToolsConfig.find(cat =>
-        cat.tools.some(t => t.name === tool)
-      );
-      return category ? [category.category, tool] : null;
-    }).filter(v => v);
-
-    return (
-      <Cascader
-        multiple
-        maxTagCount="responsive"
-        style={{width: "100%"}}
-        placeholder={i18next.t("store:Select builtin tools")}
-        options={options}
-        value={value}
-        onChange={(values) => {
-          this.updateStoreField("builtinTools", values.map(v => v[1]));
-        }}
-        showCheckedStrategy="SHOW_CHILD"
-        popupClassName="builtin-tools-cascader"
-      />
-    );
   }
 
   updateStoreField(key, value) {
@@ -557,11 +514,6 @@ class StoreEditPage extends React.Component {
                   >
                     {this.state.tools.map((tool, index) => this.renderToolOption(tool, index))}
                   </Select>,
-                  12
-                )}
-                {this.renderStoreField(
-                  Setting.getLabel(i18next.t("store:Builtin tools"), i18next.t("store:Builtin tools - Tooltip")),
-                  this.renderBuiltinTools(),
                   12
                 )}
               </>
