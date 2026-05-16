@@ -1,5 +1,6 @@
 import * as React from "react"
 import { NavLink, useLocation } from "react-router"
+import { type Account, isAdminUser, isChatAdminUser } from "~/backend/AccountBackend"
 import {
   BarChart2Icon,
   BrainCircuitIcon,
@@ -199,9 +200,22 @@ function NavGroupItem({ group, defaultOpen }: { group: NavGroup; defaultOpen: bo
   )
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  account,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { account?: Account }) {
   const location = useLocation()
   const activeGroupKey = getActiveGroupKey(location.pathname)
+
+  // Filter nav groups based on user role
+  const visibleGroups = React.useMemo(() => {
+    if (!account) return navGroups
+    // Chat-admin users only see a subset
+    if (isChatAdminUser(account) && !isAdminUser(account)) {
+      return navGroups.filter(g => !["multimedia", "logs"].includes(g.key))
+    }
+    return navGroups
+  }, [account])
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -242,7 +256,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Grouped nav items */}
         <SidebarGroup>
           <SidebarMenu>
-            {navGroups.map((group) => (
+            {visibleGroups.map((group) => (
               <NavGroupItem
                 key={group.key}
                 group={group}

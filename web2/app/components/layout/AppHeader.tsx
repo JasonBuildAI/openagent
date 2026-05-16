@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Link, useLocation, useNavigate } from "react-router"
 import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react"
+import { type Account } from "~/backend/AccountBackend"
 
 import {
   Breadcrumb,
@@ -20,7 +21,7 @@ import {
 } from "~/components/ui/dropdown-menu"
 import { Separator } from "~/components/ui/separator"
 import { SidebarTrigger } from "~/components/ui/sidebar"
-import { useTheme } from "~/hooks/use-theme"
+import { useTheme } from "~/hooks/useTheme"
 
 const RESOURCE_LABELS: Record<string, string> = {
   stores: "Stores",
@@ -66,14 +67,8 @@ function useBreadcrumbs(pathname: string) {
   return { listLabel: label, listUrl: `/${root}`, detail: detailLabel }
 }
 
-type Account = {
-  name: string
-  displayName: string
-  avatar?: string
-}
-
 type AppHeaderProps = {
-  account?: Account | null
+  account?: Account
   onSignOut?: () => void
 }
 
