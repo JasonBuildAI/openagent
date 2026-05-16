@@ -3,7 +3,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
 import { type Account, getAccount, signout } from "~/backend/AccountBackend"
-import { initServerUrl } from "~/lib/api"
 
 type AccountState = {
   /** undefined = still loading; null = not signed in; Account = signed in */
@@ -19,7 +18,6 @@ export function AccountProvider({ children }: { children: React.ReactNode }) {
   const [account, setAccount] = React.useState<Account | null | undefined>(undefined)
 
   const load = React.useCallback(() => {
-    initServerUrl()
     getAccount().then((res) => {
       if (res.status === "ok") {
         setAccount(res.data ?? null)

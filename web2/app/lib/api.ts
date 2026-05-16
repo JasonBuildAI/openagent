@@ -1,11 +1,8 @@
 // Server URL — empty string means same-origin (production); localhost gets the backend port
-export let ServerUrl = ""
-
-export function initServerUrl() {
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    ServerUrl = `http://${window.location.hostname}:14000`
-  }
-}
+export const ServerUrl =
+  typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? `http://${window.location.hostname}:14000`
+    : ""
 
 export function getLanguage(): string {
   if (typeof localStorage === "undefined") return "en"
