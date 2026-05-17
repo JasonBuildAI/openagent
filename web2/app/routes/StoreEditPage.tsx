@@ -8,6 +8,7 @@ import "~/i18n"
 import { isAdminUser, isChatAdminUser, isLocalAdminUser } from "~/backend/AccountBackend"
 import { type Store, claimStore, deleteStore, getStore, getStores, updateStore } from "~/backend/StoreBackend"
 import {
+  getProviderDisplayName,
   getProviderLogoUrl,
   getProviders,
   getServers,
@@ -88,15 +89,18 @@ export default function StoreEditPage() {
   useEffect(() => {
     if (!owner || !storeName) return
     loadStore()
-    if (account) {
-      loadStores()
-      loadProviders()
-      loadMcpServers()
-      loadSkills()
-      loadTools()
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [owner, storeName])
+
+  useEffect(() => {
+    if (!account) return
+    loadStores()
+    loadProviders()
+    loadMcpServers()
+    loadSkills()
+    loadTools()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
 
   function loadStore() {
     if (!owner || !storeName) return
@@ -231,12 +235,33 @@ export default function StoreEditPage() {
         <img
           src={getProviderLogoUrl(p)}
           alt={p.name}
-          className="h-4 w-4 object-contain"
+          className="h-4 w-4 shrink-0 object-contain"
           onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
         />
-        {p.displayName || p.name} ({p.name})
+        {getProviderDisplayName(p)} ({p.name})
       </SelectItem>
     ))
+
+  const providerSelectValue = (providers: Provider[], value: string | undefined, placeholder: string) => {
+    const provider = providers.find((p) => p.name === value)
+    if (!provider) {
+      return <span className={value ? undefined : "text-muted-foreground"}>{value || placeholder}</span>
+    }
+
+    return (
+      <span className="flex min-w-0 items-center gap-2">
+        <img
+          src={getProviderLogoUrl(provider)}
+          alt={provider.name}
+          className="h-4 w-4 shrink-0 object-contain"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none" }}
+        />
+        <span className="truncate">
+          {getProviderDisplayName(provider)} ({provider.name})
+        </span>
+      </span>
+    )
+  }
 
   const allStores = stores.filter((s) => s.name !== store.name)
   const skillOptions = skills
@@ -342,7 +367,7 @@ export default function StoreEditPage() {
             <FormField label={i18next.t("store:Storage provider")} tooltip={i18next.t("store:Storage provider - Tooltip")}>
               <Select value={store.storageProvider || ""} onValueChange={(v) => update("storageProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={i18next.t("general:empty")} />
+                  {providerSelectValue(storageProviders, store.storageProvider, i18next.t("general:empty"))}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">{i18next.t("general:empty")}</SelectItem>
@@ -385,7 +410,7 @@ export default function StoreEditPage() {
         <FormField label={i18next.t("provider:Model provider")} tooltip={i18next.t("provider:Model provider - Tooltip")}>
           <Select value={store.modelProvider || ""} onValueChange={(v) => update("modelProvider", v ?? "")}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={i18next.t("general:empty")} />
+              {providerSelectValue(modelProviders, store.modelProvider, i18next.t("general:empty"))}
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">{i18next.t("general:empty")}</SelectItem>
@@ -398,7 +423,7 @@ export default function StoreEditPage() {
             <FormField label={i18next.t("store:Embedding provider")} tooltip={i18next.t("store:Embedding provider - Tooltip")}>
               <Select value={store.embeddingProvider || ""} onValueChange={(v) => update("embeddingProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={i18next.t("general:empty")} />
+                  {providerSelectValue(embeddingProviders, store.embeddingProvider, i18next.t("general:empty"))}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">{i18next.t("general:empty")}</SelectItem>
@@ -442,7 +467,7 @@ export default function StoreEditPage() {
         <FormField label={i18next.t("store:Text-to-Speech provider")} tooltip={i18next.t("store:Text-to-Speech provider - Tooltip")}>
           <Select value={store.textToSpeechProvider || ""} onValueChange={(v) => update("textToSpeechProvider", v ?? "")}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={i18next.t("general:empty")} />
+              {providerSelectValue(ttsProviders, store.textToSpeechProvider, i18next.t("general:empty"))}
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="">{i18next.t("general:empty")}</SelectItem>
@@ -456,7 +481,7 @@ export default function StoreEditPage() {
             <FormField label={i18next.t("store:Speech-to-Text provider")} tooltip={i18next.t("store:Speech-to-Text provider - Tooltip")}>
               <Select value={store.speechToTextProvider || ""} onValueChange={(v) => update("speechToTextProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={i18next.t("general:empty")} />
+                  {providerSelectValue(sttProviders, store.speechToTextProvider, i18next.t("general:empty"))}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">{i18next.t("general:empty")}</SelectItem>

@@ -23,7 +23,7 @@ import {
   getGlobalStores,
   refreshStoreVectors,
 } from "~/backend/StoreBackend"
-import { getProviderLogoUrl } from "~/backend/ProviderBackend"
+import { getProviderLogoUrl, getProviders, type Provider } from "~/backend/ProviderBackend"
 import { useAccount } from "~/context/AccountContext"
 import {
   AlertDialog,
@@ -113,6 +113,7 @@ export default function StoreListPage() {
   })
   const [generating, setGenerating] = useState<Record<string, boolean>>({})
   const [deleteTarget, setDeleteTarget] = useState<Store | null>(null)
+  const [providers, setProviders] = useState<Record<string, Provider>>({})
 
   const isAdmin = isLocalAdminUser(account)
 
@@ -158,6 +159,23 @@ export default function StoreListPage() {
     fetch({ current: 1 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!account) return
+
+    getProviders(account.name).then((res) => {
+      if (res.status !== "ok") {
+        toast.error(`${i18next.t("general:Failed to get")}: ${res.msg}`)
+        return
+      }
+
+      const providerMap: Record<string, Provider> = {}
+      ;((res.data ?? []) as Provider[]).forEach((provider) => {
+        providerMap[provider.name] = provider
+      })
+      setProviders(providerMap)
+    })
+  }, [account])
 
   function handleAddStore() {
     if (!account) return
@@ -206,6 +224,36 @@ export default function StoreListPage() {
   function handleHideChat(checked: boolean) {
     setHideChat(checked)
     localStorage.setItem("hideChat", JSON.stringify(checked))
+  }
+
+  function renderProviderInfo(providerName?: string) {
+    if (!providerName) {
+      return <span className="text-sm text-muted-foreground">-</span>
+    }
+
+    const provider = providers[providerName]
+    if (!provider) {
+      return (
+        <Link to={`/providers/${providerName}`} className="text-sm text-primary hover:underline">
+          {providerName}
+        </Link>
+      )
+    }
+
+    return (
+      <Link
+        to={`/providers/${provider.name}`}
+        className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+      >
+        <img
+          src={getProviderLogoUrl(provider)}
+          alt={provider.name}
+          className="h-5 w-5 object-contain"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none" }}
+        />
+        {provider.name}
+      </Link>
+    )
   }
 
   const totalPages = Math.ceil(pagination.total / pagination.pageSize)
@@ -321,7 +369,7 @@ export default function StoreListPage() {
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">{store.modelProvider || "—"}</span>
+                        {renderProviderInfo(store.modelProvider)}
                       </TableCell>
                     </>
                   )}
