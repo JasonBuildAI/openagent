@@ -10,12 +10,16 @@ import {
 import type { Route } from "./+types/root"
 import "./app.css"
 
+// Runs before React loads — applies dark class immediately to avoid flash
+const themeScript = `(function(){try{var t=localStorage.getItem('themeAlgorithm');if(t&&t.includes('dark'))document.documentElement.classList.add('dark');}catch(e){}}())`
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Meta />
         <Links />
       </head>
