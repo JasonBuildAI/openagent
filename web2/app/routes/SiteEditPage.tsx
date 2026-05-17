@@ -20,6 +20,8 @@ import i18next from "i18next"
 import "~/i18n"
 
 import { type Site, getSite, updateSite } from "~/backend/SiteBackend"
+import { getSigninOptions, isAdminUser } from "~/backend/AccountBackend"
+import { useAccount } from "~/context/AccountContext"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Switch } from "~/components/ui/switch"
@@ -36,36 +38,25 @@ import {
   ImageUploadField,
   PasswordInput,
   SectionCard,
-  TagInput,
 } from "~/lib/Setting"
+import { NavItemTree } from "~/lib/NavItemTree"
 
 export function meta() {
   return [{ title: "Edit Site — OpenAgent" }]
 }
-
-// Known nav item paths for autocomplete suggestions
-const NAV_ITEM_SUGGESTIONS = [
-  "all",
-  "/home", "/chat", "/quick-setup",
-  "/stores", "/chats", "/messages",
-  "/files", "/vectors",
-  "/providers", "/pipes", "/skills", "/tools", "/servers",
-  "/tasks", "/scales", "/forms",
-  "/records", "/sessions",
-  "/identity", "/users", "/casdoor-resources", "/permissions",
-  "/sites", "/resources", "/usages", "/visitors", "/sysinfo",
-]
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function SiteEditPage() {
   const { owner, siteName } = useParams<{ owner: string; siteName: string }>()
   const navigate = useNavigate()
+  const { account } = useAccount()
 
   const [site, setSite] = useState<Site | null>(null)
   const [saving, setSaving] = useState(false)
   const [uploadingFavicon, setUploadingFavicon] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [casdoorAvailable, setCasdoorAvailable] = useState(false)
 
   useEffect(() => {
     if (!owner || !siteName) return
@@ -74,6 +65,11 @@ export default function SiteEditPage() {
         setSite(res.data)
       } else {
         toast.error(`${i18next.t("general:Failed to get")}: ${res.msg}`)
+      }
+    })
+    getSigninOptions().then((res) => {
+      if (res.status === "ok") {
+        setCasdoorAvailable(res.data?.casdoorAvailable ?? false)
       }
     })
   }, [owner, siteName])
@@ -229,11 +225,11 @@ export default function SiteEditPage() {
               />
             </FormField>
             <FormField label={i18next.t("store:Navbar items")} tooltip={i18next.t("store:Navbar items - Tooltip")} className="sm:col-span-2">
-              <TagInput
+              <NavItemTree
                 value={site.navItems ?? []}
                 onChange={(v) => update("navItems", v)}
-                placeholder={i18next.t("store:Navbar items")}
-                suggestions={NAV_ITEM_SUGGESTIONS}
+                disabled={!isAdminUser(account)}
+                casdoorAvailable={casdoorAvailable}
               />
             </FormField>
           </div>
