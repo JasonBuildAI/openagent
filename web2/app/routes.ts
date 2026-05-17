@@ -13,6 +13,10 @@ export default [
     route("stores", "routes/StoreListPage.tsx"),
     route("stores/:owner/:storeName", "routes/StoreEditPage.tsx"),
 
+    // Providers
+    route("providers", "routes/ProviderListPage.tsx"),
+    route("providers/:providerName", "routes/ProviderEditPage.tsx"),
+
     // Sites
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
