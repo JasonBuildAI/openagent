@@ -46,7 +46,8 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "~/components/ui/sidebar"
-import { cn } from "~/lib/utils"
+import { useTheme } from "~/hooks/useTheme"
+import { useSite } from "~/context/SiteContext"
 
 type NavItem = {
   title: string
@@ -205,7 +206,10 @@ export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & { account?: Account }) {
   const location = useLocation()
+  const { theme } = useTheme()
+  const { getLogoUrl } = useSite()
   const activeGroupKey = getActiveGroupKey(location.pathname)
+  const logoUrl = getLogoUrl(theme)
 
   // Filter nav groups based on user role
   const visibleGroups = React.useMemo(() => {
@@ -221,12 +225,11 @@ export function AppSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="h-[52px] justify-center border-b border-sidebar-border px-4 py-0">
         <NavLink to="/" className="flex items-center gap-2 overflow-hidden">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
-            OA
-          </div>
-          <span className="truncate font-semibold text-sm group-data-[collapsible=icon]:hidden">
-            OpenAgent
-          </span>
+          <img
+            src={logoUrl}
+            alt="logo"
+            className="h-[38px] max-w-40 object-contain transition-[height,width,max-width] group-data-[collapsible=icon]:h-7 group-data-[collapsible=icon]:w-7 group-data-[collapsible=icon]:rounded-md"
+          />
         </NavLink>
       </SidebarHeader>
 

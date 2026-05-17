@@ -8,6 +8,7 @@ import {
 } from "react-router"
 
 import type { Route } from "./+types/root"
+import { SiteProvider } from "~/context/SiteContext"
 import "./app.css"
 
 // Runs before React loads — applies dark class immediately to avoid flash
@@ -33,7 +34,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <SiteProvider>
+      <Outlet />
+    </SiteProvider>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

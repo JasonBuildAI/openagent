@@ -26,6 +26,7 @@ export function useTheme() {
   useEffect(() => {
     applyTheme(theme)
     localStorage.setItem(THEME_KEY, theme === "dark" ? "dark" : "default")
+    window.dispatchEvent(new Event("openagent:theme-updated"))
   }, [theme])
 
   const toggleTheme = useCallback(() => {

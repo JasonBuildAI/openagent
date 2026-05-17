@@ -49,6 +49,10 @@ export function getSite(owner: string, name: string): Promise<any> {
   return apiFetch(`/api/get-site?id=${encodeURIComponent(owner)}/${encodeURIComponent(name)}`)
 }
 
+export function getBuiltInSite(): Promise<any> {
+  return apiFetch("/api/get-built-in-site")
+}
+
 export function addSite(site: Site): Promise<any> {
   return apiPost("/api/add-site", site)
 }

@@ -1,17 +1,13 @@
+import { useSite } from "~/context/SiteContext"
+import { useTheme } from "~/hooks/useTheme"
+
 export function AppFooter() {
+  const { theme } = useTheme()
+  const { getFooterHtml } = useSite()
+
   return (
-    <footer className="flex h-[52px] shrink-0 items-center justify-center border-t border-border px-4 text-xs text-muted-foreground">
-      <span>
-        Powered by{" "}
-        <a
-          href="https://github.com/OpenAgentPlatform/openagent"
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-foreground underline-offset-4 hover:underline"
-        >
-          OpenAgent
-        </a>
-      </span>
+    <footer className="flex h-[52px] shrink-0 items-center justify-center overflow-hidden border-t border-border px-4 text-xs text-muted-foreground [&_img]:!h-[30px] [&_img]:w-auto [&_img]:object-contain">
+      <div dangerouslySetInnerHTML={{ __html: getFooterHtml(theme) }} />
     </footer>
   )
 }

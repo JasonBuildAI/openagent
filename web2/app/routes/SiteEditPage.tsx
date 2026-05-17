@@ -89,6 +89,9 @@ export default function SiteEditPage() {
       const res = await updateSite(owner, siteName, site)
       if (res.status === "ok") {
         toast.success(i18next.t("general:Successfully saved"))
+        if (site.name === "site-built-in") {
+          window.dispatchEvent(new Event("openagent:site-updated"))
+        }
         if (exit) {
           navigate("/sites")
         } else {
