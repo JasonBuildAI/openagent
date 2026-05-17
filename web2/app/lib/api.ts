@@ -1,13 +1,10 @@
+import { getLanguage } from "~/i18n"
+
 // Server URL — empty string means same-origin (production); localhost gets the backend port
 export const ServerUrl =
   typeof window !== "undefined" && window.location.hostname === "localhost"
     ? `http://${window.location.hostname}:14000`
     : ""
-
-export function getLanguage(): string {
-  if (typeof localStorage === "undefined") return "en"
-  return localStorage.getItem("language") ?? "en"
-}
 
 export function getAcceptLanguage(): string {
   const lang = getLanguage()
@@ -48,11 +45,11 @@ export async function handleFetchResponse(res: Response): Promise<any> {
 export function apiFetch(path: string, init?: RequestInit): Promise<any> {
   return fetch(`${ServerUrl}${path}`, {
     credentials: "include",
+    ...init,
     headers: {
       "Accept-Language": getAcceptLanguage(),
       ...init?.headers,
     },
-    ...init,
   }).then(handleFetchResponse)
 }
 
