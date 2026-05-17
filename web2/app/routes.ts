@@ -17,6 +17,10 @@ export default [
     route("providers", "routes/ProviderListPage.tsx"),
     route("providers/:providerName", "routes/ProviderEditPage.tsx"),
 
+    // Pipes
+    route("pipes", "routes/PipeListPage.tsx"),
+    route("pipes/:pipeName", "routes/PipeEditPage.tsx"),
+
     // Sites
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),

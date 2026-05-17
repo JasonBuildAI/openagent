@@ -71,6 +71,10 @@ export function getStores(owner: string): Promise<any> {
   return apiFetch(`/api/get-stores?owner=${encodeURIComponent(owner)}`)
 }
 
+export function getStoreNames(owner: string): Promise<any> {
+  return apiFetch(`/api/get-store-names?owner=${encodeURIComponent(owner)}`)
+}
+
 export function getStore(owner: string, name: string): Promise<any> {
   return apiFetch(`/api/get-store?id=${encodeURIComponent(owner)}/${encodeURIComponent(name)}`)
 }
