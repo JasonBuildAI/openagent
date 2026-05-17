@@ -29,6 +29,9 @@ export default [
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
 
+    // Quick Setup
+    route("quick-setup", "routes/QuickSetupPage.tsx"),
+
     // Usages
     route("usages", "routes/UsagePage.tsx"),
 
