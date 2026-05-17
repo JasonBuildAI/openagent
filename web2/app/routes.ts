@@ -21,6 +21,9 @@ export default [
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
 
+    // System Info
+    route("sysinfo", "routes/SystemInfoPage.tsx"),
+
     // Chat
     route("chat", "routes/ChatPage.tsx", { id: "chat" }),
     route("chat/:chatName", "routes/ChatPage.tsx", { id: "chat-by-name" }),
