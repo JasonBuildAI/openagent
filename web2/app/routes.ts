@@ -25,6 +25,9 @@ export default [
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
 
+    // Usages
+    route("usages", "routes/UsagePage.tsx"),
+
     // System Info
     route("sysinfo", "routes/SystemInfoPage.tsx"),
 
