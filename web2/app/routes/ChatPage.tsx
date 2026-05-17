@@ -1,0 +1,688 @@
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useNavigate, useParams } from "react-router"
+import { useTranslation } from "react-i18next"
+import { MenuIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "~/components/ui/button"
+import { Sheet, SheetContent } from "~/components/ui/sheet"
+import { Skeleton } from "~/components/ui/skeleton"
+import ChatMenu, { type ChatMenuHandle } from "~/components/chat/ChatMenu"
+import ChatInput, { type ChatInputHandle } from "~/components/chat/ChatInput"
+import MessageList from "~/components/chat/MessageList"
+import WelcomeHeader from "~/components/chat/WelcomeHeader"
+import { MessageCarrier } from "~/components/chat/MessageCarrier"
+import { useAccount } from "~/context/AccountContext"
+import { getChats, deleteChat, updateChat } from "~/backend/ChatBackend"
+import { getChatMessages, addMessage, updateMessage, getMessageAnswer, closeMessageEventSource } from "~/backend/MessageBackend"
+import { getGlobalStores } from "~/backend/StoreBackend"
+import { renderText, renderReason } from "~/lib/ChatMessageRender"
+import { getRandomName, deepCopy, isMobile, getIsDark } from "~/lib/chatUtils"
+import { cn } from "~/lib/utils"
+import type { Chat } from "~/backend/ChatBackend"
+import type { Message } from "~/backend/MessageBackend"
+import type { Store } from "~/backend/StoreBackend"
+
+type UploadedFile = {
+  uid: number
+  file: File
+  content: string
+  value: string
+}
+
+export default function ChatPage() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { chatName: chatNameParam, storeName: storeNameParam } = useParams<{
+    chatName?: string
+    storeName?: string
+  }>()
+  const { account } = useAccount()
+
+  // State
+  const [chats, setChats] = useState<Chat[]>([])
+  const [chat, setChat] = useState<Chat | undefined>()
+  const [messages, setMessages] = useState<Message[]>([])
+  const [stores, setStores] = useState<Store[]>([])
+  const [defaultStore, setDefaultStore] = useState<Store | undefined>()
+  const [loading, setLoading] = useState(true)
+  const [messageLoading, setMessageLoading] = useState(false)
+  const [messageError, setMessageError] = useState(false)
+  const [chatMenuCollapsed, setChatMenuCollapsed] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("chatMenuCollapsed") || "false") } catch { return false }
+  })
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [draftStoreName, setDraftStoreName] = useState<string | undefined>(storeNameParam)
+
+  // Input state (lifted up from ChatBox)
+  const [inputValue, setInputValue] = useState("")
+  const [files, setFiles] = useState<UploadedFile[]>([])
+  const [webSearchEnabled, setWebSearchEnabled] = useState(false)
+  const [isReading, setIsReading] = useState(false)
+  const [isLoadingTTS, setIsLoadingTTS] = useState(false)
+  const [readingMessage, setReadingMessage] = useState<string | undefined>()
+  const [isVoiceInput, setIsVoiceInput] = useState(false)
+
+  // Refs
+  const menuRef = useRef<ChatMenuHandle>(null)
+  const inputRef = useRef<ChatInputHandle>(null)
+  const messageListRef = useRef<HTMLDivElement>(null)
+  const inputStore = useRef(new Map<string | undefined, string>())
+
+  const isDark = getIsDark()
+
+  // ── Helpers ──────────────────────────────────────────────────────────
+
+  function scrollToBottom() {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight
+    }
+  }
+
+  function generateChatUrl(cName?: string, sName?: string, owner = "admin"): string {
+    const effectiveSName = sName || storeNameParam
+    if (!effectiveSName) {
+      return cName ? `/chat/${cName}` : "/chat"
+    }
+    return cName ? `/${owner}/${effectiveSName}/chat/${cName}` : `/${owner}/${effectiveSName}/chat`
+  }
+
+  function getCurrentStore(): Store | undefined {
+    if (!chat && !draftStoreName) return defaultStore
+    const sName = chat?.store || draftStoreName
+    return stores.find((s) => s.name === sName) || defaultStore
+  }
+
+  // ── Data loading ──────────────────────────────────────────────────────
+
+  const fetchStores = useCallback(() => {
+    getGlobalStores().then((res) => {
+      if (res.status === "ok") {
+        const all: Store[] = res.data || []
+        const def = all.find((s) => s.isDefault)
+        setStores(all)
+        setDefaultStore(def)
+      }
+    })
+  }, [])
+
+  const loadMessages = useCallback(
+    (targetChat: Chat) => {
+      setMessageError(false)
+      getChatMessages("admin", targetChat.name).then((res) => {
+        if (res.status !== "ok") return
+        const msgs: Message[] = res.data || []
+
+        // Render html for each message
+        msgs.forEach((m) => {
+          m.html = renderText(m.text)
+        })
+        setMessages(msgs)
+
+        // If last message is AI with empty text, stream it
+        if (msgs.length > 0) {
+          const lastMsg = msgs[msgs.length - 1]
+          if (lastMsg.author === "AI" && lastMsg.replyTo !== "" && lastMsg.text === "") {
+            if (lastMsg.errorText) {
+              setMessageLoading(false)
+              setMessageError(true)
+              return
+            }
+
+            setMessageLoading(true)
+            let text = ""
+            let reasonText = ""
+            const carrier = new MessageCarrier(targetChat.needTitle)
+
+            getMessageAnswer(
+              lastMsg.owner,
+              lastMsg.name,
+              // onMessage
+              (data) => {
+                const json = JSON.parse(data)
+                if (json.text === "") json.text = "\n"
+                text += json.text
+                const parsed = carrier.parseAnswerWithCarriers(text)
+                updateChatDisplayName(parsed.title, targetChat)
+
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  const last = { ...updated[updated.length - 1] }
+                  last.text = parsed.finalAnswer
+                  last.html = renderText(last.text)
+                  last.isReasoningPhase = false
+                  updated[updated.length - 1] = last
+                  return updated
+                })
+              },
+              // onReason
+              (data) => {
+                const json = JSON.parse(data)
+                if (json.text === "") json.text = "\n"
+                reasonText += json.text
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  const last = { ...updated[updated.length - 1] }
+                  last.reasonText = reasonText
+                  if (!last.toolCalls?.length) last.isReasoningPhase = true
+                  if (text) last.text = text
+                  updated[updated.length - 1] = last
+                  return updated
+                })
+              },
+              // onTool
+              (data) => {
+                const json = JSON.parse(data)
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  const last = { ...updated[updated.length - 1] }
+                  const toolCalls = [...(last.toolCalls || [])]
+                  if (!json.content) {
+                    toolCalls.push({ name: json.name, arguments: json.arguments, content: "" })
+                  } else {
+                    let found = false
+                    for (let i = toolCalls.length - 1; i >= 0; i--) {
+                      if (toolCalls[i].name === json.name && !toolCalls[i].content) {
+                        toolCalls[i] = { name: json.name, arguments: json.arguments, content: json.content }
+                        found = true
+                        break
+                      }
+                    }
+                    if (!found) toolCalls.push({ name: json.name, arguments: json.arguments, content: json.content })
+                  }
+                  last.toolCalls = toolCalls
+                  updated[updated.length - 1] = last
+                  return updated
+                })
+              },
+              // onSearch
+              (data) => {
+                const searchResults = JSON.parse(data)
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], searchResults }
+                  return updated
+                })
+              },
+              // onVector
+              (data) => {
+                const vectorScores = JSON.parse(data)
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], vectorScores }
+                  return updated
+                })
+              },
+              // onError
+              (error) => {
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], errorText: error }
+                  return updated
+                })
+                setMessageLoading(false)
+                setMessageError(true)
+              },
+              // onEnd
+              (data) => {
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  const last = { ...updated[updated.length - 1] }
+                  const parsed = carrier.parseAnswerWithCarriers(text)
+                  last.text = parsed.finalAnswer
+                  last.suggestions = parsed.suggestionArray
+                  last.html = renderText(last.text)
+                  if (last.reasonText) last.reasonHtml = renderReason(last.reasonText)
+                  last.isReasoningPhase = false
+                  updated[updated.length - 1] = last
+                  return updated
+                })
+                setMessageLoading(false)
+                setMessageError(false)
+              },
+              // onInfo
+              (infoText) => {
+                setMessages((prev) => {
+                  if (!prev.length) return prev
+                  const updated = [...prev]
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], hintText: infoText }
+                  return updated
+                })
+              }
+            )
+          } else {
+            setMessageLoading(false)
+          }
+        }
+
+        setTimeout(scrollToBottom, 50)
+      })
+    },
+    []
+  )
+
+  function updateChatDisplayName(title: string, targetChat: Chat) {
+    if (!title) return
+    setChats((prev) =>
+      prev.map((c) => (c.name === targetChat.name ? { ...c, displayName: title } : c))
+    )
+  }
+
+  const fetchChats = useCallback(() => {
+    if (!account?.name) return
+    setLoading(true)
+
+    const storeName = storeNameParam || ""
+    getChats(account.name, storeName, -1, -1, "user", account.name).then((res) => {
+      if (res.status !== "ok") {
+        setLoading(false)
+        return
+      }
+
+      const fetchedChats: Chat[] = res.data || []
+      setChats(fetchedChats)
+      setLoading(false)
+      setMessages([])
+
+      if (fetchedChats.length > 0) {
+        let targetChat = chatNameParam
+          ? fetchedChats.find((c) => c.name === chatNameParam)
+          : undefined
+        if (!targetChat) targetChat = fetchedChats[0]
+
+        if (!chatNameParam || !fetchedChats.find((c) => c.name === chatNameParam)) {
+          navigate(generateChatUrl(targetChat.name, targetChat.store), { replace: true })
+        }
+        setChat(targetChat)
+        setDraftStoreName(targetChat.store)
+        loadMessages(targetChat)
+      }
+
+      fetchStores()
+    })
+  }, [account?.name, chatNameParam, storeNameParam])
+
+  useEffect(() => {
+    fetchChats()
+  }, [fetchChats])
+
+  // Save/restore input when chat changes
+  useEffect(() => {
+    return () => {
+      inputStore.current.set(chat?.name, inputValue)
+    }
+  }, [chat?.name])
+
+  // ── Actions ───────────────────────────────────────────────────────────
+
+  function sendMessage(text: string, fileName = "", isHidden = false, isRegenerated = false, wsEnabled = false) {
+    if (!account) return
+
+    // Prepend file values
+    let fullText = text
+    files.forEach((f) => { fullText = f.value + "\n" + fullText })
+
+    const randomName = getRandomName()
+    const newMessage: Partial<Message> = {
+      owner: "admin",
+      name: `message_${randomName}`,
+      createdTime: new Date().toISOString(),
+      organization: account.owner,
+      store: chat?.store || draftStoreName || storeNameParam || defaultStore?.name || "",
+      user: account.name,
+      chat: chat?.name,
+      replyTo: "",
+      author: account.name,
+      text: fullText,
+      isHidden,
+      isDeleted: false,
+      isAlerted: false,
+      isRegenerated,
+      fileName: fileName || (files[0]?.file.name ?? ""),
+      webSearchEnabled: wsEnabled,
+      modelProvider: chat?.modelProvider || getCurrentStore()?.modelProvider,
+    }
+
+    addMessage(newMessage).then((res) => {
+      if (res.status !== "ok") {
+        toast.error(`${t("general:Failed to add")}: ${res.msg}`)
+        return
+      }
+
+      const returnedChat: Chat = res.data
+      setChat(returnedChat)
+      setDraftStoreName(returnedChat.store)
+      setInputValue("")
+      setFiles([])
+      navigate(generateChatUrl(returnedChat.name, returnedChat.store), { replace: true })
+
+      // Refresh chat list
+      getChats(account.name, storeNameParam || "", -1, -1, "user", account.name).then((r) => {
+        if (r.status === "ok") {
+          setChats(r.data || [])
+          menuRef.current?.setSelectedKeyToChat(r.data || [], returnedChat.name)
+        }
+      })
+
+      loadMessages(returnedChat)
+    }).catch((err) => {
+      toast.error(`${t("general:Failed to connect to server")}: ${err}`)
+    })
+  }
+
+  function handleSend(text: string, wsEnabled: boolean) {
+    sendMessage(text, "", false, false, wsEnabled)
+  }
+
+  function handleRegenerate(_index: number) {
+    const lastUserMsg = [...messages].reverse().find((m) => m.author !== "AI")
+    if (!lastUserMsg) return
+    handleEditMessage({ ...lastUserMsg, createdTime: new Date().toISOString() }, true)
+  }
+
+  function handleEditMessage(message: Message, silent = false) {
+    const editedMessage: Partial<Message> = {
+      ...message,
+      createdTime: new Date().toISOString(),
+      store: getCurrentStore()?.name,
+      webSearchEnabled,
+      modelProvider: chat?.modelProvider || getCurrentStore()?.modelProvider,
+    }
+    addMessage(editedMessage).then((res) => {
+      if (res.status === "ok") {
+        if (!silent) toast.success(t("general:Successfully saved"))
+        loadMessages(res.data)
+      } else {
+        toast.error(`${t("general:Failed to add")}: ${res.msg}`)
+      }
+    })
+  }
+
+  function handleCancelMessage() {
+    if (!messages.length) return
+    const lastMsg = messages[messages.length - 1]
+    if (lastMsg.author === "AI" && messageLoading) {
+      closeMessageEventSource(lastMsg.owner, lastMsg.name)
+      updateMessage(lastMsg.owner, lastMsg.name, lastMsg).then((res) => {
+        if (res.status === "ok") setMessageLoading(false)
+      })
+    }
+  }
+
+  function handleMessageLike(message: Message, type: "like" | "dislike") {
+    const opposite = type === "like" ? "dislike" : "like"
+    const isCancel = message[`${type}Users`]?.includes(account?.name ?? "") ?? false
+
+    const updated = { ...message }
+    if (isCancel) {
+      updated[`${type}Users`] = (updated[`${type}Users`] || []).filter((u) => u !== account?.name)
+    } else {
+      updated[`${type}Users`] = [...(updated[`${type}Users`] || []), account?.name ?? ""]
+    }
+    updated[`${opposite}Users`] = (updated[`${opposite}Users`] || []).filter((u) => u !== account?.name)
+
+    setMessages((prev) => prev.map((m) => (m.name === message.name ? updated : m)))
+    updateMessage(message.owner, message.name, updated).then((res) => {
+      if (res.status === "ok") {
+        if (type === "like") {
+          toast.success(isCancel ? t("general:Successfully unliked") : t("general:Successfully liked"))
+        } else {
+          toast.success(isCancel ? t("general:Successfully undisliked") : t("general:Successfully disliked"))
+        }
+      } else {
+        toast.error(res.msg)
+      }
+    })
+  }
+
+  function copyMessageText(message: Message) {
+    const parts: string[] = []
+    if (message.toolCalls?.length) {
+      message.toolCalls.forEach((tc) => {
+        let part = `Tool calls\n${tc.name}`
+        try { part += `\nArguments:\n${JSON.stringify(JSON.parse(tc.arguments), null, 2)}` } catch { part += `\nArguments:\n${tc.arguments}` }
+        if (tc.content) { try { part += `\nResult:\n${JSON.stringify(JSON.parse(tc.content), null, 2)}` } catch { part += `\nResult:\n${tc.content}` } }
+        parts.push(part)
+      })
+    }
+    const div = document.createElement("div")
+    div.innerHTML = message.text || ""
+    const text = div.innerText
+    if (text) parts.push(text)
+    navigator.clipboard.writeText(parts.join("\n\n")).then(() => {
+      toast.success(t("general:Successfully copied"))
+    })
+  }
+
+  function handleSelectChat(index: number) {
+    const selected = chats[index]
+    if (!selected) return
+    // Save current input
+    inputStore.current.set(chat?.name, inputValue)
+    setChat(selected)
+    setDraftStoreName(selected.store)
+    setMessageError(false)
+    setMobileMenuOpen(false)
+    loadMessages(selected)
+    navigate(generateChatUrl(selected.name, selected.store), { replace: true })
+    // Restore input
+    const savedInput = inputStore.current.get(selected.name) || ""
+    setInputValue(savedInput)
+  }
+
+  function handleAddChat(store?: Store) {
+    inputStore.current.set(chat?.name, inputValue)
+    const sName = store?.name || storeNameParam || defaultStore?.name || ""
+    setChat(undefined)
+    setMessages([])
+    setMessageError(false)
+    setDraftStoreName(sName)
+    setInputValue("")
+    setFiles([])
+    setMobileMenuOpen(false)
+    navigate(generateChatUrl(undefined, sName), { replace: true })
+    menuRef.current?.clearSelectedKey()
+    setTimeout(() => inputRef.current?.focus(), 100)
+  }
+
+  function handleDeleteChat(index: number) {
+    const chatToDelete = chats[index]
+    deleteChat(chatToDelete).then((res) => {
+      if (res.status !== "ok") {
+        toast.error(`${t("general:Failed to delete")}: ${res.msg}`)
+        return
+      }
+      toast.success(t("general:Successfully deleted"))
+      const newChats = chats.filter((_, i) => i !== index)
+      setChats(newChats)
+
+      if (newChats.length === 0) {
+        setChat(undefined)
+        setMessages([])
+        navigate("/chat", { replace: true })
+      } else {
+        const next = newChats[Math.min(index, newChats.length - 1)]
+        setChat(next)
+        setDraftStoreName(next.store)
+        loadMessages(next)
+        navigate(generateChatUrl(next.name, next.store), { replace: true })
+      }
+    })
+  }
+
+  function handleUpdateChatName(index: number, newName: string) {
+    const c = chats[index]
+    const updated = { ...c, displayName: newName }
+    updateChat("admin", c.name, updated).then((res) => {
+      if (res.status === "ok") {
+        toast.success(t("general:Successfully saved"))
+        setChats((prev) => prev.map((x, i) => (i === index ? updated : x)))
+        if (chat?.name === c.name) setChat(updated)
+      } else {
+        toast.error(`${t("general:Failed to save")}: ${res.msg}`)
+      }
+    })
+  }
+
+  function toggleCollapse() {
+    const next = !chatMenuCollapsed
+    setChatMenuCollapsed(next)
+    localStorage.setItem("chatMenuCollapsed", JSON.stringify(next))
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────
+
+  const mobile = isMobile()
+  const currentStore = getCurrentStore()
+
+  const sidebarContent = (
+    <ChatMenu
+      ref={menuRef}
+      chats={chats}
+      chatName={chat?.name}
+      onSelectChat={handleSelectChat}
+      onAddChat={handleAddChat}
+      onDeleteChat={handleDeleteChat}
+      onUpdateChatName={handleUpdateChatName}
+      stores={stores}
+      currentStoreName={storeNameParam}
+    />
+  )
+
+  if (loading) {
+    return (
+      <div className="flex h-full gap-3 p-4">
+        <div className="w-60 shrink-0 space-y-2">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-8 w-full" />
+          ))}
+        </div>
+        <div className="flex-1 space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className={`h-16 ${i % 2 ? "ml-auto w-2/3" : "w-3/4"}`} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex h-full overflow-hidden">
+      {/* Desktop sidebar */}
+      {!mobile && !chatMenuCollapsed && (
+        <div
+          className="flex w-60 shrink-0 flex-col border-r"
+          style={{ background: isDark ? "#1a1a1a" : "#f7f8fa" }}
+        >
+          {sidebarContent}
+        </div>
+      )}
+
+      {/* Mobile sidebar as Sheet */}
+      {mobile && (
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetContent side="left" className="w-64 p-0">
+            {sidebarContent}
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* Main chat area */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Header */}
+        <div
+          className="flex shrink-0 items-center gap-1 border-b px-2 py-1"
+          style={{
+            background: isDark ? "rgba(20,20,20,0.9)" : "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          {mobile ? (
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setMobileMenuOpen(true)}>
+              <MenuIcon className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleCollapse}>
+              {chatMenuCollapsed ? (
+                <PanelLeftOpenIcon className="h-4 w-4" />
+              ) : (
+                <PanelLeftCloseIcon className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+
+          {chat ? (
+            <span className="flex-1 truncate text-sm font-medium">
+              {chat.displayName || chat.name}
+            </span>
+          ) : (
+            <div className="flex-1" />
+          )}
+        </div>
+
+        {/* Messages */}
+        <div className="relative flex-1 overflow-hidden">
+          {/* Background logo watermark */}
+          {messages.length > 0 && (
+            <div
+              className="pointer-events-none absolute inset-0 bg-center bg-no-repeat opacity-[0.04]"
+              style={{
+                backgroundImage: `url(https://cdn.openagentai.org/img/openagent-logo_1900x450.png)`,
+                backgroundSize: "200px auto",
+              }}
+            />
+          )}
+
+          <div className="flex h-full flex-col">
+            {messages.length === 0 ? (
+              <div className="flex-1 overflow-y-auto">
+                <WelcomeHeader store={currentStore} />
+              </div>
+            ) : (
+              <MessageList
+                ref={messageListRef}
+                messages={messages}
+                account={account}
+                store={currentStore}
+                onRegenerate={handleRegenerate}
+                onMessageLike={handleMessageLike}
+                onCopyMessage={copyMessageText}
+                onToggleRead={() => {}}
+                onEditMessage={handleEditMessage}
+                isReading={isReading}
+                isLoadingTTS={isLoadingTTS}
+                readingMessage={readingMessage}
+                sendMessage={(text, fileName) => sendMessage(text, fileName || "")}
+                files={files}
+                hideThinking={currentStore?.hideThinking}
+              />
+            )}
+
+            <ChatInput
+              ref={inputRef}
+              value={inputValue}
+              store={currentStore}
+              chat={chat}
+              files={files}
+              onFileChange={setFiles}
+              onChange={setInputValue}
+              onSend={handleSend}
+              loading={messageLoading}
+              messageError={messageError}
+              onCancelMessage={handleCancelMessage}
+              webSearchEnabled={webSearchEnabled}
+              onWebSearchChange={setWebSearchEnabled}
+              isVoiceInput={isVoiceInput}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

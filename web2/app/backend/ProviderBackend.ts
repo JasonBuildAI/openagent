@@ -14,6 +14,16 @@ export function getProviders(owner: string): Promise<any> {
   return apiFetch(`/api/get-providers?owner=${encodeURIComponent(owner)}`)
 }
 
+export function getProvider(owner: string, name: string): Promise<any> {
+  return apiFetch(`/api/get-provider?id=${encodeURIComponent(owner)}/${encodeURIComponent(name)}`)
+}
+
+export function isProviderSupportWebSearch(provider: Provider): boolean {
+  if (!provider || provider.category !== "Model") return false
+  const supportedTypes = ["OpenAI", "Alibaba Cloud", "Baidu", "Tencent Cloud", "ByteDance", "Moonshot", "DeepSeek"]
+  return supportedTypes.includes(provider.type)
+}
+
 export function getServers(owner: string): Promise<any> {
   return apiFetch(`/api/get-servers?owner=${encodeURIComponent(owner)}`)
 }

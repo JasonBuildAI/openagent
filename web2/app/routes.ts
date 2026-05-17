@@ -16,5 +16,11 @@ export default [
     // Sites
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
+
+    // Chat
+    route("chat", "routes/ChatPage.tsx", { id: "chat" }),
+    route("chat/:chatName", "routes/ChatPage.tsx", { id: "chat-by-name" }),
+    route(":owner/:storeName/chat", "routes/ChatPage.tsx", { id: "store-chat" }),
+    route(":owner/:storeName/chat/:chatName", "routes/ChatPage.tsx", { id: "store-chat-by-name" }),
   ]),
 ] satisfies RouteConfig
