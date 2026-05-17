@@ -21,6 +21,10 @@ export default [
     route("pipes", "routes/PipeListPage.tsx"),
     route("pipes/:pipeName", "routes/PipeEditPage.tsx"),
 
+    // Skills
+    route("skills", "routes/SkillListPage.tsx"),
+    route("skills/:skillName", "routes/SkillEditPage.tsx"),
+
     // Sites
     route("sites", "routes/SiteListPage.tsx"),
     route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
