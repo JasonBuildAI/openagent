@@ -1,7 +1,8 @@
 import * as React from "react"
 import { Link, useLocation, useNavigate } from "react-router"
-import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react"
+import { GlobeIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react"
 import { type Account } from "~/backend/AccountBackend"
+import { getLanguage, setLanguage } from "~/i18n"
 
 import {
   Breadcrumb,
@@ -72,11 +73,34 @@ type AppHeaderProps = {
   onSignOut?: () => void
 }
 
+const LANGUAGE_LABELS: Record<string, string> = {
+  en: "English",
+  zh: "中文",
+}
+
+function useHoverDropdown() {
+  const [open, setOpen] = React.useState(false)
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const onMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setOpen(true)
+  }
+  const onMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 80)
+  }
+
+  return { open, setOpen, onMouseEnter, onMouseLeave }
+}
+
 export function AppHeader({ account, onSignOut }: AppHeaderProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
   const breadcrumbs = useBreadcrumbs(location.pathname)
+  const [lang, setLang] = React.useState(() => getLanguage())
+  const langDropdown = useHoverDropdown()
+  const accountDropdown = useHoverDropdown()
 
   function getInitials(name: string) {
     return name
@@ -123,6 +147,33 @@ export function AppHeader({ account, onSignOut }: AppHeaderProps) {
 
       {/* Right side */}
       <div className="ml-auto flex items-center gap-1">
+        {/* Language switcher */}
+        <div onMouseEnter={langDropdown.onMouseEnter} onMouseLeave={langDropdown.onMouseLeave}>
+          <DropdownMenu open={langDropdown.open} onOpenChange={langDropdown.setOpen}>
+            <DropdownMenuTrigger
+              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              aria-label="Switch language"
+            >
+              <GlobeIcon className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              {Object.entries(LANGUAGE_LABELS).map(([key, label]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => {
+                    setLanguage(key)
+                    setLang(key as "en" | "zh")
+                    langDropdown.setOpen(false)
+                  }}
+                  className={lang === key ? "font-medium text-primary" : ""}
+                >
+                  {label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
@@ -134,32 +185,34 @@ export function AppHeader({ account, onSignOut }: AppHeaderProps) {
 
         {/* Account dropdown */}
         {account ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className="flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-accent"
-            >
-              <Avatar size="sm">
-                {account.avatar && <AvatarImage src={account.avatar} alt={account.displayName} />}
-                <AvatarFallback className="text-xs">
-                  {getInitials(account.displayName || account.name)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden max-w-[120px] truncate font-medium sm:block">
-                {account.displayName || account.name}
-              </span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => navigate("/account")}>
-                <SettingsIcon />
-                My Account
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onSignOut} variant="destructive">
-                <LogOutIcon />
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div onMouseEnter={accountDropdown.onMouseEnter} onMouseLeave={accountDropdown.onMouseLeave}>
+            <DropdownMenu open={accountDropdown.open} onOpenChange={accountDropdown.setOpen}>
+              <DropdownMenuTrigger
+                className="flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-accent"
+              >
+                <Avatar size="sm">
+                  {account.avatar && <AvatarImage src={account.avatar} alt={account.displayName} />}
+                  <AvatarFallback className="text-xs">
+                    {getInitials(account.displayName || account.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="hidden max-w-[120px] truncate font-medium sm:block">
+                  {account.displayName || account.name}
+                </span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/account")}>
+                  <SettingsIcon />
+                  My Account
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onSignOut} variant="destructive">
+                  <LogOutIcon />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         ) : account === null ? (
           <Link
             to="/signin"
