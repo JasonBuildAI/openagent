@@ -1,4 +1,5 @@
 import { Outlet, useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
 
 import { AccountProvider, useAccount } from "~/context/AccountContext"
 import { AppFooter } from "~/components/layout/AppFooter"
@@ -8,6 +9,7 @@ import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
 import "~/i18n"
 
 function LayoutInner() {
+  const { i18n } = useTranslation()
   const { account, handleSignout } = useAccount()
   const navigate = useNavigate()
 
@@ -23,7 +25,7 @@ function LayoutInner() {
       <SidebarInset>
         <AppHeader account={account ?? undefined} onSignOut={handleSignout} />
         <main className="flex flex-1 flex-col">
-          <Outlet />
+          <Outlet key={i18n.language} />
         </main>
         <AppFooter />
       </SidebarInset>
