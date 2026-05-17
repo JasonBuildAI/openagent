@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
-import { Loader2Icon, XIcon, ChevronDownIcon, CheckIcon } from "lucide-react"
+import { Loader2Icon } from "lucide-react"
 import { toast } from "sonner"
 import i18next from "i18next"
 import "~/i18n"
@@ -18,7 +18,6 @@ import {
 import { useAccount } from "~/context/AccountContext"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
 import { Switch } from "~/components/ui/switch"
 import { Textarea } from "~/components/ui/textarea"
 import {
@@ -45,266 +44,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog"
+import {
+  FormField,
+  MultiSelect,
+  NumberInput,
+  SectionCard,
+  TagInput,
+} from "~/lib/Setting"
 
 export function meta() {
   return [{ title: "Edit Store — OpenAgent" }]
-}
-
-// ── Helper components ─────────────────────────────────────────────────────────
-
-function FormField({
-  label,
-  children,
-  className = "",
-}: {
-  label: string
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-      <Label className="text-sm font-medium text-muted-foreground">{label}</Label>
-      {children}
-    </div>
-  )
-}
-
-function SectionCard({
-  title,
-  desc,
-  children,
-}: {
-  title: string
-  desc?: string
-  children: React.ReactNode
-}) {
-  return (
-    <Card className="mt-4">
-      <CardHeader className="border-b pb-4">
-        <CardTitle>{title}</CardTitle>
-        {desc && <CardDescription>{desc}</CardDescription>}
-      </CardHeader>
-      <CardContent className="pt-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {children}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-function NumberInput({
-  value,
-  onChange,
-  min = 0,
-  max,
-}: {
-  value: number | undefined
-  onChange: (v: number) => void
-  min?: number
-  max?: number
-}) {
-  return (
-    <Input
-      type="number"
-      value={value ?? ""}
-      min={min}
-      max={max}
-      onChange={(e) => onChange(Number(e.target.value))}
-    />
-  )
-}
-
-// Simple multi-select pill component
-function MultiSelect({
-  value,
-  options,
-  onChange,
-  placeholder,
-}: {
-  value: string[]
-  options: Array<{ label: string; value: string }>
-  onChange: (v: string[]) => void
-  placeholder?: string
-}) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
-
-  function toggle(v: string) {
-    if (value.includes(v)) {
-      onChange(value.filter((x) => x !== v))
-    } else {
-      onChange([...value, v])
-    }
-  }
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        className="flex min-h-8 w-full flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-        onClick={() => setOpen((o) => !o)}
-      >
-        {value.length === 0 ? (
-          <span className="text-muted-foreground">{placeholder}</span>
-        ) : (
-          value.map((v) => {
-            const opt = options.find((o) => o.value === v)
-            return (
-              <span
-                key={v}
-                className="inline-flex h-5 items-center gap-1 rounded bg-muted px-1.5 text-xs font-medium"
-              >
-                {opt?.label ?? v}
-                <button
-                  type="button"
-                  className="ml-0.5 opacity-60 hover:opacity-100"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    toggle(v)
-                  }}
-                >
-                  <XIcon className="h-3 w-3" />
-                </button>
-              </span>
-            )
-          })
-        )}
-        <ChevronDownIcon className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
-      </button>
-      {open && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-border bg-popover p-1 shadow-md">
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
-              onClick={() => toggle(opt.value)}
-            >
-              <span className="flex h-4 w-4 items-center justify-center">
-                {value.includes(opt.value) && <CheckIcon className="h-3.5 w-3.5" />}
-              </span>
-              {opt.label}
-            </button>
-          ))}
-          {options.length === 0 && (
-            <div className="px-2 py-4 text-center text-sm text-muted-foreground">
-              {i18next.t("general:No data")}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Tag input for free-form tags
-function TagInput({
-  value,
-  onChange,
-  placeholder,
-  suggestions,
-}: {
-  value: string[]
-  onChange: (v: string[]) => void
-  placeholder?: string
-  suggestions?: string[]
-}) {
-  const [inputVal, setInputVal] = useState("")
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
-
-  function add(v: string) {
-    const trimmed = v.trim()
-    if (trimmed && !value.includes(trimmed)) {
-      onChange([...value, trimmed])
-    }
-    setInputVal("")
-    setOpen(false)
-  }
-
-  function remove(v: string) {
-    onChange(value.filter((x) => x !== v))
-  }
-
-  const filtered = (suggestions ?? []).filter(
-    (s) => !value.includes(s) && s.toLowerCase().includes(inputVal.toLowerCase())
-  )
-
-  return (
-    <div ref={ref} className="relative">
-      <div className="flex min-h-8 flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50">
-        {value.map((v) => (
-          <span
-            key={v}
-            className="inline-flex h-5 items-center gap-1 rounded bg-muted px-1.5 text-xs font-medium"
-          >
-            {v}
-            <button
-              type="button"
-              className="opacity-60 hover:opacity-100"
-              onClick={() => remove(v)}
-            >
-              <XIcon className="h-3 w-3" />
-            </button>
-          </span>
-        ))}
-        <input
-          className="min-w-16 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-          value={inputVal}
-          placeholder={value.length === 0 ? placeholder : ""}
-          onChange={(e) => {
-            setInputVal(e.target.value)
-            setOpen(true)
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === ",") {
-              e.preventDefault()
-              add(inputVal)
-            }
-            if (e.key === "Backspace" && !inputVal && value.length > 0) {
-              remove(value[value.length - 1])
-            }
-          }}
-          onFocus={() => setOpen(true)}
-        />
-      </div>
-      {open && filtered.length > 0 && (
-        <div className="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-border bg-popover p-1 shadow-md">
-          {filtered.map((s) => (
-            <button
-              key={s}
-              type="button"
-              className="w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
-              onClick={() => add(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────────
@@ -539,19 +288,19 @@ export default function StoreEditPage() {
         title={i18next.t("general:General Settings")}
         desc={i18next.t("general:General Settings desc")}
       >
-        <FormField label={i18next.t("general:Owner")}>
+        <FormField label={i18next.t("general:Owner")} tooltip={i18next.t("general:Owner - Tooltip")}>
           <Input value={store.owner} disabled={!isGlobalAdmin} onChange={(e) => update("owner", e.target.value)} />
         </FormField>
-        <FormField label={i18next.t("general:Name")}>
+        <FormField label={i18next.t("general:Name")} tooltip={i18next.t("general:Name - Tooltip")}>
           <Input value={store.name} onChange={(e) => update("name", e.target.value)} />
         </FormField>
-        <FormField label={i18next.t("general:Display name")}>
+        <FormField label={i18next.t("general:Display name")} tooltip={i18next.t("general:Display name - Tooltip")}>
           <Input value={store.displayName} onChange={(e) => update("displayName", e.target.value)} />
         </FormField>
-        <FormField label={i18next.t("general:Title")}>
+        <FormField label={i18next.t("general:Title")} tooltip={i18next.t("general:Title - Tooltip")}>
           <Input value={store.title} onChange={(e) => update("title", e.target.value)} />
         </FormField>
-        <FormField label={i18next.t("general:State")}>
+        <FormField label={i18next.t("general:State")} tooltip={i18next.t("general:State - Tooltip")}>
           <Select value={store.state} onValueChange={(v) => update("state", v ?? "Active")}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -562,10 +311,10 @@ export default function StoreEditPage() {
             </SelectContent>
           </Select>
         </FormField>
-        <FormField label={i18next.t("general:Avatar")}>
+        <FormField label={i18next.t("general:Avatar")} tooltip={i18next.t("general:Avatar - Tooltip")}>
           <Input value={store.avatar} onChange={(e) => update("avatar", e.target.value)} />
         </FormField>
-        <FormField label={i18next.t("store:Is default")}>
+        <FormField label={i18next.t("store:Is default")} tooltip={i18next.t("store:Is default - Tooltip")}>
           <div className="flex h-9 items-center">
             <Switch
               checked={store.isDefault}
@@ -573,7 +322,7 @@ export default function StoreEditPage() {
             />
           </div>
         </FormField>
-        <FormField label={i18next.t("store:Enable extra options")}>
+        <FormField label={i18next.t("store:Enable extra options")} tooltip={i18next.t("store:Enable extra options - Tooltip")}>
           <div className="flex h-9 items-center">
             <Switch
               checked={store.enableExtraOptions ?? false}
@@ -590,7 +339,7 @@ export default function StoreEditPage() {
       >
         {store.enableExtraOptions && (
           <>
-            <FormField label={i18next.t("store:Storage provider")}>
+            <FormField label={i18next.t("store:Storage provider")} tooltip={i18next.t("store:Storage provider - Tooltip")}>
               <Select value={store.storageProvider || ""} onValueChange={(v) => update("storageProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={i18next.t("general:empty")} />
@@ -601,13 +350,13 @@ export default function StoreEditPage() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label={i18next.t("store:Storage subpath")}>
+            <FormField label={i18next.t("store:Storage subpath")} tooltip={i18next.t("store:Storage subpath - Tooltip")}>
               <Input
                 value={store.storageSubpath ?? ""}
                 onChange={(e) => update("storageSubpath", e.target.value)}
               />
             </FormField>
-            <FormField label={i18next.t("store:Split provider")}>
+            <FormField label={i18next.t("store:Split provider")} tooltip={i18next.t("store:Split provider - Tooltip")}>
               <Select value={store.splitProvider || "Default"} onValueChange={(v) => update("splitProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -619,7 +368,7 @@ export default function StoreEditPage() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label={i18next.t("store:Search provider")}>
+            <FormField label={i18next.t("store:Search provider")} tooltip={i18next.t("store:Search provider - Tooltip")}>
               <Select value={store.searchProvider || "Default"} onValueChange={(v) => update("searchProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -633,7 +382,7 @@ export default function StoreEditPage() {
             </FormField>
           </>
         )}
-        <FormField label={i18next.t("provider:Model provider")}>
+        <FormField label={i18next.t("provider:Model provider")} tooltip={i18next.t("provider:Model provider - Tooltip")}>
           <Select value={store.modelProvider || ""} onValueChange={(v) => update("modelProvider", v ?? "")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={i18next.t("general:empty")} />
@@ -646,7 +395,7 @@ export default function StoreEditPage() {
         </FormField>
         {store.enableExtraOptions && (
           <>
-            <FormField label={i18next.t("store:Embedding provider")}>
+            <FormField label={i18next.t("store:Embedding provider")} tooltip={i18next.t("store:Embedding provider - Tooltip")}>
               <Select value={store.embeddingProvider || ""} onValueChange={(v) => update("embeddingProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={i18next.t("general:empty")} />
@@ -657,7 +406,7 @@ export default function StoreEditPage() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label={i18next.t("store:MCP server")}>
+            <FormField label={i18next.t("store:MCP server")} tooltip={i18next.t("store:MCP server - Tooltip")}>
               <Select value={store.mcpServer || ""} onValueChange={(v) => update("mcpServer", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={i18next.t("general:empty")} />
@@ -672,7 +421,7 @@ export default function StoreEditPage() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label={i18next.t("general:Skills")} className="sm:col-span-2">
+            <FormField label={i18next.t("general:Skills")} tooltip={i18next.t("general:Skills - Tooltip")} className="sm:col-span-2">
               <MultiSelect
                 value={store.skills ?? []}
                 options={skillOptions}
@@ -680,7 +429,7 @@ export default function StoreEditPage() {
                 placeholder={i18next.t("store:Select skills")}
               />
             </FormField>
-            <FormField label={i18next.t("general:Tools")} className="sm:col-span-2">
+            <FormField label={i18next.t("general:Tools")} tooltip={i18next.t("general:Tools - Tooltip")} className="sm:col-span-2">
               <MultiSelect
                 value={store.tools ?? []}
                 options={toolOptions}
@@ -690,7 +439,7 @@ export default function StoreEditPage() {
             </FormField>
           </>
         )}
-        <FormField label={i18next.t("store:Text-to-Speech provider")}>
+        <FormField label={i18next.t("store:Text-to-Speech provider")} tooltip={i18next.t("store:Text-to-Speech provider - Tooltip")}>
           <Select value={store.textToSpeechProvider || ""} onValueChange={(v) => update("textToSpeechProvider", v ?? "")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder={i18next.t("general:empty")} />
@@ -704,7 +453,7 @@ export default function StoreEditPage() {
         </FormField>
         {store.enableExtraOptions && (
           <>
-            <FormField label={i18next.t("store:Speech-to-Text provider")}>
+            <FormField label={i18next.t("store:Speech-to-Text provider")} tooltip={i18next.t("store:Speech-to-Text provider - Tooltip")}>
               <Select value={store.speechToTextProvider || ""} onValueChange={(v) => update("speechToTextProvider", v ?? "")}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={i18next.t("general:empty")} />
@@ -716,7 +465,7 @@ export default function StoreEditPage() {
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label={i18next.t("store:Enable TTS streaming")}>
+            <FormField label={i18next.t("store:Enable TTS streaming")} tooltip={i18next.t("store:Enable TTS streaming - Tooltip")}>
               <div className="flex h-9 items-center">
                 <Switch
                   checked={store.enableTtsStreaming ?? false}
@@ -726,7 +475,7 @@ export default function StoreEditPage() {
             </FormField>
           </>
         )}
-        <FormField label={i18next.t("store:Memory limit")}>
+        <FormField label={i18next.t("store:Memory limit")} tooltip={i18next.t("store:Memory limit - Tooltip")}>
           <NumberInput
             value={store.memoryLimit}
             onChange={(v) => update("memoryLimit", v)}
@@ -735,10 +484,10 @@ export default function StoreEditPage() {
         </FormField>
         {store.enableExtraOptions && (
           <>
-            <FormField label={i18next.t("store:Frequency")}>
+            <FormField label={i18next.t("store:Frequency")} tooltip={i18next.t("store:Frequency - Tooltip")}>
               <NumberInput value={store.frequency} onChange={(v) => update("frequency", v)} min={0} />
             </FormField>
-            <FormField label={i18next.t("store:Limit minutes")}>
+            <FormField label={i18next.t("store:Limit minutes")} tooltip={i18next.t("store:Limit minutes - Tooltip")}>
               <NumberInput value={store.limitMinutes} onChange={(v) => update("limitMinutes", v)} min={0} />
             </FormField>
           </>
@@ -753,18 +502,18 @@ export default function StoreEditPage() {
         </CardHeader>
         <CardContent className="pt-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <FormField label={i18next.t("store:Welcome")}>
+            <FormField label={i18next.t("store:Welcome")} tooltip={i18next.t("store:Welcome - Tooltip")}>
               <Input value={store.welcome ?? ""} onChange={(e) => update("welcome", e.target.value)} />
             </FormField>
-            <FormField label={i18next.t("store:Welcome title")}>
+            <FormField label={i18next.t("store:Welcome title")} tooltip={i18next.t("store:Welcome title - Tooltip")}>
               <Input value={store.welcomeTitle ?? ""} onChange={(e) => update("welcomeTitle", e.target.value)} />
             </FormField>
-            <FormField label={i18next.t("store:Welcome text")}>
+            <FormField label={i18next.t("store:Welcome text")} tooltip={i18next.t("store:Welcome text - Tooltip")}>
               <Input value={store.welcomeText ?? ""} onChange={(e) => update("welcomeText", e.target.value)} />
             </FormField>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-4">
-            <FormField label={i18next.t("store:Prompt")}>
+            <FormField label={i18next.t("store:Prompt")} tooltip={i18next.t("store:Prompt - Tooltip")}>
               <Textarea
                 value={store.prompt ?? ""}
                 onChange={(e) => update("prompt", e.target.value)}
@@ -780,7 +529,7 @@ export default function StoreEditPage() {
         title={i18next.t("general:Options")}
         desc={i18next.t("general:Options desc")}
       >
-        <FormField label={i18next.t("store:Knowledge count")}>
+        <FormField label={i18next.t("store:Knowledge count")} tooltip={i18next.t("store:Knowledge count - Tooltip")}>
           <NumberInput
             value={store.knowledgeCount}
             onChange={(v) => update("knowledgeCount", v)}
@@ -788,7 +537,7 @@ export default function StoreEditPage() {
             max={100}
           />
         </FormField>
-        <FormField label={i18next.t("store:Suggestion count")}>
+        <FormField label={i18next.t("store:Suggestion count")} tooltip={i18next.t("store:Suggestion count - Tooltip")}>
           <NumberInput
             value={store.suggestionCount}
             onChange={(v) => update("suggestionCount", v)}
@@ -796,18 +545,18 @@ export default function StoreEditPage() {
             max={10}
           />
         </FormField>
-        <FormField label={i18next.t("store:Memory limit")}>
+        <FormField label={i18next.t("store:Memory limit")} tooltip={i18next.t("store:Memory limit - Tooltip")}>
           <NumberInput value={store.memoryLimit} onChange={(v) => update("memoryLimit", v)} min={0} />
         </FormField>
         {store.enableExtraOptions && (
           <>
-            <FormField label={i18next.t("store:Frequency")}>
+            <FormField label={i18next.t("store:Frequency")} tooltip={i18next.t("store:Frequency - Tooltip")}>
               <NumberInput value={store.frequency} onChange={(v) => update("frequency", v)} min={0} />
             </FormField>
-            <FormField label={i18next.t("store:Limit minutes")}>
+            <FormField label={i18next.t("store:Limit minutes")} tooltip={i18next.t("store:Limit minutes - Tooltip")}>
               <NumberInput value={store.limitMinutes} onChange={(v) => update("limitMinutes", v)} min={0} />
             </FormField>
-            <FormField label={i18next.t("store:Vector stores")} className="sm:col-span-2">
+            <FormField label={i18next.t("store:Vector stores")} tooltip={i18next.t("store:Vector stores - Tooltip")} className="sm:col-span-2">
               <TagInput
                 value={store.vectorStores ?? []}
                 onChange={(v) => update("vectorStores", v)}
@@ -815,7 +564,7 @@ export default function StoreEditPage() {
                 placeholder={i18next.t("store:Vector stores")}
               />
             </FormField>
-            <FormField label={i18next.t("store:Child stores")} className="sm:col-span-2">
+            <FormField label={i18next.t("store:Child stores")} tooltip={i18next.t("store:Child stores - Tooltip")} className="sm:col-span-2">
               <TagInput
                 value={store.childStores ?? []}
                 onChange={(v) => update("childStores", v)}
@@ -825,7 +574,7 @@ export default function StoreEditPage() {
             </FormField>
           </>
         )}
-        <FormField label={i18next.t("store:Child model providers")} className="sm:col-span-2">
+        <FormField label={i18next.t("store:Child model providers")} tooltip={i18next.t("store:Child model providers - Tooltip")} className="sm:col-span-2">
           <TagInput
             value={store.childModelProviders ?? []}
             onChange={(v) => update("childModelProviders", v)}
@@ -833,14 +582,14 @@ export default function StoreEditPage() {
             placeholder={i18next.t("store:Child model providers")}
           />
         </FormField>
-        <FormField label={i18next.t("store:Forbidden words")} className="sm:col-span-2">
+        <FormField label={i18next.t("store:Forbidden words")} tooltip={i18next.t("store:Forbidden words - Tooltip")} className="sm:col-span-2">
           <TagInput
             value={store.forbiddenWords ?? []}
             onChange={(v) => update("forbiddenWords", v)}
             placeholder={i18next.t("store:Forbidden words")}
           />
         </FormField>
-        <FormField label={i18next.t("store:Show auto read")}>
+        <FormField label={i18next.t("store:Show auto read")} tooltip={i18next.t("store:Show auto read - Tooltip")}>
           <div className="flex h-9 items-center">
             <Switch
               checked={store.showAutoRead ?? false}
@@ -848,7 +597,7 @@ export default function StoreEditPage() {
             />
           </div>
         </FormField>
-        <FormField label={i18next.t("store:Disable file upload")}>
+        <FormField label={i18next.t("store:Disable file upload")} tooltip={i18next.t("store:Disable file upload - Tooltip")}>
           <div className="flex h-9 items-center">
             <Switch
               checked={store.disableFileUpload ?? false}
@@ -856,7 +605,7 @@ export default function StoreEditPage() {
             />
           </div>
         </FormField>
-        <FormField label={i18next.t("store:Hide thinking")}>
+        <FormField label={i18next.t("store:Hide thinking")} tooltip={i18next.t("store:Hide thinking - Tooltip")}>
           <div className="flex h-9 items-center">
             <Switch
               checked={store.hideThinking ?? false}

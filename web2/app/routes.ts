@@ -12,5 +12,9 @@ export default [
     // Stores
     route("stores", "routes/StoreListPage.tsx"),
     route("stores/:owner/:storeName", "routes/StoreEditPage.tsx"),
+
+    // Sites
+    route("sites", "routes/SiteListPage.tsx"),
+    route("sites/:owner/:siteName", "routes/SiteEditPage.tsx"),
   ]),
 ] satisfies RouteConfig
