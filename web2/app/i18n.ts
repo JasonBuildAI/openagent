@@ -38,12 +38,17 @@ export function setLanguage(language: string | null | undefined): SupportedLangu
   return nextLanguage
 }
 
+const namespaces = Object.keys(en) as string[]
+
 i18n.use(initReactI18next).init({
   lng: getInitialLanguage(),
   resources: { en, zh },
   fallbackLng: "en",
   supportedLngs: supportedLanguages,
+  ns: namespaces,
+  defaultNS: "general",
   keySeparator: false,
+  nsSeparator: ":",
   interpolation: { escapeValue: false },
   saveMissing: false,
 })
