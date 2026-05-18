@@ -28,7 +28,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import {MessageCarrier} from "./chat/MessageCarrier";
-import {getFirstUserMessageText} from "./carrier/titleUtils";
+import {getFirstUserMessageText, hasTitleDivider} from "./carrier/titleUtils";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
@@ -340,7 +340,9 @@ class ChatPage extends BaseListPage {
               const lastMessage2 = Setting.deepCopy(currentMessage);
               text += jsonData.text;
               const parsedResult = mssageCarrier.parseAnswerWithCarriers(text, userTextForTitle);
-              this.updateChatDisplayName(parsedResult.title, chat);
+              if (hasTitleDivider(text) && parsedResult.title) {
+                this.updateChatDisplayName(parsedResult.title, chat);
+              }
               if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }

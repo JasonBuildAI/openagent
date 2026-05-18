@@ -14,7 +14,10 @@
 
 export const FALLBACK_TITLE_MAX_RUNES = 16;
 export const MAX_CHAT_DISPLAY_NAME_RUNES = 100;
+export const TITLE_DIVIDER = "=====";
 
+// Intentionally simple: user messages rarely include complex HTML. Attributes with
+// ">" inside quoted values are a known limitation of this regex stripper.
 const HTML_TAG_RE = /<[^>]+>/gi;
 const WHITESPACE_RE = /\s+/g;
 const SUGGESTION_LEAK_RE = /\|\|\|/;
@@ -78,8 +81,15 @@ export function resolveChatTitle(aiTitle, userMessage) {
   return truncateRunes(fallbackTitleFromUserMessage(userMessage), MAX_CHAT_DISPLAY_NAME_RUNES, false);
 }
 
+export function hasTitleDivider(answer) {
+  return (answer || "").includes(TITLE_DIVIDER);
+}
+
 export function getFirstUserMessageText(messages) {
-  const message = (messages || []).find(
+  const sorted = [...(messages || [])].sort((a, b) =>
+    (a.createdTime || "").localeCompare(b.createdTime || "")
+  );
+  const message = sorted.find(
     (item) => item.author !== "AI" && !item.isHidden && (item.text || "").trim() !== ""
   );
   return message?.text || "";

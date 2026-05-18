@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { toast } from "sonner"
 import { MessageCarrier } from "~/components/chat/MessageCarrier"
+import { hasTitleDivider } from "~/carrier/titleUtils"
 import { getMessageAnswer, type ChatStreamUpdate, type Message } from "~/backend/MessageBackend"
 import { renderReason, renderText } from "~/lib/ChatMessageRender"
 import type { Chat } from "~/backend/ChatBackend"
@@ -34,7 +35,9 @@ export function useMessageStream(
           if (json.text === "") json.text = "\n"
           text += json.text
           const parsed = carrier.parseAnswerWithCarriers(text, userTextForTitle)
-          opts?.onTitle?.(parsed.title, targetChat)
+          if (hasTitleDivider(text) && parsed.title) {
+            opts?.onTitle?.(parsed.title, targetChat)
+          }
           setMessages((prev) => {
             if (!prev.length) return prev
             const updated = [...prev]

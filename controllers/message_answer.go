@@ -347,6 +347,14 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 	fmt.Printf("]\n")
 
 	answer := writer.MessageString()
+	defer func() {
+		event := fmt.Sprintf("event: end\ndata: %s\n\n", "end")
+		_, _ = responseWriter.Write([]byte(event))
+		if flusher, ok := responseWriter.(http.Flusher); ok {
+			flusher.Flush()
+		}
+	}()
+
 	message.ReasonText = writer.ReasonString()
 	message.ToolCalls = model.GetToolCallsFromWriter(writer.ToolString())
 	searchString := writer.SearchString()
@@ -442,16 +450,6 @@ func generateMessageAnswer(id string, responseWriter http.ResponseWriter, host s
 			responseErrorStream(message, err.Error())
 			return
 		}
-	}
-
-	event := fmt.Sprintf("event: end\ndata: %s\n\n", "end")
-	_, err = responseWriter.Write([]byte(event))
-	if err != nil {
-		responseErrorStream(message, err.Error())
-		return
-	}
-	if flusher, ok := responseWriter.(http.Flusher); ok {
-		flusher.Flush()
 	}
 
 	object.StartExperienceReview(object.ExperienceReviewRequest{

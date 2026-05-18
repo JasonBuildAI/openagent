@@ -17,10 +17,11 @@ package carrier
 import (
 	"regexp"
 	"strings"
-	"unicode/utf8"
 )
 
 const (
+	// TitleDivider separates the model answer body from the generated chat title.
+	TitleDivider = "====="
 	// FallbackTitleMaxRunes is the maximum length of a fallback title derived from the user's first message.
 	FallbackTitleMaxRunes = 16
 	// MaxChatDisplayNameRunes matches object.Chat.DisplayName varchar(100).
@@ -28,8 +29,8 @@ const (
 )
 
 var (
-	htmlTagRegexp      = regexp.MustCompile(`(?is)<[^>]+>`)
-	whitespaceRegexp   = regexp.MustCompile(`\s+`)
+	htmlTagRegexp        = regexp.MustCompile(`(?is)<[^>]+>`)
+	whitespaceRegexp     = regexp.MustCompile(`\s+`)
 	suggestionLeakRegexp = regexp.MustCompile(`\|\|\|`)
 )
 
@@ -39,7 +40,12 @@ type TitleCarrier struct {
 }
 
 func NewTitleCarrier(needTitle bool) (*TitleCarrier, error) {
-	return &TitleCarrier{divider: "=====", needTitle: needTitle}, nil
+	return &TitleCarrier{divider: TitleDivider, needTitle: needTitle}, nil
+}
+
+// HasTitleDivider reports whether the streamed answer already contains a title suffix.
+func HasTitleDivider(answer string) bool {
+	return strings.Contains(answer, TitleDivider)
 }
 
 func (p *TitleCarrier) GetQuestion(question string) (string, error) {
@@ -100,6 +106,8 @@ func FallbackTitleFromUserMessage(text string, maxRunes int) string {
 }
 
 // SanitizeUserMessageForTitle strips markup and collapses whitespace for title fallback input.
+// The tag regex is intentionally simple: user messages rarely contain complex HTML, and
+// attributes with ">" inside quoted values are a known limitation.
 func SanitizeUserMessageForTitle(text string) string {
 	text = strings.TrimSpace(text)
 	if text == "" {
@@ -119,10 +127,10 @@ func normalizeAITitle(title string) string {
 		return ""
 	}
 	if idx := strings.IndexAny(title, "\r\n"); idx >= 0 {
-		title = strings.TrimSpace(title[:idx])
+		title = title[:idx]
 	}
 	if suggestionLeakRegexp.MatchString(title) {
-		title = strings.TrimSpace(suggestionLeakRegexp.Split(title, 2)[0])
+		title = suggestionLeakRegexp.Split(title, 2)[0]
 	}
 	return strings.TrimSpace(title)
 }
@@ -140,14 +148,4 @@ func truncateRunes(text string, maxRunes int, withEllipsis bool) string {
 		return string(runes[:maxRunes-1]) + "…"
 	}
 	return string(runes[:maxRunes])
-}
-
-// NormalizeTitle is kept for callers that only need AI title cleanup.
-func NormalizeTitle(title string) string {
-	return normalizeAITitle(title)
-}
-
-// ValidUTF8Title returns false when the title is empty after normalization.
-func ValidUTF8Title(title string) bool {
-	return strings.TrimSpace(title) != "" && utf8.ValidString(title)
 }

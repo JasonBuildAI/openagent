@@ -24,7 +24,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import {MessageCarrier} from "./chat/MessageCarrier";
-import {getFirstUserMessageText} from "./carrier/titleUtils";
+import {getFirstUserMessageText, hasTitleDivider} from "./carrier/titleUtils";
 
 const {TextArea} = Input;
 
@@ -148,7 +148,7 @@ const MultiPaneManager = ({
         text += jsonData.text;
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text, userTextForTitle);
 
-        if (parsedResult.title) {
+        if (hasTitleDivider(text) && parsedResult.title) {
           const updatedChat = {...chat, displayName: parsedResult.title, needTitle: false};
           setPanes(prev => prev.map((pane, i) =>
             i === paneIndex ? {...pane, chat: updatedChat} : pane

@@ -22,7 +22,7 @@ import * as ProviderBackend from "../backend/ProviderBackend";
 import i18next from "i18next";
 import ChatBox from "../ChatBox";
 import {MessageCarrier} from "../chat/MessageCarrier";
-import {getFirstUserMessageText} from "../carrier/titleUtils";
+import {getFirstUserMessageText, hasTitleDivider} from "../carrier/titleUtils";
 
 /**
  * ChatWidget - A complete chat component with header, model selector, and chat interface
@@ -455,7 +455,9 @@ class ChatWidget extends React.Component {
         text += jsonData.text;
         const parsedResult = messageCarrier.parseAnswerWithCarriers(text, userTextForTitle);
 
-        this.updateChatDisplayName(parsedResult.title, chat);
+        if (hasTitleDivider(text) && parsedResult.title) {
+          this.updateChatDisplayName(parsedResult.title, chat);
+        }
 
         if (!chat || (this.state.currentChat?.name !== chat.name)) {
           return;
