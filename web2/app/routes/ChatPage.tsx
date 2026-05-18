@@ -10,17 +10,17 @@ import ChatMenu, { type ChatMenuHandle } from "~/components/chat/ChatMenu"
 import ChatInput, { type ChatInputHandle } from "~/components/chat/ChatInput"
 import MessageList from "~/components/chat/MessageList"
 import WelcomeHeader from "~/components/chat/WelcomeHeader"
-import { MessageCarrier } from "~/components/chat/MessageCarrier"
 import { useAccount } from "~/context/AccountContext"
 import { getChats, deleteChat, updateChat } from "~/backend/ChatBackend"
-import { getChatMessages, addMessage, updateMessage, getMessageAnswer, closeMessageEventSource } from "~/backend/MessageBackend"
+import { getChatMessages, addMessage, updateMessage, closeMessageEventSource } from "~/backend/MessageBackend"
 import { getGlobalStores } from "~/backend/StoreBackend"
-import { renderText, renderReason } from "~/lib/ChatMessageRender"
-import { getRandomName, deepCopy, isMobile, getIsDark } from "~/lib/chatUtils"
-import { cn } from "~/lib/utils"
+import { renderText } from "~/lib/ChatMessageRender"
+import { getRandomName, isMobile, getIsDark } from "~/lib/chatUtils"
 import type { Chat } from "~/backend/ChatBackend"
 import type { Message } from "~/backend/MessageBackend"
 import type { Store } from "~/backend/StoreBackend"
+import { useMessageStream } from "~/hooks/useMessageStream"
+import { useChatMessageHandlers } from "~/hooks/useChatMessageHandlers"
 
 type UploadedFile = {
   uid: number
@@ -70,6 +70,9 @@ export default function ChatPage() {
 
   const isDark = getIsDark()
 
+  const streamAnswer = useMessageStream(setMessages, setMessageLoading, setMessageError)
+  const { handleMessageLike, copyMessageText } = useChatMessageHandlers(setMessages)
+
   // ── Helpers ──────────────────────────────────────────────────────────
 
   function scrollToBottom() {
@@ -112,13 +115,11 @@ export default function ChatPage() {
         if (res.status !== "ok") return
         const msgs: Message[] = res.data || []
 
-        // Render html for each message
         msgs.forEach((m) => {
           m.html = renderText(m.text)
         })
         setMessages(msgs)
 
-        // If last message is AI with empty text, stream it
         if (msgs.length > 0) {
           const lastMsg = msgs[msgs.length - 1]
           if (lastMsg.author === "AI" && lastMsg.replyTo !== "" && lastMsg.text === "") {
@@ -127,135 +128,9 @@ export default function ChatPage() {
               setMessageError(true)
               return
             }
-
-            setMessageLoading(true)
-            let text = ""
-            let reasonText = ""
-            const carrier = new MessageCarrier(targetChat.needTitle)
-
-            getMessageAnswer(
-              lastMsg.owner,
-              lastMsg.name,
-              // onMessage
-              (data) => {
-                const json = JSON.parse(data)
-                if (json.text === "") json.text = "\n"
-                text += json.text
-                const parsed = carrier.parseAnswerWithCarriers(text)
-                updateChatDisplayName(parsed.title, targetChat)
-
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  const last = { ...updated[updated.length - 1] }
-                  last.text = parsed.finalAnswer
-                  last.html = renderText(last.text)
-                  last.isReasoningPhase = false
-                  updated[updated.length - 1] = last
-                  return updated
-                })
-              },
-              // onReason
-              (data) => {
-                const json = JSON.parse(data)
-                if (json.text === "") json.text = "\n"
-                reasonText += json.text
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  const last = { ...updated[updated.length - 1] }
-                  last.reasonText = reasonText
-                  if (!last.toolCalls?.length) last.isReasoningPhase = true
-                  if (text) last.text = text
-                  updated[updated.length - 1] = last
-                  return updated
-                })
-              },
-              // onTool
-              (data) => {
-                const json = JSON.parse(data)
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  const last = { ...updated[updated.length - 1] }
-                  const toolCalls = [...(last.toolCalls || [])]
-                  if (!json.content) {
-                    toolCalls.push({ name: json.name, arguments: json.arguments, content: "" })
-                  } else {
-                    let found = false
-                    for (let i = toolCalls.length - 1; i >= 0; i--) {
-                      if (toolCalls[i].name === json.name && !toolCalls[i].content) {
-                        toolCalls[i] = { name: json.name, arguments: json.arguments, content: json.content }
-                        found = true
-                        break
-                      }
-                    }
-                    if (!found) toolCalls.push({ name: json.name, arguments: json.arguments, content: json.content })
-                  }
-                  last.toolCalls = toolCalls
-                  updated[updated.length - 1] = last
-                  return updated
-                })
-              },
-              // onSearch
-              (data) => {
-                const searchResults = JSON.parse(data)
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  updated[updated.length - 1] = { ...updated[updated.length - 1], searchResults }
-                  return updated
-                })
-              },
-              // onVector
-              (data) => {
-                const vectorScores = JSON.parse(data)
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  updated[updated.length - 1] = { ...updated[updated.length - 1], vectorScores }
-                  return updated
-                })
-              },
-              // onError
-              (error) => {
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  updated[updated.length - 1] = { ...updated[updated.length - 1], errorText: error }
-                  return updated
-                })
-                setMessageLoading(false)
-                setMessageError(true)
-              },
-              // onEnd
-              (data) => {
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  const last = { ...updated[updated.length - 1] }
-                  const parsed = carrier.parseAnswerWithCarriers(text)
-                  last.text = parsed.finalAnswer
-                  last.suggestions = parsed.suggestionArray
-                  last.html = renderText(last.text)
-                  if (last.reasonText) last.reasonHtml = renderReason(last.reasonText)
-                  last.isReasoningPhase = false
-                  updated[updated.length - 1] = last
-                  return updated
-                })
-                setMessageLoading(false)
-                setMessageError(false)
-              },
-              // onInfo
-              (infoText) => {
-                setMessages((prev) => {
-                  if (!prev.length) return prev
-                  const updated = [...prev]
-                  updated[updated.length - 1] = { ...updated[updated.length - 1], hintText: infoText }
-                  return updated
-                })
-              }
-            )
+            streamAnswer(lastMsg, targetChat, {
+              onTitle: updateChatDisplayName,
+            })
           } else {
             setMessageLoading(false)
           }
@@ -264,7 +139,7 @@ export default function ChatPage() {
         setTimeout(scrollToBottom, 50)
       })
     },
-    []
+    [streamAnswer]
   )
 
   function updateChatDisplayName(title: string, targetChat: Chat) {
@@ -420,51 +295,6 @@ export default function ChatPage() {
         if (res.status === "ok") setMessageLoading(false)
       })
     }
-  }
-
-  function handleMessageLike(message: Message, type: "like" | "dislike") {
-    const opposite = type === "like" ? "dislike" : "like"
-    const isCancel = message[`${type}Users`]?.includes(account?.name ?? "") ?? false
-
-    const updated = { ...message }
-    if (isCancel) {
-      updated[`${type}Users`] = (updated[`${type}Users`] || []).filter((u) => u !== account?.name)
-    } else {
-      updated[`${type}Users`] = [...(updated[`${type}Users`] || []), account?.name ?? ""]
-    }
-    updated[`${opposite}Users`] = (updated[`${opposite}Users`] || []).filter((u) => u !== account?.name)
-
-    setMessages((prev) => prev.map((m) => (m.name === message.name ? updated : m)))
-    updateMessage(message.owner, message.name, updated).then((res) => {
-      if (res.status === "ok") {
-        if (type === "like") {
-          toast.success(isCancel ? t("general:Successfully unliked") : t("general:Successfully liked"))
-        } else {
-          toast.success(isCancel ? t("general:Successfully undisliked") : t("general:Successfully disliked"))
-        }
-      } else {
-        toast.error(res.msg)
-      }
-    })
-  }
-
-  function copyMessageText(message: Message) {
-    const parts: string[] = []
-    if (message.toolCalls?.length) {
-      message.toolCalls.forEach((tc) => {
-        let part = `Tool calls\n${tc.name}`
-        try { part += `\nArguments:\n${JSON.stringify(JSON.parse(tc.arguments), null, 2)}` } catch { part += `\nArguments:\n${tc.arguments}` }
-        if (tc.content) { try { part += `\nResult:\n${JSON.stringify(JSON.parse(tc.content), null, 2)}` } catch { part += `\nResult:\n${tc.content}` } }
-        parts.push(part)
-      })
-    }
-    const div = document.createElement("div")
-    div.innerHTML = message.text || ""
-    const text = div.innerText
-    if (text) parts.push(text)
-    navigator.clipboard.writeText(parts.join("\n\n")).then(() => {
-      toast.success(t("general:Successfully copied"))
-    })
   }
 
   function handleSelectChat(index: number) {
