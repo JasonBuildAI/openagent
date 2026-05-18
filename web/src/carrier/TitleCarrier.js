@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {normalizeAITitle} from "./titleUtils";
-
 export class TitleCarrier {
   constructor(needTitle) {
     this.needTitle = needTitle;
@@ -30,11 +28,11 @@ export class TitleCarrier {
     }
 
     const parsedAnswer = parts[0];
-    const title = normalizeAITitle(parts[1]);
+    const title = parts[1];
 
     return {
       parsedAnswer,
-      title,
+      title: title,
     };
   };
 }

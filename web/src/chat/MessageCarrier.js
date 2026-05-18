@@ -14,7 +14,6 @@
 
 import {SuggestionCarrier} from "../carrier/SuggestionCarrier";
 import {TitleCarrier} from "../carrier/TitleCarrier";
-import {resolveChatTitle} from "../carrier/titleUtils";
 
 export class MessageCarrier {
   constructor(needTitle) {
@@ -22,15 +21,17 @@ export class MessageCarrier {
     this.titleCarrier = new TitleCarrier(needTitle);
   }
 
-  parseAnswerWithCarriers = (answer, userMessage = "") => {
+  parseAnswerWithCarriers = (answer) => {
+    // First extract title
     const {parsedAnswer, title} = this.titleCarrier.parseAnswerAndTitle(answer);
 
+    // Then extract suggestions
     const {finalAnswer, suggestionArray} = this.suggestionCarrier.parseAnswerAndSuggestions(parsedAnswer);
 
     return {
       finalAnswer,
       suggestionArray,
-      title: resolveChatTitle(title, userMessage),
+      title,
     };
   };
 }
