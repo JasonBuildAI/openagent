@@ -14,7 +14,24 @@
 
 package carrier
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+	"unicode/utf8"
+)
+
+const (
+	// FallbackTitleMaxRunes is the maximum length of a fallback title derived from the user's first message.
+	FallbackTitleMaxRunes = 16
+	// MaxChatDisplayNameRunes matches object.Chat.DisplayName varchar(100).
+	MaxChatDisplayNameRunes = 100
+)
+
+var (
+	htmlTagRegexp      = regexp.MustCompile(`(?is)<[^>]+>`)
+	whitespaceRegexp   = regexp.MustCompile(`\s+`)
+	suggestionLeakRegexp = regexp.MustCompile(`\|\|\|`)
+)
 
 type TitleCarrier struct {
 	divider   string
@@ -32,12 +49,12 @@ func (p *TitleCarrier) GetQuestion(question string) (string, error) {
 
 	format := "<title>"
 	question = question +
-		"\n\n**At the end of your answer, if and only if a clear, concise, and meaningful topic title can be generated — based on both the user's input and your response — then append it.**\n" +
+		"\n\n**At the end of your answer, you MUST append a clear, concise, and meaningful topic title based on both the user's input and your response.**\n" +
 		"A meaningful topic title should be able to represent the user's purpose or the overall theme of this conversation.\n" +
 		"Examples of generated title:\n" +
 		"\tquery: what is openagent? title: introduction to openagent\n" +
 		"It should appear at the very end of the response, prefixed by: " + p.divider + "\n" +
-		"Do not include the divider or title if a meaningful title cannot be generated.\n" +
+		"Only skip the divider and title when the user's message is completely empty.\n" +
 		"Format:\n<Your complete answer>\n" + p.divider + format + "\n"
 
 	return question, nil
@@ -54,7 +71,83 @@ func (p *TitleCarrier) ParseAnswer(answer string) (string, []string, error) {
 	}
 
 	parsedAnswer := parts[0]
-	title := strings.TrimSpace(parts[1])
+	title := normalizeAITitle(parts[1])
 
 	return parsedAnswer, []string{title}, nil
+}
+
+// ResolveChatTitle prefers the AI-generated title and falls back to a truncated user message.
+func ResolveChatTitle(aiTitle, userMessage string) string {
+	aiTitle = normalizeAITitle(aiTitle)
+	if aiTitle != "" {
+		return truncateRunes(aiTitle, MaxChatDisplayNameRunes, false)
+	}
+
+	fallback := FallbackTitleFromUserMessage(userMessage, FallbackTitleMaxRunes)
+	return truncateRunes(fallback, MaxChatDisplayNameRunes, false)
+}
+
+// FallbackTitleFromUserMessage builds a sidebar title from the first user message when the model omits one.
+func FallbackTitleFromUserMessage(text string, maxRunes int) string {
+	if maxRunes <= 0 {
+		maxRunes = FallbackTitleMaxRunes
+	}
+	text = SanitizeUserMessageForTitle(text)
+	if text == "" {
+		return ""
+	}
+	return truncateRunes(text, maxRunes, true)
+}
+
+// SanitizeUserMessageForTitle strips markup and collapses whitespace for title fallback input.
+func SanitizeUserMessageForTitle(text string) string {
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return ""
+	}
+
+	text = htmlTagRegexp.ReplaceAllString(text, " ")
+	text = strings.ReplaceAll(text, "\r\n", "\n")
+	text = strings.ReplaceAll(text, "\n", " ")
+	text = whitespaceRegexp.ReplaceAllString(text, " ")
+	return strings.TrimSpace(text)
+}
+
+func normalizeAITitle(title string) string {
+	title = strings.TrimSpace(title)
+	if title == "" {
+		return ""
+	}
+	if idx := strings.IndexAny(title, "\r\n"); idx >= 0 {
+		title = strings.TrimSpace(title[:idx])
+	}
+	if suggestionLeakRegexp.MatchString(title) {
+		title = strings.TrimSpace(suggestionLeakRegexp.Split(title, 2)[0])
+	}
+	return strings.TrimSpace(title)
+}
+
+func truncateRunes(text string, maxRunes int, withEllipsis bool) string {
+	if maxRunes <= 0 || text == "" {
+		return ""
+	}
+
+	runes := []rune(text)
+	if len(runes) <= maxRunes {
+		return text
+	}
+	if withEllipsis && maxRunes > 1 {
+		return string(runes[:maxRunes-1]) + "…"
+	}
+	return string(runes[:maxRunes])
+}
+
+// NormalizeTitle is kept for callers that only need AI title cleanup.
+func NormalizeTitle(title string) string {
+	return normalizeAITitle(title)
+}
+
+// ValidUTF8Title returns false when the title is empty after normalization.
+func ValidUTF8Title(title string) bool {
+	return strings.TrimSpace(title) != "" && utf8.ValidString(title)
 }

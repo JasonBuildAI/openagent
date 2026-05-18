@@ -22,6 +22,7 @@ import * as ProviderBackend from "../backend/ProviderBackend";
 import i18next from "i18next";
 import ChatBox from "../ChatBox";
 import {MessageCarrier} from "../chat/MessageCarrier";
+import {getFirstUserMessageText} from "../carrier/titleUtils";
 
 /**
  * ChatWidget - A complete chat component with header, model selector, and chat interface
@@ -441,6 +442,7 @@ class ChatWidget extends React.Component {
     }
 
     const messageCarrier = new MessageCarrier(chat.needTitle);
+    const userTextForTitle = getFirstUserMessageText(messages);
 
     MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name,
       // onMessage
@@ -451,7 +453,7 @@ class ChatWidget extends React.Component {
         }
         const lastMessage2 = Setting.deepCopy(lastMessage);
         text += jsonData.text;
-        const parsedResult = messageCarrier.parseAnswerWithCarriers(text);
+        const parsedResult = messageCarrier.parseAnswerWithCarriers(text, userTextForTitle);
 
         this.updateChatDisplayName(parsedResult.title, chat);
 
@@ -643,12 +645,13 @@ class ChatWidget extends React.Component {
         }
 
         // Parse the final answer and suggestions
-        const parsedResult = messageCarrier.parseAnswerWithCarriers(text);
+        const parsedResult = messageCarrier.parseAnswerWithCarriers(text, userTextForTitle);
         text = parsedResult.finalAnswer;
 
         if (parsedResult.title !== "") {
           chat.displayName = parsedResult.title;
           chat.needTitle = false;
+          this.updateChatDisplayName(parsedResult.title, chat);
         }
 
         lastMessage2.text = parsedResult.finalAnswer;
@@ -675,6 +678,13 @@ class ChatWidget extends React.Component {
         setTimeout(() => {
           Setting.scrollToDiv(`chatbox-list-item-${updatedMessages.length}`);
         }, 100);
+      },
+      null,
+      (update) => {
+        if (!chat || !update?.displayName || update.name !== chat.name) {
+          return;
+        }
+        this.updateChatDisplayName(update.displayName, {...chat, needTitle: update.needTitle ?? false});
       }
     );
   }
@@ -682,6 +692,7 @@ class ChatWidget extends React.Component {
   updateChatDisplayName(title, chat) {
     if (title !== "" && chat) {
       chat.displayName = title;
+      chat.needTitle = false;
       this.setState({
         currentChat: chat,
       });

@@ -115,6 +115,26 @@ func GetChatMessages(chat string) ([]*Message, error) {
 	return messages, nil
 }
 
+// GetFirstUserMessageText returns the earliest non-hidden user message in a chat.
+func GetFirstUserMessageText(chatName string) (string, error) {
+	messages, err := GetChatMessages(chatName)
+	if err != nil {
+		return "", err
+	}
+
+	for _, message := range messages {
+		if message == nil || message.Author == "AI" || message.IsHidden {
+			continue
+		}
+		text := strings.TrimSpace(message.Text)
+		if text != "" {
+			return text, nil
+		}
+	}
+
+	return "", nil
+}
+
 func GetMessages(owner string, user string, storeName string) ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Desc("created_time").Find(&messages, &Message{Owner: owner, User: user, Store: storeName})
